@@ -1,0 +1,21 @@
+{
+  "name": "asq-exercise",
+  "version": "0.0.0",
+  "homepage": "https://github.com/ASQ-USI/asq-exercise",
+  "authors": [
+    "Vasileios Triglianos <triglian@gmail.com>",
+    "Zhenfei Nie <zhenfei.nie@gmail.com>"
+  ],
+  "description": "ASQ Exercise element",
+  "keywords": [
+    "ASQ"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "polymer": "Polymer/polymer#^0.5.1",
+    "paper-elements": "Polymer/paper-elements#~0.5.1"
+  },
+  "devDependencies": {
+    "web-component-tester": "Polymer/web-component-tester#^2.0.0-rc1"
+  }
+}

@@ -1,0 +1,122 @@
+<!doctype html>
+<html>
+<head>
+  <meta name="asq-exercise" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  <title>ASQ - Elements | Exercise</title>
+
+  <script src="../webcomponentsjs/webcomponents.js"></script>
+
+  <link rel="import" href="./asq-exercise.html">
+  
+
+  <style shim-shadowdom>
+    body {
+      font-family: RobotoDraft, 'Helvetica Neue', Helvetica, Arial;
+      font-size: 14px;
+      margin: 0;
+      padding: 24px;
+      -webkit-tap-highlight-color: rgba(0,0,0,0);
+      -webkit-touch-callout: none;
+    }
+    section {
+      padding: 20px 0;
+    }
+    section > div {
+      padding: 14px;
+      font-size: 16px;
+    }
+  </style>
+
+</head>
+<body>
+
+<template is="auto-binding">
+
+  <section>
+
+    <asq-exercise exerciseid="ex1" class="exercise">
+      <asq-stem><h2>Exercise 1</h2></asq-stem>
+      <asq-multi-choice>
+        <asq-stem><h3>Which are the official languages of Switzerland?</h3></asq-stem>
+        <asq-option>English</asq-option>
+        <asq-option correct-answer="true">French</asq-option>
+        <asq-option correct-answer="true">German</asq-option>
+        <asq-option correct-answer="true">Rumantsch</asq-option>
+      </asq-multi-choice>
+
+    </asq-exercise>
+
+    <asq-exercise exerciseid="ex2" class="exercise">
+      <asq-stem><h2>Exercise 2</h2></asq-stem>
+      
+      <asq-text-input placeholder="answer here">
+        <asq-stem><h3>What's the result of '2 * 3'</h3></stem>
+      </asq-text-input>
+
+      <asq-text-input placeholder="answer here">
+        <asq-stem><h3>What's the result of '2 * 4'</h3></stem>
+      </asq-text-input>
+
+      <asq-text-input placeholder="answer here">
+        <asq-stem><h3>What's the result of '2 * 5'</h3></stem>
+      </asq-text-input>
+    </asq-exercise>
+
+    <asq-exercise exerciseid="ex3" class="exercise">
+      <asq-stem><h2>Exercise 3</h2></asq-stem>
+      <asq-js-function-body funName="wrap(str, tagName)" question="wrap('hello World', 'div');">
+        <asq-stem class="question"><h2>Implement a function that wraps a given string with an HTML tag:</h2></asq-stem>
+      </asq-js-function-body>
+    </asq-exercise>
+
+    
+
+    <asq-exercise exerciseid="ex4" class="exercise">
+      <asq-stem><h2>Exercise 4</h2></asq-stem>
+        <asq-css-select htmlcode="<ul><li class='daclass'><ul id='ghouan'><li></li><li></li><li></li></ul></li><li></li><li></li><li><div><p></p><p class='pclass'></p></div></li></ul>">
+          <asq-stem><h3>Select 'div' elements:</h3><asq-stem>
+      </asq-css-select>
+    </asq-exercise>
+
+   <asq-exercise exerciseid="ex0" class="exercise">
+      <asq-stem><h2>Exercise 0</h2></asq-stem>
+      <asq-code mode="htmlmixed" tabSize="2" value="<polymer-element name='my-element'>
+  <template></template>  
+  <script>    
+    Polymer('my-element', {});  
+  </script>
+</polymer-element>">
+      
+      </asq-code>
+    </asq-exercise>  
+
+
+  </section>
+</template>
+  <script>
+  window.onmessage = function(e){
+
+    if (typeof e.data.role == "string" && e.data.role.length > 0) {
+      var allAsqElements = document.querySelectorAll('html /deep/ *');
+      allAsqElements = Array.prototype.slice.call(allAsqElements).filter(function(el) {
+        return isASQEl(el);
+      });
+
+      //set role for every asq-element in this page
+      allAsqElements.forEach(function(elem, index) {
+        elem.role = e.data.role;
+      });
+    }
+
+    function isASQEl(el) {
+      return el.localName.indexOf('asq-') != -1;
+    } 
+  };
+</script>
+
+
+
+
+</body>
+</html>

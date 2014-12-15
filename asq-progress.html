@@ -1,0 +1,37 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../asq-element-conf/asq-element-conf.html">
+
+<polymer-element name="asq-progress">
+  <template>
+    <style></style>
+    
+    <!-- (for now) Keep same when either viewer or presenter -->
+    <div>
+      <progress value="{{value}}" max="{{max}}"></progress>
+      <i>{{value}} / {{max}}</i>    
+    </div>
+
+  </template>
+
+  <script>
+    (function() {
+
+      var p = {
+
+        type_ : "asq-progress",
+
+        value: 0,
+        max: 0,
+
+        ready: function () {
+          this.value = 3;
+          this.max = 10;
+        }
+      };
+
+      ASQ.mixin(p, ASQ.ElementType);
+      ASQ.mixin(p, ASQ.Role);
+      Polymer('asq-progress', p);
+    }) ();
+  </script>
+</polymer-element>

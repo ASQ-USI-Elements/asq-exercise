@@ -1,0 +1,158 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../paper-button/paper-button.html">
+
+<link rel="import" href="asq-confidence.html">
+<link rel="import" href="asq-progress.html">
+<link rel="import" href="../asq-element-conf/asq-element-conf.html">
+
+
+<polymer-element name="asq-exercise" attributes="exerciseid" >
+  <template>
+    <style> 
+
+      :host{
+        display: block;
+      }
+   
+      .submit-button {
+        color: #fff;
+        background-color: #5cb85c;
+      }
+      .disabled-button {
+        background-color: #817E7E;
+      }
+      .edit-button {
+        color: #fff;
+        background-color: rgb(255, 155, 15);
+      }
+
+      div {
+        margin-left: 2em;
+        margin-right: 2em;
+      }
+
+      footer {
+       /* position:absolute;
+        bottom: 1em;
+        right: 1em;
+        text-align: right;*/
+      }
+     
+    </style>
+
+    <template if="{{role==Roles.VIEWER}}">
+      <article id="ex" class="asq-exercise">
+        <div>
+          <content select="asq-stem"></content>
+        </div>
+        <div id="exercises">
+          <content></content>
+        </div>
+        <footer id="buttons" horizontal end-justified layout>
+          <div>
+            <asq-confidence id="confidence"></asq-confidence>
+            <paper-button id="submit_button" class="submit-button" on-tap="{{submit}}" raised="true">Submit</paper-button>
+            <paper-button id="edit_button"  class="edit-button" on-tap="{{edit}}" raised="true">Edit</paper-button> 
+          </div>   
+        </footer>
+      </article>
+    </template>
+
+
+    <template if="{{role==Roles.PRESENTER}}">
+      <article id="ex" class="asq-exercise">
+        <div>
+          <content select="asq-stem"></content>
+        </div>
+        <div id="exercises">
+          <content></content>
+        </div>
+        <footer id="buttons" horizontal end-justified layout>
+          <div>
+            <asq-progress></asq-progress>
+            <paper-button id="stats" class="submit-button" raised="true">Stats</paper-button>
+          </div>
+        </footer>
+      </article>
+    </template> 
+
+    <template if="{{role==Roles.TA}}">
+      <article id="ex" class="asq-exercise">
+        <div>
+          <content select="asq-stem"></content>
+        </div>
+        <div id="exercises">
+          <content></content>
+        </div>
+        <footer id="buttons" horizontal end-justified layout>
+          <div>
+            <asq-progress></asq-progress>
+          </div>
+        </footer>
+      </article>
+    </template> 
+
+  </template>
+
+  <script>
+    (function() {
+
+      var p = {
+        exerciseid: 0,
+
+        isQuestion_: true,
+        type_: "asq-exercise",
+
+        submit: function() {
+          if ( this.role !== this.Roles.VIEWER ) {
+            return;
+          }
+
+          var questions = this.childNodes.array().filter(function(el) {
+            return el.isASQElement && el.isQuestion;
+          });
+
+          console.log("questions ", questions);
+
+          var submisstion = [];
+          questions.forEach(function(elem, index) {
+            submisstion.push(elem.getSubmission());
+          });
+
+          var confidence = this.$.confidence.getConfidenceLevel();
+
+          var a = {
+            submisstion: submisstion,
+            confidence: confidence
+          }
+
+          this.toggleSubmisstion();
+          console.log("SUMMISSION", a);
+          return a;
+        },
+
+        edit: function() {
+          this.toggleSubmisstion();
+        },
+
+        toggleSubmisstion: function() {
+          if ( this.$.submit_button.disabled ) {
+            this.$.submit_button.disabled = false;
+            this.$.submit_button.classList.remove("disabled-button");
+          } else {
+            this.$.submit_button.disabled = true;
+            this.$.submit_button.classList.add("disabled-button");
+          }
+        },
+
+        
+
+      }
+
+      ASQ.mixin(p, ASQ.ElementType, ASQ.Role);
+      // ASQ.mixin(p, );
+      Polymer('asq-exercise', p);
+
+    })();
+  </script>
+</polymer-element>

@@ -1,0 +1,44 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../asq-element-conf/asq-element-conf.html">
+
+<polymer-element name="asq-confidence">
+  <template>
+    <link rel="stylesheet" href="./asq-confidence.css" type="text/css" />
+    
+    <!-- (for now) Keep same when either viewer or presenter -->
+    <div id="rating" class="rating">
+      <span><i>Confidence: </i></span>
+      <input type="radio" id="star5" name="rating" value="5"/><label for="star5" title="O">5 stars</label>
+      <input type="radio" id="star4" name="rating" value="4"/><label for="star4" title="Sure">4 stars</label>
+      <input type="radio" id="star3" name="rating" value="3"/><label for="star3" title="Good">3 stars</label>
+      <input type="radio" id="star2" name="rating" value="2"/><label for="star2" title="Guess">2 stars</label>
+      <input type="radio" id="star1" name="rating" value="1"/><label for="star1" title="Random guess">1 star</label>
+    </div>
+  </template>
+
+  <script>
+    (function() {
+
+      var p = {
+
+        type_: "asq-confidence",
+
+        getConfidenceLevel: function () {
+          var rates = this.$.rating.querySelectorAll("input[type=radio]");
+          for (var i=0; i<rates.length; i++) {
+            var rate = rates[i];
+            if ( rate.checked == true ) {
+              return rate.value;
+            }
+          }
+          return 1;      
+        },
+
+      }
+      ASQ.mixin(p, ASQ.ElementType);
+      ASQ.mixin(p, ASQ.Role);
+
+      Polymer('asq-confidence', p);
+    })();
+  </script>
+</polymer-element>
