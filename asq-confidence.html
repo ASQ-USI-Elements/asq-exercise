@@ -21,8 +21,6 @@
 
       var p = {
 
-        type_: "asq-confidence",
-
         getConfidenceLevel: function () {
           var rates = this.$.rating.querySelectorAll("input[type=radio]");
           for (var i=0; i<rates.length; i++) {
@@ -35,8 +33,10 @@
         },
 
       }
-      ASQ.mixin(p, ASQ.ElementType);
-      ASQ.mixin(p, ASQ.Role);
+
+      Polymer.mixin2(p, ASQ.ElementTypeMixin);
+      Polymer.mixin2(p, ASQ.RoleMixin);
+
 
       Polymer('asq-confidence', p);
     })();

@@ -100,9 +100,6 @@
       var p = {
         exerciseid: 0,
 
-        isQuestion_: true,
-        type_: "asq-exercise",
-
         submit: function() {
           if ( this.role !== this.Roles.VIEWER ) {
             return;
@@ -144,13 +141,12 @@
             this.$.submit_button.classList.add("disabled-button");
           }
         },
-
-        
-
       }
+      
+      Polymer.mixin2(p, ASQ.ElementTypeMixin);
+      Polymer.mixin2(p, ASQ.RoleMixin);
+      Polymer.mixin2(p, ASQ.QuestionTypeMixin);
 
-      ASQ.mixin(p, ASQ.ElementType, ASQ.Role);
-      // ASQ.mixin(p, );
       Polymer('asq-exercise', p);
 
     })();
