@@ -111,28 +111,28 @@ ASQ<link rel="import" href="../polymer/polymer.html">
 
           console.log("questions ", questions);
 
-          var submisstion = [];
+          var submission = [];
           questions.forEach(function(elem, index) {
-            submisstion.push(elem.getSubmission());
+            submission.push(elem.submit());
           });
 
           var confidence = this.$.confidence.getConfidenceLevel();
 
-          var a = {
-            submisstion: submisstion,
-            confidence: confidence
-          }
+          this.toggleSubmit();
 
-          this.toggleSubmisstion();
-          console.log("SUMMISSION", a);
-          return a;
+          this.fire('asq-submit', {
+            submission: {
+              submission: submission,
+              confidence: confidence
+            }
+          });
         },
 
         edit: function() {
-          this.toggleSubmisstion();
+          this.toggleSubmit();
         },
 
-        toggleSubmisstion: function() {
+        toggleSubmit: function() {
           if ( this.$.submit_button.disabled ) {
             this.$.submit_button.disabled = false;
             this.$.submit_button.classList.remove("disabled-button");
@@ -143,10 +143,9 @@ ASQ<link rel="import" href="../polymer/polymer.html">
         },
       }
       
-      ASQ.mixin2(p, ASQ.ElementTypeMixin);
-      ASQ.mixin2(p, ASQ.RoleMixin);
-      ASQ.mixin2(p, ASQ.QuestionTypeMixin);
 
+      ASQ.mixin2(p, ASQ.RoleMixin);
+      Polymer.mixin(p, ASQ.ElementTypeMixin, ASQ.QuestionTypeMixin);
       Polymer('asq-exercise', p);
 
     })();
