@@ -1,5 +1,5 @@
 <link rel="import" href="../polymer/polymer.html">
-<link rel="import" href="../asq-element-conf/asq-element-conf.html">
+<link rel="import" href="../asq-element-common/asq-element-common.html">
 
 <polymer-element name="asq-confidence">
   <template>
@@ -21,8 +21,6 @@
 
       var p = {
 
-        type_: "asq-confidence",
-
         getConfidenceLevel: function () {
           var rates = this.$.rating.querySelectorAll("input[type=radio]");
           for (var i=0; i<rates.length; i++) {
@@ -31,13 +29,13 @@
               return rate.value;
             }
           }
-          return 1;      
+          return "1";      
         },
 
       }
-      ASQ.mixin(p, ASQ.ElementType);
-      ASQ.mixin(p, ASQ.Role);
 
+      ASQ.mixin2(p, ASQ.RoleMixin);
+      Polymer.mixin(p, ASQ.ElementTypeMixin);
       Polymer('asq-confidence', p);
     })();
   </script>

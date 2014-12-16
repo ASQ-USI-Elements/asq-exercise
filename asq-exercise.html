@@ -1,9 +1,9 @@
-<link rel="import" href="../polymer/polymer.html">
+ASQ<link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../paper-button/paper-button.html">
 
 <link rel="import" href="asq-confidence.html">
 <link rel="import" href="asq-progress.html">
-<link rel="import" href="../asq-element-conf/asq-element-conf.html">
+<link rel="import" href="../asq-element-common/asq-element-common.html">
 
 
 <polymer-element name="asq-exercise" attributes="exerciseid" >
@@ -100,9 +100,6 @@
       var p = {
         exerciseid: 0,
 
-        isQuestion_: true,
-        type_: "asq-exercise",
-
         submit: function() {
           if ( this.role !== this.Roles.VIEWER ) {
             return;
@@ -144,13 +141,12 @@
             this.$.submit_button.classList.add("disabled-button");
           }
         },
-
-        
-
       }
+      
+      ASQ.mixin2(p, ASQ.ElementTypeMixin);
+      ASQ.mixin2(p, ASQ.RoleMixin);
+      ASQ.mixin2(p, ASQ.QuestionTypeMixin);
 
-      ASQ.mixin(p, ASQ.ElementType, ASQ.Role);
-      // ASQ.mixin(p, );
       Polymer('asq-exercise', p);
 
     })();

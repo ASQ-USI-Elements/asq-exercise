@@ -1,5 +1,5 @@
 <link rel="import" href="../polymer/polymer.html">
-<link rel="import" href="../asq-element-conf/asq-element-conf.html">
+<link rel="import" href="../asq-element-common/asq-element-common.html">
 
 <polymer-element name="asq-progress">
   <template>
@@ -18,8 +18,6 @@
 
       var p = {
 
-        type_ : "asq-progress",
-
         value: 0,
         max: 0,
 
@@ -29,8 +27,8 @@
         }
       };
 
-      ASQ.mixin(p, ASQ.ElementType);
-      ASQ.mixin(p, ASQ.Role);
+      ASQ.mixin2(p, ASQ.RoleMixin);
+      Polymer.mixin(p, ASQ.ElementTypeMixin);
       Polymer('asq-progress', p);
     }) ();
   </script>
