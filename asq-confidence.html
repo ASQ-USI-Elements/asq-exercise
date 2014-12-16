@@ -29,15 +29,13 @@
               return rate.value;
             }
           }
-          return 1;      
+          return "1";      
         },
 
       }
 
-      ASQ.mixin2(p, ASQ.ElementTypeMixin);
       ASQ.mixin2(p, ASQ.RoleMixin);
-
-
+      Polymer.mixin(p, ASQ.ElementTypeMixin);
       Polymer('asq-confidence', p);
     })();
   </script>
