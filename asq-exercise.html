@@ -25,18 +25,6 @@ ASQ<link rel="import" href="../polymer/polymer.html">
         color: #fff;
         background-color: rgb(255, 155, 15);
       }
-
-      div {
-        margin-left: 2em;
-        margin-right: 2em;
-      }
-
-      footer {
-       /* position:absolute;
-        bottom: 1em;
-        right: 1em;
-        text-align: right;*/
-      }
      
     </style>
 
@@ -111,28 +99,28 @@ ASQ<link rel="import" href="../polymer/polymer.html">
 
           console.log("questions ", questions);
 
-          var submisstion = [];
+          var submission = [];
           questions.forEach(function(elem, index) {
-            submisstion.push(elem.getSubmission());
+            submission.push(elem.getSubmission());
           });
 
           var confidence = this.$.confidence.getConfidenceLevel();
 
           var a = {
-            submisstion: submisstion,
+            submission: submission,
             confidence: confidence
           }
 
-          this.toggleSubmisstion();
+          this.toggleCanSubmit();
           console.log("SUMMISSION", a);
           return a;
         },
 
         edit: function() {
-          this.toggleSubmisstion();
+          this.toggleCanSubmit();
         },
 
-        toggleSubmisstion: function() {
+        toggleCanSubmit: function() {
           if ( this.$.submit_button.disabled ) {
             this.$.submit_button.disabled = false;
             this.$.submit_button.classList.remove("disabled-button");
@@ -143,11 +131,10 @@ ASQ<link rel="import" href="../polymer/polymer.html">
         },
       }
       
-      ASQ.mixin2(p, ASQ.ElementTypeMixin);
+      //we use a custom mixin to avoid overwriting published properties of the prototype
       ASQ.mixin2(p, ASQ.RoleMixin);
-      ASQ.mixin2(p, ASQ.QuestionTypeMixin);
 
-      Polymer('asq-exercise', p);
+      Polymer('asq-exercise', Polymer.mixin(p, ASQ.ElementTypeMixin, ASQ.QuestionTypeMixin));
 
     })();
   </script>
