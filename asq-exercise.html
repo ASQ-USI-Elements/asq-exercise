@@ -101,26 +101,26 @@ ASQ<link rel="import" href="../polymer/polymer.html">
 
           var submission = [];
           questions.forEach(function(elem, index) {
-            submission.push(elem.getSubmission());
+            submission.push(elem.submit());
           });
 
           var confidence = this.$.confidence.getConfidenceLevel();
 
-          var a = {
-            submission: submission,
-            confidence: confidence
-          }
+          this.toggleSubmit();
 
-          this.toggleCanSubmit();
-          console.log("SUMMISSION", a);
-          return a;
+          this.fire('asq-submit', {
+            submission: {
+              submission: submission,
+              confidence: confidence
+            }
+          });
         },
 
         edit: function() {
-          this.toggleCanSubmit();
+          this.toggleSubmit();
         },
 
-        toggleCanSubmit: function() {
+        toggleSubmit: function() {
           if ( this.$.submit_button.disabled ) {
             this.$.submit_button.disabled = false;
             this.$.submit_button.classList.remove("disabled-button");
@@ -133,8 +133,8 @@ ASQ<link rel="import" href="../polymer/polymer.html">
       
       //we use a custom mixin to avoid overwriting published properties of the prototype
       ASQ.mixin2(p, ASQ.RoleMixin);
-
-      Polymer('asq-exercise', Polymer.mixin(p, ASQ.ElementTypeMixin, ASQ.QuestionTypeMixin));
+      Polymer.mixin(p, ASQ.ElementTypeMixin, ASQ.QuestionTypeMixin);
+      Polymer('asq-exercise', p);
 
     })();
   </script>
