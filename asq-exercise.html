@@ -3,7 +3,7 @@ ASQ<link rel="import" href="../polymer/polymer.html">
 
 <link rel="import" href="asq-confidence.html">
 <link rel="import" href="asq-progress.html">
-<link rel="import" href="../asq-element-common/asq-element-common.html">
+<link rel="import" href="../asq-base/asq-base.html">
 
 
 <polymer-element name="asq-exercise" attributes="exerciseid" >
@@ -28,7 +28,7 @@ ASQ<link rel="import" href="../polymer/polymer.html">
      
     </style>
 
-    <template if="{{role==Roles.VIEWER}}">
+    <template if="{{role==roles.VIEWER}}">
       <article id="ex" class="asq-exercise">
         <div>
           <content select="asq-stem"></content>
@@ -47,7 +47,7 @@ ASQ<link rel="import" href="../polymer/polymer.html">
     </template>
 
 
-    <template if="{{role==Roles.PRESENTER}}">
+    <template if="{{role==roles.PRESENTER}}">
       <article id="ex" class="asq-exercise">
         <div>
           <content select="asq-stem"></content>
@@ -64,7 +64,7 @@ ASQ<link rel="import" href="../polymer/polymer.html">
       </article>
     </template> 
 
-    <template if="{{role==Roles.TA}}">
+    <template if="{{role==roles.TA}}">
       <article id="ex" class="asq-exercise">
         <div>
           <content select="asq-stem"></content>
@@ -88,20 +88,30 @@ ASQ<link rel="import" href="../polymer/polymer.html">
       var p = {
         exerciseid: 0,
 
+        // created: function(){
+        //   document.addEventListener('asq-ready', function(evt){
+        //     try{
+        //       this.subscribeToEvents(evt.detail.asqEventBus)
+        //     }catch(err){
+        //       console.debug('failed to subscribeToEvents');
+        //     }
+        //   }.bind(this));
+        // },
+
         submit: function() {
-          if ( this.role !== this.Roles.VIEWER ) {
+          if ( this.role !== this.roles.VIEWER ) {
             return;
           }
 
           var questions = this.childNodes.array().filter(function(el) {
-            return el.isASQElement && el.isQuestion;
+            return el.isASQElement && el.isASQQuestionTypeElement;
           });
 
           console.log("questions ", questions);
 
-          var submission = [];
+          var answers = [];
           questions.forEach(function(elem, index) {
-            submission.push(elem.submit());
+            answers.push(elem.submit());
           });
 
           var confidence = this.$.confidence.getConfidenceLevel();
@@ -110,7 +120,7 @@ ASQ<link rel="import" href="../polymer/polymer.html">
 
           this.fire('asq-submit', {
             submission: {
-              submission: submission,
+              answers: answers,
               confidence: confidence
             }
           });
@@ -132,8 +142,7 @@ ASQ<link rel="import" href="../polymer/polymer.html">
       }
       
       //we use a custom mixin to avoid overwriting published properties of the prototype
-      ASQ.mixin2(p, ASQ.RoleMixin);
-      Polymer.mixin(p, ASQ.ElementTypeMixin, ASQ.QuestionTypeMixin);
+      ASQ.asqify(p);
       Polymer('asq-exercise', p);
 
     })();
