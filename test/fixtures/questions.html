@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+</head>
+<body>
+  <asq-exercise id="no-uids">
+    <asq-multi-choice>
+      <asq-stem>This is a stem</asq-stem>
+      <asq-options>
+        <asq-option>Option 1</asq-option>
+        <asq-option>Option 2</asq-option>
+      </asq-options>
+    </asq-multi-choice>  
+    <asq-highlight>
+      <asq-stem>Highlight all vars</asq-stem>
+    </asq-highlight>   
+  </asq-exercise>
+  <asq-exercise id="same-uids">
+    <asq-multi-choice uid="a-uid">
+      <asq-stem>This is a stem</asq-stem>
+      <asq-options>
+        <asq-option>Option 1</asq-option>
+        <asq-option>Option 2</asq-option>
+      </asq-options>
+    </asq-multi-choice>     
+     <asq-code-input uid="a-uid">
+      <asq-stem>Write a for loop</asq-stem>
+    </asq-code-input>
+  </asq-exercise>
+  <asq-exercise id="uids-ok">
+    <asq-code-input uid="uid-1">
+      <asq-stem>Write a for loop</asq-stem>
+    </asq-code-input>
+    <asq-js-function-body uid="uid-2">
+      <asq-stem>Write a for loop</asq-stem>
+    </asq-js-function-body>
+  </asq-exercise>
+  <asq-exercise>
+    <asq-css-select>
+      <asq-stem>Select all the li elements</asq-stem>
+    </asq-css-select>     
+  </asq-exercise>
+</body>
+</html>
+
+
