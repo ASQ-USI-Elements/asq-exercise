@@ -5,7 +5,28 @@ ASQ<link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="asq-progress.html">
 <link rel="import" href="../asq-base/asq-base.html">
 
+<!--
+`asq-exercise` is the container for all ASQ `question types`. It can contain several `ASQ questions`. It is the one that can communicate(submit answers) with server side.
 
+##### Example
+    <asq-exercise exerciseid="ex1" class="exercise">
+      <asq-stem><h2>Exercise 1</h2></asq-stem>
+      <asq-multi-choice>
+        <asq-stem><h3>Which are the official languages of Switzerland?</h3></asq-stem>
+        <asq-option>English</asq-option>
+        <asq-option correct-answer="true">French</asq-option>
+        <asq-option correct-answer="true">German</asq-option>
+        <asq-option correct-answer="true">Rumantsch</asq-option>
+      </asq-multi-choice>
+    </asq-exercise>
+
+Different users will see different UI according to their `role`. There are three types of roles, `viewer`, `presenter` and `teaching assistant`.
+
+@element asq-exercise
+@group ASQ Elements
+@blurb Element Container for all ASQ `question types`.
+@homepage http://github.com/ASQ_USI/asq-exercise
+-->
 <polymer-element name="asq-exercise" attributes="exerciseid" >
   <template>
     <style> 
@@ -98,36 +119,70 @@ ASQ<link rel="import" href="../polymer/polymer.html">
         //   }.bind(this));
         // },
 
+        /**
+         * The `asq-submit` event is fired whenever function `submit` is called.
+         *
+         * @event asq-submit
+         * @param {Object} detail
+         *   @param {Object} detail.submission The submission.
+         *     @param {String} detail.submission.confindence The confindence.
+         *     @param {Object} detail.submission.answers All the answers in JSON format.
+         */
+        /**
+         * The `submit` method will submit the answer to a wrapped 'asq-exercise' instance. 
+         * Only useful when the `role` is `viewer`.
+         *
+         * @method submit
+         */
         submit: function() {
           if ( this.role !== this.roles.VIEWER ) {
             return;
           }
 
-          var questions = this.childNodes.array().filter(function(el) {
-            return el.isASQElement && el.isASQQuestionTypeElement;
-          });
+          var questions = this.getQuestions();
 
-          console.log("questions ", questions);
-
-          var answers = [];
-          questions.forEach(function(elem, index) {
-            answers.push(elem.submit());
-          });
+          var answers = this.getAnswers();
 
           var confidence = this.$.confidence.getConfidenceLevel();
 
           this.toggleSubmit();
 
+          console.log("client submits submission");
           this.fire('asq-submit', {
             submission: {
               answers: answers,
               confidence: confidence
             }
           });
+          
+        },
+
+        getQuestions: function() {
+          return this.childNodes.array().filter(function(el) {
+            return el.isASQElement && el.isASQQuestionTypeElement;
+          });
+        },
+
+        getAnswers: function() {
+          var questions = this.getQuestions();
+          var answers = [];
+          questions.forEach(function(elem, index) {
+            answers.push(elem.submit());
+          });
+          return answers;
         },
 
         edit: function() {
-          this.toggleSubmit();
+          if ( this.$.submit_button.disabled ) {
+            console.log("client edits submission", this.getAnswers());
+            this.toggleSubmit();
+            this.fire('asq-edit-submission', {
+              submission: {
+                answers: this.getAnswers()
+              }
+            });
+            
+          }
         },
 
         toggleSubmit: function() {
