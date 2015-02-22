@@ -1,6 +1,12 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../asq-base/asq-base.html">
 
+<!--
+TODO ...
+
+@element asq-progress
+@group ASQ Elements
+-->
 <polymer-element name="asq-progress">
   <template>
     <style></style>
@@ -17,19 +23,27 @@
     (function() {
 
       var p = {
-
+        /**
+         * The current value of the progress bar. 
+         * @attribute value
+         * @type number
+         * @default 0
+         */
         value: 0,
-        max: 0,
 
-        ready: function () {
-          this.value = 0;
-          this.max = 10;
-        }
+        /**
+         * The max value of the progress bar. 
+         * @attribute max
+         * @type number
+         * @default 10
+         */
+        max: 10
+
+
       };
 
-      ASQ.mixin2(p, ASQ.RoleMixin);
-      Polymer.mixin(p, ASQ.ElementTypeMixin);
+      ASQ.asqify(p);
       Polymer('asq-progress', p);
-    }) ();
+    })();
   </script>
 </polymer-element>

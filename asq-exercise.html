@@ -27,7 +27,7 @@ Different users will see different UI according to their `role`. There are three
 @blurb Element Container for all ASQ `question types`.
 @homepage http://github.com/ASQ_USI/asq-exercise
 -->
-<polymer-element name="asq-exercise" attributes="exerciseid" >
+<polymer-element name="asq-exercise" >
   <template>
     <style> 
 
@@ -50,14 +50,14 @@ Different users will see different UI according to their `role`. There are three
     </style>
 
     <template if="{{role==roles.VIEWER}}">
-      <article id="ex" class="asq-exercise">
+      <article class="asq-exercise">
         <div>
           <content select="asq-stem"></content>
         </div>
-        <div id="exercises">
+        <div>
           <content></content>
         </div>
-        <footer id="buttons" horizontal end-justified layout>
+        <footer horizontal end-justified layout>
           <div>
             <asq-confidence id="confidence"></asq-confidence>
             <paper-button id="submit_button" class="submit-button" on-tap="{{submit}}" raised="true">Submit</paper-button>
@@ -69,14 +69,14 @@ Different users will see different UI according to their `role`. There are three
 
 
     <template if="{{role==roles.PRESENTER}}">
-      <article id="ex" class="asq-exercise">
+      <article class="asq-exercise">
         <div>
           <content select="asq-stem"></content>
         </div>
-        <div id="exercises">
+        <div>
           <content></content>
         </div>
-        <footer id="buttons" horizontal end-justified layout>
+        <footer horizontal end-justified layout>
           <div>
             <asq-progress></asq-progress>
             <paper-button id="stats" class="submit-button" raised="true">Stats</paper-button>
@@ -86,14 +86,14 @@ Different users will see different UI according to their `role`. There are three
     </template> 
 
     <template if="{{role==roles.TA}}">
-      <article id="ex" class="asq-exercise">
+      <article class="asq-exercise">
         <div>
           <content select="asq-stem"></content>
         </div>
-        <div id="exercises">
+        <div>
           <content></content>
         </div>
-        <footer id="buttons" horizontal end-justified layout>
+        <footer horizontal end-justified layout>
           <div>
             <asq-progress></asq-progress>
           </div>
@@ -107,7 +107,6 @@ Different users will see different UI according to their `role`. There are three
     (function() {
 
       var p = {
-        exerciseid: 0,
 
         // created: function(){
         //   document.addEventListener('asq-ready', function(evt){
@@ -130,7 +129,8 @@ Different users will see different UI according to their `role`. There are three
          */
         /**
          * The `submit` method will submit the answer to a wrapped 'asq-exercise' instance. 
-         * Only useful when the `role` is `viewer`.
+         * <br>
+         * Only useful when the `role` is <b>viewer</b>.
          *
          * @method submit
          */
@@ -157,12 +157,22 @@ Different users will see different UI according to their `role`. There are three
           
         },
 
+        /**
+         * Get all questions inside this exercise.
+         *
+         * @method getQuestions
+         */
         getQuestions: function() {
           return this.childNodes.array().filter(function(el) {
             return el.isASQElement && el.isASQQuestionTypeElement;
           });
         },
 
+        /**
+         * Get all answers of all questions.
+         *
+         * @method getAnswers
+         */
         getAnswers: function() {
           var questions = this.getQuestions();
           var answers = [];
@@ -172,6 +182,21 @@ Different users will see different UI according to their `role`. There are three
           return answers;
         },
 
+        /**
+         * The `asq-edit-submission` event is fired whenever function `edit` is called.
+         *
+         * @event asq-edit-submission
+         * @param {Object} detail
+         *   @param {Object} detail.submission The submission.
+         *     @param {Object} detail.submission.answers All the answers in JSON format.
+         */
+        /**
+         * The `edit` method will allow student to modify the answers. 
+         * <br>
+         * Only useful when the `role` is <b>viewer</b>.
+         *
+         * @method edit
+         */
         edit: function() {
           if ( this.$.submit_button.disabled ) {
             console.log("client edits submission", this.getAnswers());

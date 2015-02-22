@@ -27,6 +27,12 @@
 
       var p = {
 
+        /**
+         * Return the confidence level.
+         * 
+         * @method getConfidenceLevel
+         * @return {string} String literal from '1' to '5'.
+         */
         getConfidenceLevel: function () {
           var rates = this.$.rating.querySelectorAll("input[type=radio]");
           for (var i=0; i<rates.length; i++) {
@@ -40,8 +46,7 @@
 
       }
 
-      ASQ.mixin2(p, ASQ.RoleMixin);
-      Polymer.mixin(p, ASQ.ElementTypeMixin);
+      ASQ.asqify(p);
       Polymer('asq-confidence', p);
     })();
   </script>
