@@ -1,0 +1,51 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="asq" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <title>asq-exercise</title>
+
+  <script src="../../../webcomponentsjs/webcomponents.min.js"></script>
+  <script src="../../../web-component-tester/browser.js"></script>
+
+  <!-- Step 1: import the element to test -->
+  <link rel="import" href="../../asq-exercise.html">
+  <link rel="import" href="../../../asq-text-input/asq-text-input.html">
+  <link rel="import" href="../../../asq-base/asq-base.html">
+</head>
+<body>
+
+  <!-- You use the document as a place to set up your fixtures. -->
+  <asq-exercise id="single-question">
+    <asq-text-input label="answer here">
+      <asq-stem><h3>What's the result of '2 * 4'</h3></asq-stem>
+    </asq-text-input>
+  </asq-exercise>
+
+  <script>
+    var sq = document.querySelector('#single-question');
+    suite('<asq-exercise>', function() {
+      test('test getQuestions()', function() {
+        assert.isTrue(Array.isArray(sq.getQuestions()));
+        assert.equal(sq.getQuestions().length, 1);
+        assert.equal(sq.getQuestions()[0].nodeName, "ASQ-TEXT-INPUT");
+      });
+
+      test('test getAnswers()', function() {
+        assert.isTrue(Array.isArray(sq.getAnswers()));
+        assert.equal(sq.getAnswers().length, 1);
+      });
+
+      test('test default mixin values', function() {
+        assert.isTrue(sq.isASQElement);
+        assert.isFalse(sq.isASQQuestionTypeElement);
+        assert.equal(sq.uid, "");
+        assert.equal(sq.role, ASQ.RoleMixin.roles.VIEWER);
+      });
+
+      
+    });
+  </script>
+
+</body>
+</html>

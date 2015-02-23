@@ -34,15 +34,36 @@
          * @return {string} String literal from '1' to '5'.
          */
         getConfidenceLevel: function () {
-          var rates = this.$.rating.querySelectorAll("input[type=radio]");
-          for (var i=0; i<rates.length; i++) {
-            var rate = rates[i];
-            if ( rate.checked == true ) {
-              return rate.value;
+          var stars = this.$.rating.querySelectorAll("input[type=radio]");
+          for (var i=0; i<stars.length; i++) {
+            var star = stars[i];
+            if ( star.checked == true ) {
+              return star.value;
             }
           }
-          return "1";      
+          return "0";      
         },
+
+        /**
+         * Set the confidence level.
+         * 
+         * @method setConfidenceLevel
+         * @param {number} The confidence level would be set
+         * 
+         */
+        setConfidenceLevel: function(level) {
+          var stars = this.$.rating.querySelectorAll("input[type=radio]").array().reverse();
+
+          for ( var i=0; i<stars.length; i++ ) {
+            stars[i].checked = false;
+          }
+
+          level = level < 0 ? 0 : level;
+          level = level > stars.length ? stars.length : level;
+          for ( var i=0; i<level; i++ ) {
+            stars[i].checked = true;
+          }
+        }
 
       }
 

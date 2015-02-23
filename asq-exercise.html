@@ -27,7 +27,7 @@ Different users will see different UI according to their `role`. There are three
 @blurb Element Container for all ASQ `question types`.
 @homepage http://github.com/ASQ_USI/asq-exercise
 -->
-<polymer-element name="asq-exercise" >
+<polymer-element name="asq-exercise">
   <template>
     <style> 
 
@@ -45,6 +45,10 @@ Different users will see different UI according to their `role`. There are three
       .edit-button {
         color: #fff;
         background-color: rgb(255, 155, 15);
+      }
+
+      asq-progress::shadow paper-progress::shadow #activeProgress {
+        background-color: #5C87B8;
       }
      
     </style>

@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="asq" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <title>asq-progress</title>
+
+  <script src="../../../webcomponentsjs/webcomponents.min.js"></script>
+  <script src="../../../web-component-tester/browser.js"></script>
+
+  <!-- Step 1: import the element to test -->
+  <link rel="import" href="../../asq-progress.html">
+  <link rel="import" href="../../../asq-base/asq-base.html">
+</head>
+<body>
+
+  <!-- You use the document as a place to set up your fixtures. -->
+ <asq-progress id="m"></asq-progress>
+
+  <script>
+    var m = document.querySelector('#m');
+    suite('<asq-progress>', function() {
+      test('test default values', function() {
+        assert.equal(m.value, 0);
+        assert.equal(m.max, 10);
+        assert.equal(m.ratio, 0);
+      });
+
+      test('test default mixin values', function() {
+        assert.isTrue(m.isASQElement);
+        assert.isFalse(m.isASQQuestionTypeElement);
+        assert.equal(m.uid, "");
+        assert.equal(m.role, ASQ.RoleMixin.roles.VIEWER);
+      });
+
+      
+    });
+  </script>
+
+</body>
+</html>
