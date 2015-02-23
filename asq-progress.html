@@ -1,5 +1,6 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../asq-base/asq-base.html">
+<link rel="import" href="../paper-progress/paper-progress.html">
 
 <!--
 TODO ...
@@ -7,16 +8,12 @@ TODO ...
 @element asq-progress
 @group ASQ Elements
 -->
-<polymer-element name="asq-progress">
+<polymer-element name="asq-progress" attributes="max value ratio">
   <template>
-    <style></style>
-    
-    <!-- (for now) Keep same when either viewer or presenter -->
     <div>
-      <progress value="{{value}}" max="{{max}}"></progress>
+      <paper-progress value="{{value}}" max="{{max}}" ratio="{{ratio}}"></paper-progress>
       <i>{{value}} / {{max}}</i>    
     </div>
-
   </template>
 
   <script>
@@ -29,7 +26,7 @@ TODO ...
          * @type number
          * @default 0
          */
-        value: 0,
+        value: 5,
 
         /**
          * The max value of the progress bar. 
