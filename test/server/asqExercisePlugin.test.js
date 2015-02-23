@@ -6,7 +6,7 @@ var should = chai.should();
 var expect = chai.expect;
 var cheerio = require('cheerio');
 var Promise = require('bluebird');
-var modulePath = "../lib/asqExercisePlugin";
+var modulePath = "../../lib/asqExercisePlugin";
 var fs = require("fs");
 
 describe("asqExercisePlugin.js", function(){
@@ -41,7 +41,7 @@ describe("asqExercisePlugin.js", function(){
     this.asqExercisePlugin = require(modulePath);
   });
 
-   describe("parseHtml", function(){
+  describe("parseHtml", function(){
 
     before(function(){
      sinon.stub(this.asqExercisePlugin.prototype, "processEl").returns("res");
@@ -186,14 +186,14 @@ describe("asqExercisePlugin.js", function(){
 
       el = this.$("#uids-ok")[0];
       this.asqEx.parseQuestions(this.$, el);
-      this.$(el).find('asq-code-input').eq(0).attr('uid').should.equal("uid-1");
+      this.$(el).find('asq-code').eq(0).attr('uid').should.equal("uid-1");
       this.$(el).find('asq-js-function-body').eq(0).attr('uid').should.equal("uid-2");
     });
 
     it("should throw an error when there are more than questions with the same uid", function(){
       var el = this.$("#same-uids")[0];
       var bindedFn = this.asqEx.parseQuestions.bind(this.asqEx, this.$, el);
-      expect(bindedFn).to.throw(/cannot have two questions with the same uids/);
+      expect(bindedFn).to.throw(/An exercise cannot have two questions with the same uids/);
     });
 
     it("should return an array of uis", function(){
