@@ -27,7 +27,7 @@ Different users will see different UI according to their `role`. There are three
 @blurb Element Container for all ASQ `question types`.
 @homepage http://github.com/ASQ_USI/asq-exercise
 -->
-<polymer-element name="asq-exercise">
+<polymer-element name="asq-exercise" attributes="confidence">
   <template>
     <style> 
 
@@ -63,7 +63,9 @@ Different users will see different UI according to their `role`. There are three
         </div>
         <footer horizontal end-justified layout>
           <div>
+            <template if="{{confidence}}">
             <asq-confidence id="confidence"></asq-confidence>
+            </template>
             <paper-button id="submit_button" class="submit-button" on-tap="{{submit}}" raised="true">Submit</paper-button>
             <paper-button id="edit_button"  class="edit-button" on-tap="{{edit}}" raised="true">Edit</paper-button> 
           </div>   
@@ -111,6 +113,15 @@ Different users will see different UI according to their `role`. There are three
     (function() {
 
       var p = {
+
+      /**
+       * Display confidence stars in the exercise
+       *
+       * @attribute confidence
+       * @type Boolean
+       * @default false
+       */
+        confidence: false, 
 
         // created: function(){
         //   document.addEventListener('asq-ready', function(evt){
