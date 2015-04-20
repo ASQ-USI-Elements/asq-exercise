@@ -158,7 +158,12 @@ Different users will see different UI according to their `role`. There are three
 
           var answers = this.getAnswers();
 
-          var confidence = this.$.confidence.getConfidenceLevel();
+          //submitted confidence will be null if not this.confidence is false
+          var confidence;
+
+          if(this.confidence){
+            confidence = this.shadowRoot.getElementById('confidence').getConfidenceLevel();
+          }
 
           this.toggleSubmit();
 
