@@ -84,7 +84,7 @@ Different users will see different UI according to their `role`. There are three
         </div>
         <footer horizontal end-justified layout>
           <div>
-            <asq-progress></asq-progress>
+            <asq-progress value="{{submissionsNum}}" max="{{connectedViewersNum}}"></asq-progress>
             <paper-button id="stats" class="submit-button" raised="true">Stats</paper-button>
           </div>
         </footer>
@@ -121,17 +121,55 @@ Different users will see different UI according to their `role`. There are three
        * @type Boolean
        * @default false
        */
-        confidence: false, 
+        confidence: false,
 
-        // created: function(){
-        //   document.addEventListener('asq-ready', function(evt){
-        //     try{
-        //       this.subscribeToEvents(evt.detail.asqEventBus)
-        //     }catch(err){
-        //       console.debug('failed to subscribeToEvents');
-        //     }
-        //   }.bind(this));
-        // },
+        connectedViewersNum: 0,
+
+        submissions: 0, 
+
+        created: function(){
+          document.addEventListener('asq-ready', function(evt){
+            try{
+              this.subscribeToEvents(evt.detail.asqEventBus)
+            }catch(err){
+              console.debug('failed to subscribeToEvents');
+            }
+          }.bind(this));
+        },
+
+        /**
+         * Exercise is interested in two events: `asq:question_type`, which is emitted 
+         * when answer is submitted successfully, and `asq:question_type_edit`, which is emitted
+         * when editing answer.
+         *
+         */
+        subscribeToEvents: function(eventBus){
+          eventBus.on('asq:question_type', this.onQuestionType.bind(this));
+          eventBus.on('asq:connected-clients', this.onConnectedClients.bind(this));
+        },
+
+        onQuestionType: function(evt){
+          if(evt && evt.questionType && evt.questionType == 'asq-exercise'){
+            if(evt.type == "progress"){
+              this.onProgress(evt)
+            }
+          }
+        },
+
+        onProgress: function(evt){
+          if(evt.exerciseUid !== this.uid) return;
+          if(this.role !== this.roles.PRESENTER) return;
+          this.updateProgress(evt.submissions);
+        },
+
+        updateProgress: function(submissions){
+          this.submissionsNum = submissions.length;
+        },
+
+        onConnectedClients: function(event){
+          if(this.role !== this.roles.PRESENTER) return;
+          this.connectedViewersNum = event.connectedViewers.length;
+        },
 
         /**
          * The `asq-submit` event is fired whenever function `submit` is called.
