@@ -15,7 +15,7 @@
   <link rel="import" href="../asq-code/asq-code.html">
   <link rel="import" href="../asq-css-select/asq-css-select.html">
   <link rel="import" href="../asq-js-function-body/asq-js-function-body.html">
-
+  <link rel="import" href="../asq-rating/asq-rating.html">
   
 
   <style shim-shadowdom>
@@ -34,17 +34,32 @@
       padding: 14px;
       font-size: 16px;
     }
+
+    asq-code {
+      margin-bottom: 1em;
+    }
   </style>
 
 </head>
 <body>
+  <section>
+    <asq-confidence disabled></asq-confidence>
+
+
+  </section>
+  <script>
+    var xx = document.querySelector('asq-confidence');
+  </script>
 
 <template is="auto-binding">
 
+
+
+
   <section>
 
-    <asq-exercise 
-      <asq-stem><h2>Exercise 1-1</h2></asq-stem>
+    <asq-exercise> 
+      <asq-stem><h2>A not re-submiitabled exercise </h2></asq-stem>
       <asq-multi-choice choose='1'>
         <asq-stem><h3>Select a functional language.</h3></asq-stem>
         <asq-option checked>Haskell</asq-option>
@@ -54,61 +69,53 @@
       </asq-multi-choice>
     </asq-exercise>
 
-    <asq-exercise edittable disabled>
-      <asq-stem><h2>Exercise 1-2</h2></asq-stem>
-      <asq-multi-choice choose='n'>
-        <asq-stem><h3>Select official languages of Switzerland</h3></asq-stem>
-        <asq-option>English</asq-option>
-        <asq-option>French</asq-option>
-        <asq-option>German</asq-option>
-        <asq-option>Italian</asq-option>
-        <asq-option checked>Rumantsch</asq-option>
-      </asq-multi-choice>
-    </asq-exercise>
-
-    <asq-exercise confidence>
-      <asq-stem><h2>Exercise 2 (with confidence)</h2></asq-stem>
-      
-      <asq-text-input placeholder="answer here">
-        <asq-stem><h3>What's the result of '2 * 3'</h3></stem>
-      </asq-text-input>
-
-      <asq-text-input placeholder="answer here">
-        <asq-stem><h3>What's the result of '2 * 4'</h3></stem>
+    <asq-exercise confidence edittable>
+      <asq-stem><h2>An exercise with confidence and re-submiitabled</h2></asq-stem>
+      <asq-text-input label="value">
+        <asq-stem><h5>What's value of a[3]?</h5></asq-stem>
+        <pre><code>
+          char a[27];
+          char *b = "abc";
+          strcpy(a, b);</code></pre>
+        <asq-solution hidden>\0</asq-solution>
       </asq-text-input>
     </asq-exercise>
 
     <asq-exercise confidence>
       <asq-stem><h2>Exercise 3</h2></asq-stem>
-      <asq-js-function-body funName="wrap(str, tagName)" question="wrap('hello World', 'div');">
-        <asq-stem <h2>Implement a function that wraps a given string with an HTML tag:</h2></asq-stem>
+      <asq-js-function-body functionName="wrap(str, tagName)" question="wrap('hello World', 'div');">
+        <asq-stem><h4>Implement a function that wraps a given string with an HTML tag:</h4></asq-stem>
       </asq-js-function-body>
     </asq-exercise>
 
     
 
-    <asq-exercise 
+    <asq-exercise edittable>
       <asq-stem><h2>Exercise 4</h2></asq-stem>
-        <asq-css-select htmlcode="<ul><li ouan'><li></li><li></li><li></li></ul></li><li></li><li></li><li><div><p></p><p </li></ul>">
-          <asq-stem><h3>Select 'div' elements:</h3><asq-stem>
-      </asq-css-select>
+      <asq-css-select htmlcode="<ul><li class='aclass'><ul id='aid'><li></li><li></li></ul></li><div><p></p><p class='bclass'></p></div></li></ul>">
+      <asq-stem><h3>Select 'div' elements:</h3></asq-stem>
+    </asq-css-select>
+
     </asq-exercise>
 
-   <asq-exercise 
+   <asq-exercise edittable> 
       <asq-stem><h2>Exercise 5</h2></asq-stem>
-      <asq-code mode="htmlmixed" tabSize="2" value="<polymer-element name='my-element'>
-  <template></template>  
-  <script>    
-    Polymer('my-element', {});  
-  </script>
-</polymer-element>">
-      
-      </asq-code>
+      <asq-code mode="java">
+      <asq-stem><h4>Implement quick sort algorithm in Java</h4></asq-stem>
+      <code>public class Main { 
+    public static void main(String args) {
+        
+    }
+} </code>
+    </asq-code>
     </asq-exercise>  
 
 
   </section>
+
+
 </template>
+
   <script>
 
 

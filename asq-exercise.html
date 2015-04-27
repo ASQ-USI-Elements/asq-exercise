@@ -130,28 +130,38 @@ Different users will see different UI according to their **role**. There are sev
 
         publish: {
 
-        connectedViewersNum: 0,
+          connectedViewersNum: 0,
 
-        /**
-         * Display confidence stars in the exercise
-         *
-         * @attribute confidence
-         * @type Boolean
-         * @default false
-         */
-        confidence: {value: false, reflect: true},
+          /**
+           * Display confidence stars in the exercise
+           *
+           * @attribute confidence
+           * @type Boolean
+           * @default false
+           */
+          confidence: {value: false, reflect: true},
 
-        submissions: 0,
-        
-        /**
-         * Disable or endable the element. Changes will be also propagated to 
-         * inner elements.
-         * 
-         * @attribute disabled
-         * @type boolean
-         * @default false
-         */
-        disabled: {value: false, reflect: true},
+          submissions: 0,
+          
+          /**
+           * Disable or endable the element. Changes will be also propagated to 
+           * inner elements.
+           * 
+           * @attribute disabled
+           * @type boolean
+           * @default false
+           */
+          disabled: {value: false, reflect: true},
+
+          /**
+           * Allow re-submission or not.
+           *
+           * @attribute confidence
+           * @type Boolean
+           * @default false
+           */
+          edittable: {value: false, reflect: true},
+        },
 
         created: function(){
           document.addEventListener('asq-ready', function(evt){
@@ -163,20 +173,9 @@ Different users will see different UI according to their **role**. There are sev
           }.bind(this));
         },
 
-        /**
-         * Allow re-submission or not.
-         *
-         * @attribute confidence
-         * @type Boolean
-         * @default false
-         */
-        edittable: {value: false, reflect: true},
-        },
-
         domReady: function() {
           // call disabledChanged manually because only after the dom is ready, 
           // it is possible to propagate the value to children nodes
-          // 
           this.disabledChanged();
         },
 
@@ -246,8 +245,8 @@ Different users will see different UI according to their **role**. There are sev
           //submitted confidence will be null if not this.confidence is false
           var confidence;
 
-          if(this.confidence){
-            confidence = this.shadowRoot.getElementById('confidence').getConfidenceLevel();
+          if( this.confidence ){
+            confidence = this.shadowRoot.getElementById('confidence').getConfidence();
           }
 
           this.toggleSubmit();
@@ -332,6 +331,10 @@ Different users will see different UI according to their **role**. There are sev
           // propagate value of *disabled*
           for ( var x of this.getQuestions() ) {
             x.disabled = this.disabled;
+          }
+
+          if(this.confidence){
+            this.shadowRoot.getElementById('confidence').disabled = this.disabled;
           }
         }
       }
