@@ -21,9 +21,9 @@
     </asq-exercise>
 
 
-##### Another example: by setting edittable attribtue, re-submission is allowed.
+##### Another example: by setting allowresubmit attribtue, re-submission is allowed.
 
-    <asq-exercise edittable>
+    <asq-exercise allowresubmit>
       <asq-stem><h2>Exercise 1</h2></asq-stem>
       <asq-multi-choice choose='n'>
         <asq-stem><h3>Official languages of Switzerland</h3></asq-stem>
@@ -160,7 +160,7 @@ Different users will see different UI according to their **role**. There are sev
            * @type Boolean
            * @default false
            */
-          edittable: {value: false, reflect: true},
+          allowresubmit: {value: false, reflect: true},
         },
 
         created: function(){
@@ -284,7 +284,7 @@ Different users will see different UI according to their **role**. There are sev
          
         // event handler for tapping the *edit* button.
         edit: function() {
-          if ( this.edittable ) {
+          if ( this.allowresubmit ) {
             this.$.submit_button.hidden = false;
             this.$.edit_button.hidden = true;
             this.disabled = ! this.disabled;
@@ -296,7 +296,7 @@ Different users will see different UI according to their **role**. There are sev
 
         /**
          * Toggle the attribute *disabled*. Also check if 
-         * *edittable*'s value. If true, display the *edit* button and 
+         * *allowresubmit*'s value. If true, display the *edit* button and 
          * hide the *submit* button; otherwise, display a disbaled 
          * *submit* button.
          * 
@@ -304,7 +304,7 @@ Different users will see different UI according to their **role**. There are sev
          */
         toggleSubmit: function() {
           this.disabled = ! this.disabled;
-          if ( this.edittable ) {
+          if ( this.allowresubmit ) {
             this.$.submit_button.hidden = true;
             this.$.edit_button.hidden = false;
           }
