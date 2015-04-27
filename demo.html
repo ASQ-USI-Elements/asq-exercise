@@ -16,6 +16,8 @@
   <link rel="import" href="../asq-css-select/asq-css-select.html">
   <link rel="import" href="../asq-js-function-body/asq-js-function-body.html">
   <link rel="import" href="../asq-rating/asq-rating.html">
+  <link rel="import" href="../asq-buckets/asq-buckets.html">
+  <link rel="import" href="../asq-order/asq-order.html">
   
 
   <style shim-shadowdom>
@@ -46,6 +48,126 @@
 
   <section>
 
+    <style>
+      asq-exercise > asq-buckets /deep/ [target] {
+        padding: 4px;
+        margin-bottom: 20px;
+        line-height: 1.42857143;
+        background-color: #fff;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        -webkit-transition: border .2s ease-in-out;
+             -o-transition: border .2s ease-in-out;
+                transition: border .2s ease-in-out;
+
+      }
+      asq-exercise > asq-buckets > div#targets {
+        display: flex;
+        flex-direction: row;
+        /*justify-content: center;*/
+      }
+
+      asq-exercise > asq-buckets /deep/ wrapper{
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+      }
+
+      asq-exercise > asq-buckets /deep/ [target] {
+        cursor: pointer;
+        display: block;
+        
+        min-height: 200px;
+        min-width: 150px;
+
+      }
+
+      asq-exercise > asq-buckets /deep/ [target] > [object] {
+        cursor: default;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        margin: 2px;
+      }
+
+      asq-exercise > asq-buckets /deep/ [target] > [object] > [change] {
+        background-color: #FF6666;
+      }
+
+      asq-exercise > asq-buckets /deep/ [target] > span {
+        color: #E6E6E6;
+        background-color: #0080FF;
+        border-color: #bce8f1;
+        padding: 10px 5px;
+
+        border: 1px solid transparent;
+        border-radius: 4px;
+        display: block;
+        text-align: center;
+
+      }
+
+      asq-exercise > asq-buckets[disabled] /deep/ [target] > span {
+        background-color: #000080;
+      }
+
+      asq-exercise > asq-buckets[disabled] /deep/ [target] {
+        cursor: auto;
+        background-color: lightgray;
+      }
+
+      asq-exercise > asq-buckets {
+        max-width: 400px;
+        text-align: center;
+
+      }
+
+      asq-exercise > asq-buckets /deep/ section {
+        text-align: center;
+      }
+
+
+      asq-exercise > asq-buckets /deep/ [object] {
+        display: block;
+        color: #a94442;
+        background-color: #f2dede;
+        border-color: #ebccd1;
+        border-color: #faebcc;
+        padding: 8px 6px;
+        border: 1px solid transparent;
+        border-radius: 4px;
+
+        max-width: 150px;
+        margin: 1px auto;
+      }
+
+      asq-exercise > asq-buckets > [object] > b {
+        color: red;
+      }
+
+      asq-exercise#buckets {
+        max-width: 600px;
+      }
+    </style>
+
+    <asq-exercise id="buckets" allowresubmit>
+      <asq-stem><h2>asq-bucket question</h2></asq-stem>
+      <asq-buckets targets="#targets" objects="#objects">
+        <asq-stem><h3>Please classify the words according to the pronunciation of the bolded vowels</h3></asq-stem>
+        <div id="targets">
+          <div target name="Long"><span>Long</span></div>
+          <div target name="Short"><span>Short</span></div>
+          <div target name="Medium"><span>Medium</span></div>
+        </div>
+        <div id="objects">
+          <div object name="glas">Gl<b>a</b>s</div>
+          <div object name="nudeln">N<b>u</b>deln</div>
+          <div object name="platz">Pl<b>a</b>tz</div>
+          <div object name="vier">v<b>i</b>er</div>
+        </div>
+      </asq-buckets>
+    </asq-exercise>
+
     <asq-exercise> 
       <asq-stem><h2>A not re-submiitabled exercise </h2></asq-stem>
       <asq-multi-choice selected="op3">
@@ -70,7 +192,7 @@
     </asq-exercise>
 
     <asq-exercise confidence>
-      <asq-stem><h2>Exercise 3</h2></asq-stem>
+      <asq-stem><h2>asq-js-function-body quesiton</h2></asq-stem>
       <asq-js-function-body functionName="wrap(str, tagName)" question="wrap('hello World', 'div');">
         <asq-stem><h4>Implement a function that wraps a given string with an HTML tag:</h4></asq-stem>
       </asq-js-function-body>
@@ -79,7 +201,7 @@
     
 
     <asq-exercise allowresubmit>
-      <asq-stem><h2>Exercise 4</h2></asq-stem>
+      <asq-stem><h2>asq-css-selected question</h2></asq-stem>
       <asq-css-select htmlcode="<ul><li class='aclass'><ul id='aid'><li></li><li></li></ul></li><div><p></p><p class='bclass'></p></div></li></ul>">
       <asq-stem><h3>Select 'div' elements:</h3></asq-stem>
     </asq-css-select>
@@ -87,7 +209,7 @@
     </asq-exercise>
 
    <asq-exercise allowresubmit> 
-      <asq-stem><h2>Exercise 5</h2></asq-stem>
+      <asq-stem><h2>asq-code question</h2></asq-stem>
       <asq-code mode="java">
       <asq-stem><h4>Implement quick sort algorithm in Java</h4></asq-stem>
       <code>public class Main { 
@@ -98,6 +220,8 @@
     </asq-code>
     </asq-exercise>  
 
+
+    
 
   </section>
 
