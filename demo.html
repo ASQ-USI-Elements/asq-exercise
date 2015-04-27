@@ -3,7 +3,7 @@
 <head>
   <meta name="asq-exercise" content="width=device-width, initial-scale=1, user-scalable=no">
 
-  <title>ASQ - Elements | Exercise</title>
+  <title>ASQ-EXERCISE | Demo</title>
 
   <script src="../webcomponentsjs/webcomponents.js"></script>
 
@@ -43,19 +43,30 @@
 
   <section>
 
-    <asq-exercise exerciseid="ex1" class="exercise">
-      <asq-stem><h2>Exercise 1</h2></asq-stem>
-      <asq-multi-choice>
-        <asq-stem><h3>Which are the official languages of Switzerland?</h3></asq-stem>
-        <asq-option>English</asq-option>
-        <asq-option correct-answer="true">French</asq-option>
-        <asq-option correct-answer="true">German</asq-option>
-        <asq-option correct-answer="true">Rumantsch</asq-option>
+    <asq-exercise 
+      <asq-stem><h2>Exercise 1-1</h2></asq-stem>
+      <asq-multi-choice choose='1'>
+        <asq-stem><h3>Select a functional language.</h3></asq-stem>
+        <asq-option checked>Haskell</asq-option>
+        <asq-option>C</asq-option>
+        <asq-option>Python</asq-option>
+        <asq-option>Perl</asq-option>
       </asq-multi-choice>
-
     </asq-exercise>
 
-    <asq-exercise exerciseid="ex2" class="exercise" confidence>
+    <asq-exercise edittable disabled>
+      <asq-stem><h2>Exercise 1-2</h2></asq-stem>
+      <asq-multi-choice choose='n'>
+        <asq-stem><h3>Select official languages of Switzerland</h3></asq-stem>
+        <asq-option>English</asq-option>
+        <asq-option>French</asq-option>
+        <asq-option>German</asq-option>
+        <asq-option>Italian</asq-option>
+        <asq-option checked>Rumantsch</asq-option>
+      </asq-multi-choice>
+    </asq-exercise>
+
+    <asq-exercise confidence>
       <asq-stem><h2>Exercise 2 (with confidence)</h2></asq-stem>
       
       <asq-text-input placeholder="answer here">
@@ -65,30 +76,26 @@
       <asq-text-input placeholder="answer here">
         <asq-stem><h3>What's the result of '2 * 4'</h3></stem>
       </asq-text-input>
-
-      <asq-text-input placeholder="answer here">
-        <asq-stem><h3>What's the result of '2 * 5'</h3></stem>
-      </asq-text-input>
     </asq-exercise>
 
-    <asq-exercise exerciseid="ex3" class="exercise" confidence>
+    <asq-exercise confidence>
       <asq-stem><h2>Exercise 3</h2></asq-stem>
       <asq-js-function-body funName="wrap(str, tagName)" question="wrap('hello World', 'div');">
-        <asq-stem class="question"><h2>Implement a function that wraps a given string with an HTML tag:</h2></asq-stem>
+        <asq-stem <h2>Implement a function that wraps a given string with an HTML tag:</h2></asq-stem>
       </asq-js-function-body>
     </asq-exercise>
 
     
 
-    <asq-exercise exerciseid="ex4" class="exercise">
+    <asq-exercise 
       <asq-stem><h2>Exercise 4</h2></asq-stem>
-        <asq-css-select htmlcode="<ul><li class='daclass'><ul id='ghouan'><li></li><li></li><li></li></ul></li><li></li><li></li><li><div><p></p><p class='pclass'></p></div></li></ul>">
+        <asq-css-select htmlcode="<ul><li ouan'><li></li><li></li><li></li></ul></li><li></li><li></li><li><div><p></p><p </li></ul>">
           <asq-stem><h3>Select 'div' elements:</h3><asq-stem>
       </asq-css-select>
     </asq-exercise>
 
-   <asq-exercise exerciseid="ex0" class="exercise">
-      <asq-stem><h2>Exercise 0</h2></asq-stem>
+   <asq-exercise 
+      <asq-stem><h2>Exercise 5</h2></asq-stem>
       <asq-code mode="htmlmixed" tabSize="2" value="<polymer-element name='my-element'>
   <template></template>  
   <script>    
@@ -103,6 +110,8 @@
   </section>
 </template>
   <script>
+
+
   window.onmessage = function(e){
 
     if (typeof e.data.role == "string" && e.data.role.length > 0) {

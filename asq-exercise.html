@@ -1,4 +1,4 @@
-ASQ<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../paper-button/paper-button.html">
 
 <link rel="import" href="asq-confidence.html">
@@ -9,25 +9,40 @@ ASQ<link rel="import" href="../polymer/polymer.html">
 `asq-exercise` is the container for all ASQ `question types`. It can contain several `ASQ questions`. It is the one that can communicate(submit answers) with server side.
 
 ##### Example
-    <asq-exercise exerciseid="ex1" class="exercise">
-      <asq-stem><h2>Exercise 1</h2></asq-stem>
-      <asq-multi-choice>
-        <asq-stem><h3>Which are the official languages of Switzerland?</h3></asq-stem>
-        <asq-option>English</asq-option>
-        <asq-option correct-answer="true">French</asq-option>
-        <asq-option correct-answer="true">German</asq-option>
-        <asq-option correct-answer="true">Rumantsch</asq-option>
+    <asq-exercise 
+      <asq-stem><h2>Exercise 1-1</h2></asq-stem>
+      <asq-multi-choice choose='1'>
+        <asq-stem><h3>Select a functional language.</h3></asq-stem>
+        <asq-option checked>Haskell</asq-option>
+        <asq-option>C</asq-option>
+        <asq-option>Python</asq-option>
+        <asq-option>Perl</asq-option>
       </asq-multi-choice>
     </asq-exercise>
 
-Different users will see different UI according to their `role`. There are three types of roles, `viewer`, `presenter` and `teaching assistant`.
+
+##### Another example: by setting edittable attribtue, re-submission is allowed.
+
+    <asq-exercise edittable>
+      <asq-stem><h2>Exercise 1</h2></asq-stem>
+      <asq-multi-choice choose='n'>
+        <asq-stem><h3>Official languages of Switzerland</h3></asq-stem>
+        <asq-option>English</asq-option>
+        <asq-option>French</asq-option>
+        <asq-option>German</asq-option>
+        <asq-option>Italian</asq-option>
+        <asq-option>Rumantsch</asq-option>
+      </asq-multi-choice>
+    </asq-exercise>
+
+Different users will see different UI according to their **role**. There are several types of roles, `viewer`, `presenter`, `teaching assistant` and `ghost`.
 
 @element asq-exercise
 @group ASQ Elements
 @blurb Element Container for all ASQ `question types`.
-@homepage http://github.com/ASQ_USI/asq-exercise
+@homepage http://github.com/ASQ-USI/asq-exercise
 -->
-<polymer-element name="asq-exercise" attributes="confidence">
+<polymer-element name="asq-exercise">
   <template>
     <style> 
 
@@ -67,7 +82,7 @@ Different users will see different UI according to their `role`. There are three
             <asq-confidence id="confidence"></asq-confidence>
             </template>
             <paper-button id="submit_button" class="submit-button" on-tap="{{submit}}" raised="true">Submit</paper-button>
-            <paper-button id="edit_button"  class="edit-button" on-tap="{{edit}}" raised="true">Edit</paper-button> 
+            <paper-button id="edit_button" hidden class="edit-button" on-tap="{{edit}}" raised="true">Edit</paper-button> 
           </div>   
         </footer>
       </article>
@@ -111,21 +126,32 @@ Different users will see different UI according to their `role`. There are three
 
   <script>
     (function() {
-
       var p = {
 
-      /**
-       * Display confidence stars in the exercise
-       *
-       * @attribute confidence
-       * @type Boolean
-       * @default false
-       */
-        confidence: false,
+        publish: {
 
         connectedViewersNum: 0,
 
-        submissions: 0, 
+        /**
+         * Display confidence stars in the exercise
+         *
+         * @attribute confidence
+         * @type Boolean
+         * @default false
+         */
+        confidence: {value: false, reflect: true},
+
+        submissions: 0,
+        
+        /**
+         * Disable or endable the element. Changes will be also propagated to 
+         * inner elements.
+         * 
+         * @attribute disabled
+         * @type boolean
+         * @default false
+         */
+        disabled: {value: false, reflect: true},
 
         created: function(){
           document.addEventListener('asq-ready', function(evt){
@@ -136,6 +162,24 @@ Different users will see different UI according to their `role`. There are three
             }
           }.bind(this));
         },
+
+        /**
+         * Allow re-submission or not.
+         *
+         * @attribute confidence
+         * @type Boolean
+         * @default false
+         */
+        edittable: {value: false, reflect: true},
+        },
+
+        domReady: function() {
+          // call disabledChanged manually because only after the dom is ready, 
+          // it is possible to propagate the value to children nodes
+          // 
+          this.disabledChanged();
+        },
+
 
         /**
          * Exercise is interested in two events: `asq:question_type`, which is emitted 
@@ -160,6 +204,7 @@ Different users will see different UI according to their `role`. There are three
           if(evt.exerciseUid !== this.uid) return;
           if(this.role !== this.roles.PRESENTER) return;
           this.updateProgress(evt.submissions);
+          // 
         },
 
         updateProgress: function(submissions){
@@ -175,11 +220,13 @@ Different users will see different UI according to their `role`. There are three
          * The `asq-submit` event is fired whenever function `submit` is called.
          *
          * @event asq-submit
-         * @param {Object} detail
-         *   @param {Object} detail.submission The submission.
-         *     @param {String} detail.submission.confindence The confindence.
-         *     @param {Object} detail.submission.answers All the answers in JSON format.
+         *
+         *     detail: {
+         *       submission: // all collected submissions
+         *       confidence: // the confidence level
+         *     }
          */
+        
         /**
          * The `submit` method will submit the answer to a wrapped 'asq-exercise' instance. 
          * <br>
@@ -188,13 +235,13 @@ Different users will see different UI according to their `role`. There are three
          * @method submit
          */
         submit: function() {
-          if ( this.role !== this.roles.VIEWER ) {
-            return;
-          }
+          if ( this.role !== this.roles.VIEWER ) return;
+
+          if ( this.disabled ) return;
 
           var questions = this.getQuestions();
 
-          var answers = this.getAnswers();
+          var submission = this.getSubmission();
 
           //submitted confidence will be null if not this.confidence is false
           var confidence;
@@ -205,14 +252,10 @@ Different users will see different UI according to their `role`. There are three
 
           this.toggleSubmit();
 
-          console.log("client submits submission");
           this.fire('asq-submit', {
-            submission: {
-              answers: answers,
-              confidence: confidence
-            }
+            submission: submission,
+            confidence: confidence
           });
-          
         },
 
         /**
@@ -227,56 +270,70 @@ Different users will see different UI according to their `role`. There are three
         },
 
         /**
-         * Get all answers of all questions.
+         * Get all submission of all questions.
          *
-         * @method getAnswers
+         * @method getSubmission
          */
-        getAnswers: function() {
+        getSubmission: function() {
           var questions = this.getQuestions();
-          var answers = [];
+          var sumissions = [];
           questions.forEach(function(elem, index) {
-            answers.push(elem.submit());
+            sumissions.push(elem.submit());
           });
-          return answers;
+          return sumissions;
         },
-
-        /**
-         * The `asq-edit-submission` event is fired whenever function `edit` is called.
-         *
-         * @event asq-edit-submission
-         * @param {Object} detail
-         *   @param {Object} detail.submission The submission.
-         *     @param {Object} detail.submission.answers All the answers in JSON format.
-         */
-        /**
-         * The `edit` method will allow student to modify the answers. 
-         * <br>
-         * Only useful when the `role` is <b>viewer</b>.
-         *
-         * @method edit
-         */
+         
+        // event handler for tapping the *edit* button.
         edit: function() {
-          if ( this.$.submit_button.disabled ) {
-            console.log("client edits submission", this.getAnswers());
-            this.toggleSubmit();
-            this.fire('asq-edit-submission', {
-              submission: {
-                answers: this.getAnswers()
-              }
-            });
-            
+          if ( this.edittable ) {
+            this.$.submit_button.hidden = false;
+            this.$.edit_button.hidden = true;
+            this.disabled = ! this.disabled;
+          } else {
+            this.$.submit_button.hidden = false;
+            this.$.edit_button.hidden = true;
           }
         },
 
+        /**
+         * Toggle the attribute *disabled*. Also check if 
+         * *edittable*'s value. If true, display the *edit* button and 
+         * hide the *submit* button; otherwise, display a disbaled 
+         * *submit* button.
+         * 
+         * @method toggleSubmit
+         */
         toggleSubmit: function() {
-          if ( this.$.submit_button.disabled ) {
-            this.$.submit_button.disabled = false;
-            this.$.submit_button.classList.remove("disabled-button");
-          } else {
-            this.$.submit_button.disabled = true;
-            this.$.submit_button.classList.add("disabled-button");
+          this.disabled = ! this.disabled;
+          if ( this.edittable ) {
+            this.$.submit_button.hidden = true;
+            this.$.edit_button.hidden = false;
           }
         },
+
+
+        /**
+         * The `asq-disabled` event is fired when the value of *disabled* is
+         * changed. This may be caused by clicking the *submit* button.
+         *
+         * @event asq-disabled
+         *
+         *      detail: { 
+         *        disabled: this.disabled
+         *      }
+         *    
+         */
+
+        disabledChanged: function() {
+          this.fire('asq-disabled', {disabled: this.disabled});
+          this.$.submit_button.disabled = this.disabled;
+          this.$.submit_button.classList.toggle('disabled-button', this.disabled);
+
+          // propagate value of *disabled*
+          for ( var x of this.getQuestions() ) {
+            x.disabled = this.disabled;
+          }
+        }
       }
       
       //we use a custom mixin to avoid overwriting published properties of the prototype
