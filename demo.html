@@ -42,30 +42,18 @@
 
 </head>
 <body>
-  <section>
-    <asq-confidence disabled></asq-confidence>
-
-
-  </section>
-  <script>
-    var xx = document.querySelector('asq-confidence');
-  </script>
-
 <template is="auto-binding">
-
-
-
 
   <section>
 
     <asq-exercise> 
       <asq-stem><h2>A not re-submiitabled exercise </h2></asq-stem>
-      <asq-multi-choice choose='1'>
-        <asq-stem><h3>Select a functional language.</h3></asq-stem>
-        <asq-option checked>Haskell</asq-option>
-        <asq-option>C</asq-option>
-        <asq-option>Python</asq-option>
-        <asq-option>Perl</asq-option>
+      <asq-multi-choice selected="op3">
+        <asq-stem><h3>Here you can pick just one answer:</h3></asq-stem>
+        <asq-option name="op0">Option 0</asq-option>
+        <asq-option name="op1">Option 1</asq-option>
+        <asq-option name="op2">Option 2</asq-option>
+        <asq-option name="op3">Option 3</asq-option>
       </asq-multi-choice>
     </asq-exercise>
 
