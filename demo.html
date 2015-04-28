@@ -226,7 +226,7 @@
 
      
 
-    <asq-exercise> 
+    <asq-exercise maxsubmissionattempts="0"> 
       <asq-stem><h2>A not re-submiitabled exercise </h2></asq-stem>
       <asq-multi-choice selected="op3">
         <asq-stem><h3>Here you can pick just one answer:</h3></asq-stem>
@@ -237,7 +237,7 @@
       </asq-multi-choice>
     </asq-exercise>
 
-    <asq-exercise confidence allowresubmit>
+    <asq-exercise confidence maxsubmissionattempts="3">
       <asq-stem><h2>An exercise with confidence and re-submiitabled</h2></asq-stem>
       <asq-text-input label="value">
         <asq-stem><h5>What's value of a[3]?</h5></asq-stem>
@@ -258,7 +258,7 @@
 
     
 
-    <asq-exercise allowresubmit>
+    <asq-exercise>
       <asq-stem><h2>asq-css-selected question</h2></asq-stem>
       <asq-css-select htmlcode="<ul><li class='aclass'><ul id='aid'><li></li><li></li></ul></li><div><p></p><p class='bclass'></p></div></li></ul>">
       <asq-stem><h3>Select 'div' elements:</h3></asq-stem>
@@ -266,7 +266,7 @@
 
     </asq-exercise>
 
-   <asq-exercise allowresubmit> 
+   <asq-exercise> 
       <asq-stem><h2>asq-code question</h2></asq-stem>
       <asq-code mode="java">
       <asq-stem><h4>Implement quick sort algorithm in Java</h4></asq-stem>
@@ -278,7 +278,7 @@
     </asq-code>
     </asq-exercise>  
 
-    <asq-exercise allowresubmit>
+    <asq-exercise>
       <asq-stem><h2>asq-css-selected question</h2></asq-stem>
         <asq-order objects="#objects" vertical layout
         hints solution='{es ist} {schneit} {und} {kalt}' >
@@ -296,7 +296,7 @@
      </asq-exercise> 
     
     
-    <asq-exercise id="buckets" allowresubmit>
+    <asq-exercise id="buckets">
       <asq-stem><h2>asq-bucket question</h2></asq-stem>
       <asq-buckets targets="#targets" objects="#objects">
         <asq-stem><h3>Please classify the words according to the pronunciation of the bolded vowels</h3></asq-stem>

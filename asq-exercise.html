@@ -1,5 +1,6 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="../core-tooltip/core-tooltip.html">
 
 <link rel="import" href="asq-confidence.html">
 <link rel="import" href="asq-progress.html">
@@ -81,7 +82,9 @@ Different users will see different UI according to their **role**. There are sev
             <template if="{{confidence}}">
             <asq-confidence id="confidence"></asq-confidence>
             </template>
-            <paper-button id="submit_button" class="submit-button" on-tap="{{submit}}" raised="true">Submit</paper-button>
+            <core-tooltip label="{{remainattempts}}">
+              <paper-button id="submit_button" class="submit-button" on-tap="{{submit}}" raised="true">Submit</paper-button>
+            </core-tooltip>
             <paper-button id="edit_button" hidden class="edit-button" on-tap="{{edit}}" raised="true">Edit</paper-button> 
           </div>   
         </footer>
@@ -141,8 +144,6 @@ Different users will see different UI according to their **role**. There are sev
            */
           confidence: {value: false, reflect: true},
 
-          submissions: 0,
-          
           /**
            * Disable or endable the element. Changes will be also propagated to 
            * inner elements.
@@ -153,14 +154,49 @@ Different users will see different UI according to their **role**. There are sev
            */
           disabled: {value: false, reflect: true},
 
+          
+
+
           /**
-           * Allow re-submission or not.
-           *
-           * @attribute confidence
-           * @type Boolean
-           * @default false
+           * The maximum submission attempts allowed.
+           * 
+           * @attribute maxsubmissionattempts
+           * @type number
+           * @default 0
            */
-          allowresubmit: {value: false, reflect: true},
+          maxsubmissionattempts: {value: 1, reflect: true},
+
+        },
+
+        /**
+         * Counter for submission times. 
+         *
+         * @attribute submissions
+         * @type number
+         * @default 0
+         */
+        submissions: 0,
+
+        computed: {
+          'remainattempts': 'maxsubmissionattempts == 0  \
+              ? "Unlimited attempts" \
+              : ( maxsubmissionattempts - submissions <= 0 \
+                ? "No further attempt allowed" \
+                : (maxsubmissionattempts - submissions == 1 \
+                  ? "Last chance" \
+                  : (maxsubmissionattempts - submissions) + " attempts left" ) )'
+        },
+
+        /**
+         * Check if re-submission allowed
+         *
+         * @method allowresubmit
+         * @return Boolean
+         */
+        allowresubmit: function() {
+          return this.maxsubmissionattempts === 0 ? true 
+                  : this.maxsubmissionattempts > this.submissions ? true
+                  : false;
         },
 
         created: function(){
@@ -215,6 +251,7 @@ Different users will see different UI according to their **role**. There are sev
           this.connectedViewersNum = event.connectedViewers.length;
         },
 
+
         /**
          * The `asq-submit` event is fired whenever function `submit` is called.
          *
@@ -228,7 +265,7 @@ Different users will see different UI according to their **role**. There are sev
         
         /**
          * The `submit` method will submit the answer to a wrapped 'asq-exercise' instance. 
-         * <br>
+         * 
          * Only useful when the `role` is <b>viewer</b>.
          *
          * @method submit
@@ -238,7 +275,12 @@ Different users will see different UI according to their **role**. There are sev
 
           if ( this.disabled ) return;
 
-          var questions = this.getQuestions();
+          if ( !this.allowresubmit() ) return;
+
+
+          this.submissions += 1;
+
+          this.toggleSubmit();
 
           var submission = this.getSubmission();
 
@@ -249,12 +291,13 @@ Different users will see different UI according to their **role**. There are sev
             confidence = this.shadowRoot.getElementById('confidence').getConfidence();
           }
 
-          this.toggleSubmit();
+          
 
           this.fire('asq-submit', {
             submission: submission,
             confidence: confidence
           });
+
         },
 
         /**
@@ -284,7 +327,7 @@ Different users will see different UI according to their **role**. There are sev
          
         // event handler for tapping the *edit* button.
         edit: function() {
-          if ( this.allowresubmit ) {
+          if ( this.allowresubmit() ) {
             this.$.submit_button.hidden = false;
             this.$.edit_button.hidden = true;
             this.disabled = ! this.disabled;
@@ -304,7 +347,7 @@ Different users will see different UI according to their **role**. There are sev
          */
         toggleSubmit: function() {
           this.disabled = ! this.disabled;
-          if ( this.allowresubmit ) {
+          if ( this.allowresubmit() ) {
             this.$.submit_button.hidden = true;
             this.$.edit_button.hidden = false;
           }
