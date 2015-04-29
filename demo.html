@@ -47,177 +47,200 @@
 <template is="auto-binding">
 
   <style>
-      asq-exercise > asq-buckets /deep/ [target] {
-        padding: 4px;
-        margin-bottom: 20px;
-        line-height: 1.42857143;
-        background-color: #fff;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        -webkit-transition: border .2s ease-in-out;
-             -o-transition: border .2s ease-in-out;
-                transition: border .2s ease-in-out;
+      asq-buckets [target] {
 
-      }
-      asq-exercise > asq-buckets > div#targets {
-        display: flex;
-        flex-direction: row;
-        /*justify-content: center;*/
-      }
+      padding: 4px;
+      margin-bottom: 20px;
+      line-height: 1.42857143;
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      -webkit-transition: border .2s ease-in-out;
+           -o-transition: border .2s ease-in-out;
+              transition: border .2s ease-in-out;
 
-      asq-exercise > asq-buckets /deep/ wrapper{
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-      }
+    }
+    asq-buckets #targets {
+      display: flex;
+      flex-direction: row;
 
-      asq-exercise > asq-buckets /deep/ [target] {
-        cursor: pointer;
-        display: block;
-        
-        min-height: 200px;
-        min-width: 150px;
+    }
 
-      }
+    asq-buckets [target] {
+      cursor: pointer;
+      display: block;
+      
+      min-height: 200px;
+      min-width: 150px;
 
-      asq-exercise > asq-buckets /deep/ [target] > [object] {
-        cursor: default;
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-        margin: 2px;
-      }
+    }
 
-      asq-exercise > asq-buckets /deep/ [target] > [object] > [change] {
-        background-color: #FF6666;
-      }
+    asq-buckets [target] [object] {
+      cursor: default;
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      margin: 2px;
+    }
 
-      asq-exercise > asq-buckets /deep/ [target] > span {
-        color: #E6E6E6;
-        background-color: #0080FF;
-        border-color: #bce8f1;
-        padding: 10px 5px;
+    asq-buckets [target] [change] {
+      background-color: #FF6666;
+    }
 
-        border: 1px solid transparent;
-        border-radius: 4px;
-        display: block;
-        text-align: center;
+    asq-buckets [target] > span {
+      color: #E6E6E6;
+      background-color: #0080FF;
+      border-color: #bce8f1;
+      padding: 10px 5px;
 
-      }
+      border: 1px solid transparent;
+      border-radius: 4px;
+      display: block;
+      text-align: center;
 
-      asq-exercise > asq-buckets[disabled] /deep/ [target] > span {
-        background-color: #000080;
-      }
+    }
 
-      asq-exercise > asq-buckets[disabled] /deep/ [target] {
-        cursor: auto;
-        background-color: lightgray;
-      }
+    asq-buckets {
+      max-width: 400px;
 
-      asq-exercise > asq-buckets {
-        max-width: 400px;
-        text-align: center;
+    }
 
-      }
+    asq-buckets > section {
+      text-align: center;
+    }
 
-      asq-exercise > asq-buckets /deep/ section {
-        text-align: center;
-      }
+    asq-buckets [object] {
+      display: block;
+      color: #a94442;
+      background-color: #f2dede;
+      border-color: #ebccd1;
+      border-color: #faebcc;
+      padding: 8px 6px;
+      border: 1px solid transparent;
+      border-radius: 4px;
 
+      max-width: 150px;
+      margin: 1px auto;
+    }
 
-      asq-exercise > asq-buckets /deep/ [object] {
-        display: block;
-        color: #a94442;
-        background-color: #f2dede;
-        border-color: #ebccd1;
-        border-color: #faebcc;
-        padding: 8px 6px;
-        border: 1px solid transparent;
-        border-radius: 4px;
+    asq-buckets::shadow [object] {
+      display: block;
+      color: #a94442;
+      background-color: #f2dede;
+      border-color: #ebccd1;
+      border-color: #faebcc;
+      padding: 8px 6px;
+      border: 1px solid transparent;
+      border-radius: 4px;
 
-        max-width: 150px;
-        margin: 1px auto;
-      }
+      max-width: 150px;
+    }
 
-      asq-exercise > asq-buckets > [object] > b {
-        color: red;
-      }
+    asq-buckets [object] > b {
+      color: red;
+    }
 
-      asq-exercise#buckets {
-        max-width: 600px;
-      }
+    asq-buckets::shadow [object] > b {
+      color: red;
+    }
 
-      asq-exercise > asq-buckets /deep/ core-icon {
-        transition: all 0.2s;
-        -webkit-transition: all 0.2s;
-      }
+    asq-buckets core-icon {
+      transition: all 0.2s;
+      -webkit-transition: all 0.2s;
+    }
 
-      asq-exercise > asq-buckets /deep/ core-icon:hover {
-        fill: #fb8c00;
-        padding-right: 1em;
-      }
+    asq-buckets core-icon:hover {
+      fill: #fb8c00;
+    }
+
+    asq-buckets[disabled] [target] > span {
+      background-color: #4C4C4C;
+    }
+
+    asq-buckets[disabled] [target] {
+      cursor: auto;
+      background-color: lightgray;
+    }
+    asq-buckets[disabled] [object] {
+      color: white;
+      background-color: #808080;
+    }
+
+    asq-buckets[disabled]::shadow [object] {
+      color: white;
+      background-color: #808080;
+    }
+    asq-buckets[disabled] [object] > b {
+      color: #333333;
+    }
+
+    asq-buckets[disabled]::shadow [object] > b {
+      color: #333333;
+    }
     </style>
 
     <style>
-      asq-exercise > asq-order /deep/ [target] {
-        min-height: 45px;
-        padding: 4px;
-        margin-bottom: 20px;
-        line-height: 1.42857143;
-        background-color: #fff;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        -webkit-transition: border .2s ease-in-out;
-             -o-transition: border .2s ease-in-out;
-                transition: border .2s ease-in-out;
+      asq-order [target] {
+      min-height: 45px;
+      padding: 4px;
+      margin-bottom: 20px;
+      line-height: 1.42857143;
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      -webkit-transition: border .2s ease-in-out;
+           -o-transition: border .2s ease-in-out;
+              transition: border .2s ease-in-out;
 
-      }
+    }
 
 
-      asq-exercise > asq-order /deep/ [target] > [object] {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        margin: 2px;
-      }
+    asq-order [target] > [object] {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      margin: 2px;
+    }
 
-      asq-exercise > asq-order {
-        width: 220px;
-        max-width: 500px;
-      }
+    asq-order {
+      width: 220px;
+      max-width: 500px;
+    }
 
-      asq-exercise > asq-order /deep/ [object] {
-        cursor: pointer;
-        display: block;
-        color: #a94442;
-        background-color: #f2dede;
-        border-color: #faebcc;
-        padding: 8px 6px;
-        border: 1px solid transparent;
-        border-radius: 4px;
+    asq-order [object] {
+      cursor: pointer;
+      display: block;
+      color: #a94442;
+      background-color: #f2dede;
+      border-color: #ebccd1;
+      border-color: #faebcc;
+      padding: 8px 6px;
+      border: 1px solid transparent;
+      border-radius: 4px;
 
-        max-width: 150px;
-        margin: 1px auto;
-      }
+      max-width: 150px;
+      margin: 1px auto;
+    }
 
-      asq-exercise > asq-order[disabled] /deep/ [object] {
-        cursor: auto;
-        color: white;
-        background-color: #666666;
-      }
+    asq-order[disabled] [object] {
+      cursor: auto;
+      color: white;
+      background-color: #666666;
+    }
 
-      asq-exercise > asq-order > img {
-        max-width: 220px;
-        height: 200px;
-        margin: 1em;
-      }
+    asq-order > img {
+      max-width: 220px;
+      height: 200px;
+      margin: 1em;
+    }
 
-      .error-solution {
-        border-color: red;
-        outline: 0;
-        -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, .6);
-                box-shadow: inset 0 1px 1px rgba(255, 6, 6, 0.075), 0 0 8px rgba(255, 0, 0, 1);
-      }
+    .error-solution {
+      border-color: red;
+      outline: 0;
+      -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, .6);
+              box-shadow: inset 0 1px 1px rgba(255, 6, 6, 0.075), 0 0 8px rgba(255, 0, 0, 1);
+    }
+
 
     </style>
 
