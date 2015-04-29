@@ -21,7 +21,7 @@
     font-size:100%;
     line-height:1.2;
     color:#ddd;
-    /*text-shadow:1px 1px #bbb, 2px 2px #666, .1em .1em .2em rgba(0,0,0,.5);*/
+    
 }
 
 .rating:not(:checked) > label:before {
@@ -30,13 +30,11 @@
 
 .rating > input:checked ~ label {
     color: #f70;
-    /*text-shadow:1px 1px #c60, 2px 2px #940, .1em .1em .2em rgba(0,0,0,.5);*/
 }
 
 .rating:not(:checked) > label:hover,
 .rating:not(:checked) > label:hover ~ label {
     color: gold;
-    /*text-shadow:1px 1px goldenrod, 2px 2px #B57340, .1em .1em .2em rgba(0,0,0,.5);*/
 }
 
 .rating > input:checked + label:hover,
@@ -45,7 +43,6 @@
 .rating > input:checked ~ label:hover ~ label,
 .rating > label:hover ~ input:checked ~ label {
     color: #ea0;
-    /*text-shadow:1px 1px goldenrod, 2px 2px #B57340, .1em .1em .2em rgba(0,0,0,.5);*/
 }
 
 .rating > label:active {
@@ -53,6 +50,46 @@
     top:2px;
     left:2px;
 }
+
+/* when disabled */
+.rating:not(:checked)[disabled] > label:before {
+    content: '★ ';
+}
+
+.rating > input[disabled] ~ label {
+    color: #666666;
+}
+
+.rating > input:checked[disabled] ~ label {
+    color: #FF6666;
+}
+
+.rating:not(:checked)[disabled] > label:hover,
+.rating:not(:checked)[disabled] > label:hover ~ label {
+    color: #666666;
+}
+
+.rating > input:not(:checked)[disabled] + label:hover,
+.rating > input:not(:checked)[disabled] + label:hover ~ label,
+.rating > input:not(:checked)[disabled] ~ label:hover,
+.rating > input:not(:checked)[disabled] ~ label:hover ~ label,
+.rating > label:hover ~ input:not(:checked)[disabled] ~ label {
+    color: #666666;
+}
+
+.rating > input:checked[disabled] + label:hover,
+.rating > input:checked[disabled] + label:hover ~ label,
+.rating > input:checked[disabled] ~ label:hover,
+.rating > input:checked[disabled] ~ label:hover ~ label,
+.rating > label:hover ~ input:checked[disabled] ~ label {
+    color: #FF6666;
+}
+
+.rating > [disabled],
+.rating > [disabled] ~ label {
+    cursor: auto;
+}
+
 
 span {
     font-size: smaller;

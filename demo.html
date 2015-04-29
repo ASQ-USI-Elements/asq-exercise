@@ -15,7 +15,9 @@
   <link rel="import" href="../asq-code/asq-code.html">
   <link rel="import" href="../asq-css-select/asq-css-select.html">
   <link rel="import" href="../asq-js-function-body/asq-js-function-body.html">
-
+  <link rel="import" href="../asq-rating/asq-rating.html">
+  <link rel="import" href="../asq-buckets/asq-buckets.html">
+  <link rel="import" href="../asq-order/asq-order.html">
   
 
   <style shim-shadowdom>
@@ -34,81 +36,313 @@
       padding: 14px;
       font-size: 16px;
     }
+
+    asq-code {
+      margin-bottom: 1em;
+    }
   </style>
 
 </head>
 <body>
-
 <template is="auto-binding">
+
+  <style>
+      asq-buckets [target] {
+
+      padding: 4px;
+      margin-bottom: 20px;
+      line-height: 1.42857143;
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      -webkit-transition: border .2s ease-in-out;
+           -o-transition: border .2s ease-in-out;
+              transition: border .2s ease-in-out;
+
+    }
+    asq-buckets #targets {
+      display: flex;
+      flex-direction: row;
+
+    }
+
+    asq-buckets [target] {
+      cursor: pointer;
+      display: block;
+      
+      min-height: 200px;
+      min-width: 150px;
+
+    }
+
+    asq-buckets [target] [object] {
+      cursor: default;
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      margin: 2px;
+    }
+
+    asq-buckets [target] [change] {
+      background-color: #FF6666;
+    }
+
+    asq-buckets [target] > span {
+      color: #E6E6E6;
+      background-color: #0080FF;
+      border-color: #bce8f1;
+      padding: 10px 5px;
+
+      border: 1px solid transparent;
+      border-radius: 4px;
+      display: block;
+      text-align: center;
+
+    }
+
+    asq-buckets {
+      max-width: 400px;
+
+    }
+
+    asq-buckets > section {
+      text-align: center;
+    }
+
+    asq-buckets [object] {
+      display: block;
+      color: #a94442;
+      background-color: #f2dede;
+      border-color: #ebccd1;
+      border-color: #faebcc;
+      padding: 8px 6px;
+      border: 1px solid transparent;
+      border-radius: 4px;
+
+      max-width: 150px;
+      margin: 1px auto;
+    }
+
+    asq-buckets::shadow [object] {
+      display: block;
+      color: #a94442;
+      background-color: #f2dede;
+      border-color: #ebccd1;
+      border-color: #faebcc;
+      padding: 8px 6px;
+      border: 1px solid transparent;
+      border-radius: 4px;
+
+      max-width: 150px;
+    }
+
+    asq-buckets [object] > b {
+      color: red;
+    }
+
+    asq-buckets::shadow [object] > b {
+      color: red;
+    }
+
+    asq-buckets core-icon {
+      transition: all 0.2s;
+      -webkit-transition: all 0.2s;
+    }
+
+    asq-buckets core-icon:hover {
+      fill: #fb8c00;
+    }
+
+    asq-buckets[disabled] [target] > span {
+      background-color: #4C4C4C;
+    }
+
+    asq-buckets[disabled] [target] {
+      cursor: auto;
+      background-color: lightgray;
+    }
+    asq-buckets[disabled] [object] {
+      color: white;
+      background-color: #808080;
+    }
+
+    asq-buckets[disabled]::shadow [object] {
+      color: white;
+      background-color: #808080;
+    }
+    asq-buckets[disabled] [object] > b {
+      color: #333333;
+    }
+
+    asq-buckets[disabled]::shadow [object] > b {
+      color: #333333;
+    }
+    </style>
+
+    <style>
+      asq-order [target] {
+      min-height: 45px;
+      padding: 4px;
+      margin-bottom: 20px;
+      line-height: 1.42857143;
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      -webkit-transition: border .2s ease-in-out;
+           -o-transition: border .2s ease-in-out;
+              transition: border .2s ease-in-out;
+
+    }
+
+
+    asq-order [target] > [object] {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      margin: 2px;
+    }
+
+    asq-order {
+      width: 220px;
+      max-width: 500px;
+    }
+
+    asq-order [object] {
+      cursor: pointer;
+      display: block;
+      color: #a94442;
+      background-color: #f2dede;
+      border-color: #ebccd1;
+      border-color: #faebcc;
+      padding: 8px 6px;
+      border: 1px solid transparent;
+      border-radius: 4px;
+
+      max-width: 150px;
+      margin: 1px auto;
+    }
+
+    asq-order[disabled] [object] {
+      cursor: auto;
+      color: white;
+      background-color: #666666;
+    }
+
+    asq-order > img {
+      max-width: 220px;
+      height: 200px;
+      margin: 1em;
+    }
+
+    .error-solution {
+      border-color: red;
+      outline: 0;
+      -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, .6);
+              box-shadow: inset 0 1px 1px rgba(255, 6, 6, 0.075), 0 0 8px rgba(255, 0, 0, 1);
+    }
+
+
+    </style>
+
 
   <section>
 
-    <asq-exercise 
-      <asq-stem><h2>Exercise 1-1</h2></asq-stem>
-      <asq-multi-choice choose='1'>
-        <asq-stem><h3>Select a functional language.</h3></asq-stem>
-        <asq-option checked>Haskell</asq-option>
-        <asq-option>C</asq-option>
-        <asq-option>Python</asq-option>
-        <asq-option>Perl</asq-option>
+     
+
+    <asq-exercise maxnumsubmissions="0"> 
+      <asq-stem><h2>A not re-submiitabled exercise </h2></asq-stem>
+      <asq-multi-choice selected="op3">
+        <asq-stem><h3>Here you can pick just one answer:</h3></asq-stem>
+        <asq-option name="op0">Option 0</asq-option>
+        <asq-option name="op1">Option 1</asq-option>
+        <asq-option name="op2">Option 2</asq-option>
+        <asq-option name="op3">Option 3</asq-option>
       </asq-multi-choice>
     </asq-exercise>
 
-    <asq-exercise edittable disabled>
-      <asq-stem><h2>Exercise 1-2</h2></asq-stem>
-      <asq-multi-choice choose='n'>
-        <asq-stem><h3>Select official languages of Switzerland</h3></asq-stem>
-        <asq-option>English</asq-option>
-        <asq-option>French</asq-option>
-        <asq-option>German</asq-option>
-        <asq-option>Italian</asq-option>
-        <asq-option checked>Rumantsch</asq-option>
-      </asq-multi-choice>
-    </asq-exercise>
-
-    <asq-exercise confidence>
-      <asq-stem><h2>Exercise 2 (with confidence)</h2></asq-stem>
-      
-      <asq-text-input placeholder="answer here">
-        <asq-stem><h3>What's the result of '2 * 3'</h3></stem>
-      </asq-text-input>
-
-      <asq-text-input placeholder="answer here">
-        <asq-stem><h3>What's the result of '2 * 4'</h3></stem>
+    <asq-exercise confidence maxnumsubmissions="3">
+      <asq-stem><h2>An exercise with confidence and re-submiitabled</h2></asq-stem>
+      <asq-text-input label="value">
+        <asq-stem><h5>What's value of a[3]?</h5></asq-stem>
+        <pre><code>
+          char a[27];
+          char *b = "abc";
+          strcpy(a, b);</code></pre>
+        <asq-solution hidden>\0</asq-solution>
       </asq-text-input>
     </asq-exercise>
 
     <asq-exercise confidence>
-      <asq-stem><h2>Exercise 3</h2></asq-stem>
-      <asq-js-function-body funName="wrap(str, tagName)" question="wrap('hello World', 'div');">
-        <asq-stem <h2>Implement a function that wraps a given string with an HTML tag:</h2></asq-stem>
+      <asq-stem><h2>asq-js-function-body quesiton</h2></asq-stem>
+      <asq-js-function-body functionName="wrap(str, tagName)" question="wrap('hello World', 'div');">
+        <asq-stem><h4>Implement a function that wraps a given string with an HTML tag:</h4></asq-stem>
       </asq-js-function-body>
     </asq-exercise>
 
     
 
-    <asq-exercise 
-      <asq-stem><h2>Exercise 4</h2></asq-stem>
-        <asq-css-select htmlcode="<ul><li ouan'><li></li><li></li><li></li></ul></li><li></li><li></li><li><div><p></p><p </li></ul>">
-          <asq-stem><h3>Select 'div' elements:</h3><asq-stem>
-      </asq-css-select>
+    <asq-exercise>
+      <asq-stem><h2>asq-css-selected question</h2></asq-stem>
+      <asq-css-select htmlcode="<ul><li class='aclass'><ul id='aid'><li></li><li></li></ul></li><div><p></p><p class='bclass'></p></div></li></ul>">
+      <asq-stem><h3>Select 'div' elements:</h3></asq-stem>
+    </asq-css-select>
+
     </asq-exercise>
 
-   <asq-exercise 
-      <asq-stem><h2>Exercise 5</h2></asq-stem>
-      <asq-code mode="htmlmixed" tabSize="2" value="<polymer-element name='my-element'>
-  <template></template>  
-  <script>    
-    Polymer('my-element', {});  
-  </script>
-</polymer-element>">
-      
-      </asq-code>
+   <asq-exercise> 
+      <asq-stem><h2>asq-code question</h2></asq-stem>
+      <asq-code mode="java">
+      <asq-stem><h4>Implement quick sort algorithm in Java</h4></asq-stem>
+      <code>public class Main { 
+    public static void main(String args) {
+        
+    }
+} </code>
+    </asq-code>
     </asq-exercise>  
 
+    <asq-exercise>
+      <asq-stem><h2>asq-css-selected question</h2></asq-stem>
+        <asq-order objects="#objects" vertical layout
+        hints solution='{es ist} {schneit} {und} {kalt}' >
+        <asq-stem><p>It is snowing and it is cold.</p></asq-stem>
+        <img src="../asq-order/cs1.png"></img>  
+
+        <div target name="words" horizontal layout></div>
+        <div id="objects" horizontal layout>
+          <div object name="schneit">schneit</div>
+          <div object name="und">und</div>
+          <div object name="kalt">kalt</div>
+          <div object name="es ist">es ist</div>
+        </div>
+      </asq-order>
+     </asq-exercise> 
+    
+    
+    <asq-exercise id="buckets">
+      <asq-stem><h2>asq-bucket question</h2></asq-stem>
+      <asq-buckets targets="#targets" objects="#objects">
+        <asq-stem><h3>Please classify the words according to the pronunciation of the bolded vowels</h3></asq-stem>
+        <div id="targets">
+          <div target name="Long"><span>Long</span></div>
+          <div target name="Short"><span>Short</span></div>
+          <div target name="Medium"><span>Medium</span></div>
+        </div>
+        <div id="objects">
+          <div object name="glas">Gl<b>a</b>s</div>
+          <div object name="nudeln">N<b>u</b>deln</div>
+          <div object name="platz">Pl<b>a</b>tz</div>
+          <div object name="vier">v<b>i</b>er</div>
+        </div>
+      </asq-buckets>
+    </asq-exercise>
+    
 
   </section>
+
+
 </template>
+
   <script>
 
 

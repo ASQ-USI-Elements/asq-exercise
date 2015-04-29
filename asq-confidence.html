@@ -8,18 +8,22 @@
 @group ASQ Elements
 -->
 <polymer-element name="asq-confidence">
-  <template>
+  <template>  
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
     <link rel="stylesheet" href="./asq-confidence.css" type="text/css" />
     
-    <!-- (for now) Keep same when either viewer or presenter -->
-    <div id="rating" class="rating">
+    <form id="rating" class="rating">
       <span><i>Confidence: </i></span>
-      <input type="radio" id="star5" name="rating" value="5"/><label for="star5" title="O">5 stars</label>
-      <input type="radio" id="star4" name="rating" value="4"/><label for="star4" title="Sure">4 stars</label>
-      <input type="radio" id="star3" name="rating" value="3"/><label for="star3" title="Good">3 stars</label>
-      <input type="radio" id="star2" name="rating" value="2"/><label for="star2" title="Guess">2 stars</label>
-      <input type="radio" id="star1" name="rating" value="1"/><label for="star1" title="Random guess">1 star</label>
-    </div>
+        <input type="radio" id="star5" name="rating" value="5"/><label for="star5" title="Pretty Sure">5 stars</label>
+        <input type="radio" id="star4" name="rating" value="4"/><label for="star4" title="Sure">4 stars</label>
+        <input type="radio" id="star3" name="rating" value="3"/><label for="star3" title="Good">3 stars</label> 
+        <input type="radio" id="star2" name="rating" value="2"/><label for="star2" title="Guess">2 stars</label>
+        <input type="radio" id="star1" name="rating" value="1"/><label for="star1" title="Random guess">1 star</label>
+    </form>
   </template>
 
   <script>
@@ -27,32 +31,57 @@
 
       var p = {
 
+        publish: {
+          
+          /**
+           * Set to true to disable the element.
+           *
+           * @attribute disabled
+           * @type boolean
+           * @default false
+           */
+          disabled: {value: false, reflect: true},
+
+        },
+
+        domReady: function() {
+          this.disabledChanged();
+        },
+
+        disabledChanged: function() {
+          if ( !this.$.rating ) return;
+          var stars = this.$.rating.querySelectorAll('input[type=radio]');
+          for ( var x of stars.array() ) {
+            x.disabled = this.disabled;
+          }
+        },
+
         /**
          * Return the confidence level.
          * 
-         * @method getConfidenceLevel
+         * @method getConfidence
          * @return {string} String literal from '1' to '5'.
          */
-        getConfidenceLevel: function () {
-          var stars = this.$.rating.querySelectorAll("input[type=radio]");
+        getConfidence: function () {
+          var stars = this.$.rating.querySelectorAll('input[type=radio]');
           for (var i=0; i<stars.length; i++) {
             var star = stars[i];
             if ( star.checked == true ) {
               return star.value;
             }
           }
-          return "0";      
+          return '0';      
         },
 
         /**
          * Set the confidence level.
          * 
-         * @method setConfidenceLevel
+         * @method setConfidence
          * @param {number} The confidence level would be set
          * 
          */
-        setConfidenceLevel: function(level) {
-          var stars = this.$.rating.querySelectorAll("input[type=radio]").array().reverse();
+        setConfidence: function(level) {
+          var stars = this.$.rating.querySelectorAll('input[type=radio]').array().reverse();
 
           for ( var i=0; i<stars.length; i++ ) {
             stars[i].checked = false;
