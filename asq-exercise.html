@@ -160,11 +160,11 @@ Different users will see different UI according to their **role**. There are sev
           /**
            * The maximum submission attempts allowed.
            * 
-           * @attribute maxsubmissionattempts
+           * @attribute maxnumsubmissions
            * @type number
            * @default 0
            */
-          maxsubmissionattempts: {value: 1, reflect: true},
+          maxnumsubmissions: {value: 1, reflect: true},
 
         },
 
@@ -178,13 +178,13 @@ Different users will see different UI according to their **role**. There are sev
         submissions: 0,
 
         computed: {
-          'remainattempts': 'maxsubmissionattempts == 0  \
+          'remainattempts': 'maxnumsubmissions == 0  \
               ? "Unlimited attempts" \
-              : ( maxsubmissionattempts - submissions <= 0 \
+              : ( maxnumsubmissions - submissions <= 0 \
                 ? "No further attempt allowed" \
-                : (maxsubmissionattempts - submissions == 1 \
+                : (maxnumsubmissions - submissions == 1 \
                   ? "Last chance" \
-                  : (maxsubmissionattempts - submissions) + " attempts left" ) )'
+                  : (maxnumsubmissions - submissions) + " attempts left" ) )'
         },
 
         /**
@@ -194,8 +194,8 @@ Different users will see different UI according to their **role**. There are sev
          * @return Boolean
          */
         allowresubmit: function() {
-          return this.maxsubmissionattempts === 0 ? true 
-                  : this.maxsubmissionattempts > this.submissions ? true
+          return this.maxnumsubmissions === 0 ? true 
+                  : this.maxnumsubmissions > this.submissions ? true
                   : false;
         },
 
