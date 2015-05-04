@@ -79,6 +79,9 @@ Different users will see different UI according to their **role**. There are sev
         </div>
         <footer horizontal end-justified layout>
           <div>
+            <b>{{status}}</b>
+          </div>
+          <div>
             <template if="{{confidence}}">
             <asq-confidence id="confidence"></asq-confidence>
             </template>
@@ -177,6 +180,17 @@ Different users will see different UI according to their **role**. There are sev
          */
         submissions: 0,
 
+        /**
+         * Represents the status of the submission.
+         *
+         * Do not change it manually.
+         * 
+         * @attribute status
+         * @type 'unsubmitted' | 'submitting' | 'success' | 'error'
+         * @default 'unsubmitted'
+         */
+        status: 'unsubmitted',
+
         computed: {
           'remainattempts': 'maxnumsubmissions == 0  \
               ? "Unlimited attempts" \
@@ -225,6 +239,7 @@ Different users will see different UI according to their **role**. There are sev
         subscribeToEvents: function(eventBus){
           eventBus.on('asq:question_type', this.onQuestionType.bind(this));
           eventBus.on('asq:connected-clients', this.onConnectedClients.bind(this));
+          eventBus.on('asq:submitted', this.onSubmitted.bind(this));
         },
 
         onQuestionType: function(evt){
@@ -246,11 +261,25 @@ Different users will see different UI according to their **role**. There are sev
           this.submissionsNum = submissions.length;
         },
 
-        onConnectedClients: function(event){
+        onConnectedClients: function(evt){
           if(this.role !== this.roles.PRESENTER) return;
-          this.connectedViewersNum = event.connectedViewers.length;
+          this.connectedViewersNum = evt.connectedViewers.length;
         },
 
+        onSubmitted: function(evt) {
+          console.log('onSubmitted', evt.status, evt.exerciseUid);
+          if (evt.exerciseUid == this.uid) {
+            console.log('     -  - ', evt.status, evt.exerciseUid);
+            if ( this.status == 'submitted' && evt.status !== 'error' ) {
+              return
+            }
+            this.status = evt.status;
+          }
+        },
+
+        // statusChanged: function() {
+          
+        // },
 
         /**
          * The `asq-submit` event is fired whenever function `submit` is called.
