@@ -85,7 +85,7 @@ Different users will see different UI according to their **role**. There are sev
             <template if="{{confidence}}">
             <asq-confidence id="confidence"></asq-confidence>
             </template>
-            <core-tooltip label="{{remainattempts}}">
+            <core-tooltip label="{{remainingattempts}}">
               <paper-button id="submit_button" class="submit-button" on-tap="{{submit}}" raised="true">Submit</paper-button>
             </core-tooltip>
             <paper-button id="edit_button" hidden class="edit-button" on-tap="{{edit}}" raised="true">Edit</paper-button> 
@@ -192,7 +192,7 @@ Different users will see different UI according to their **role**. There are sev
         status: 'unsubmitted',
 
         computed: {
-          'remainattempts': 'maxnumsubmissions == 0  \
+          'remainingattempts': 'maxnumsubmissions == 0  \
               ? "Unlimited attempts" \
               : ( maxnumsubmissions - submissions <= 0 \
                 ? "No further attempt allowed" \
