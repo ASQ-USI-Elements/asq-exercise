@@ -242,16 +242,38 @@ Different users will see different UI according to their **role**. There are sev
         onQuestionType: function(evt){
           if(evt && evt.questionType && evt.questionType == 'asq-exercise'){
             if(evt.type == "progress"){
-              this.onProgress(evt)
+              this.onProgress(evt.exercise)
+            }else if(evt.type =="restorePresenter"){
+              if(this.role !== this.roles.PRESENTER) return;
+              this.onRestorePresenter(evt)
+            }else if(evt.type =="restoreViewer"){
+              if(this.role !== this.roles.VIEWER) return;
+              this.onRestoreViewer(evt)
             }
           }
         },
 
-        onProgress: function(evt){
-          if(evt.exerciseUid !== this.uid) return;
+        onRestorePresenter: function(evt){
+          evt.exercises.forEach(function(ex){
+            this.onProgress(ex);
+          }.bind(this));
+        },
+
+        onRestoreViewer: function(evt){
+          evt.exercises.forEach(function(ex){
+            if(ex.uid!== this.uid) return;
+            this.submissions = ex.submissionNum;
+            // since the id exists it means we have answered
+            if(! this.disabled){
+              this.toggleSubmit();
+            }
+          }.bind(this));
+        },
+
+        onProgress: function(exercise){
+          if(exercise.uid !== this.uid) return;
           if(this.role !== this.roles.PRESENTER) return;
-          this.updateProgress(evt.submissions);
-          // 
+          this.updateProgress(exercise.submissions);
         },
 
         updateProgress: function(submissions){
