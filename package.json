@@ -1,22 +1,22 @@
 {
   "name": "asq-exercise",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "ASQ exercise plugin.",
-  "author": "Zhenfei Nie <zhen.fei.nie@usi.ch>, Vassilis Triglianos <triglian@gmail.com>",
-  "homepage": "https://github.com/ASQ-USI/asq-exercise",
+  "author": "Vassilis Triglianos <triglian@gmail.com>, Zhenfei Nie <youyis2fox@gmail.com>",
+  "homepage": "https://github.com/ASQ-USI-Elements/asq-exercise",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:ASQ-USI/asq-exercise.git"
+    "url": "git@github.com:ASQ-USI-Elements/asq-exercise.git"
   },
   "keywords": [
     "node.js"
   ],
   "bugs": {
-    "url": "https://github.com/ASQ-USI/asq-exercise/issues"
+    "url": "https://github.com/ASQ-USI-Elements/asq-exercise/issues"
   },
   "dependencies": {
     "asq-plugin": "ASQ-USI/asq-plugin",

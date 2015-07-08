@@ -12,28 +12,28 @@
 ##### Example
     <asq-exercise 
       <asq-stem><h2>Exercise 1-1</h2></asq-stem>
-      <asq-multi-choice choose='1'>
+      <asq-multi-choice-q>
         <asq-stem><h3>Select a functional language.</h3></asq-stem>
         <asq-option checked>Haskell</asq-option>
         <asq-option>C</asq-option>
         <asq-option>Python</asq-option>
         <asq-option>Perl</asq-option>
-      </asq-multi-choice>
+      </asq-multi-choice-q>
     </asq-exercise>
 
 
-##### Another example: by setting allowresubmit attribtue, re-submission is allowed.
+##### 
 
-    <asq-exercise allowresubmit>
+    <asq-exercise maxnumsubmissions="3">
       <asq-stem><h2>Exercise 1</h2></asq-stem>
-      <asq-multi-choice choose='n'>
+      <asq-multi-choice-q multi>
         <asq-stem><h3>Official languages of Switzerland</h3></asq-stem>
         <asq-option>English</asq-option>
         <asq-option>French</asq-option>
         <asq-option>German</asq-option>
         <asq-option>Italian</asq-option>
         <asq-option>Rumantsch</asq-option>
-      </asq-multi-choice>
+      </asq-multi-choice-q>
     </asq-exercise>
 
 Different users will see different UI according to their **role**. There are several types of roles, `viewer`, `presenter`, `teaching assistant` and `ghost`.
@@ -41,7 +41,7 @@ Different users will see different UI according to their **role**. There are sev
 @element asq-exercise
 @group ASQ Elements
 @blurb Element Container for all ASQ `question types`.
-@homepage http://github.com/ASQ-USI/asq-exercise
+@homepage http://github.com/ASQ-USI-Elements/asq-exercise
 -->
 <polymer-element name="asq-exercise">
   <template>

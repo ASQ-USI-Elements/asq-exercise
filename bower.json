@@ -1,10 +1,10 @@
 {
   "name": "asq-exercise",
-  "version": "0.0.0",
-  "homepage": "https://github.com/ASQ-USI/asq-exercise",
+  "version": "0.1.0",
+  "homepage": "https://github.com/ASQ-USI-Elements/asq-exercise",
   "authors": [
     "Vasileios Triglianos <triglian@gmail.com>",
-    "Zhenfei Nie <zhenfei.nie@gmail.com>"
+    "Zhenfei Nie <youyis2fox@gmail.com>"
   ],
   "description": "ASQ Exercise element",
   "keywords": [
@@ -14,7 +14,7 @@
   "dependencies": {
     "polymer": "Polymer/polymer#^0.5.1",
     "paper-elements": "Polymer/paper-elements#~0.5.1",
-    "asq-base": "ASQ-USI/asq-base#master"
+    "asq-base": "ASQ-USI-Elements/asq-base#master"
   },
   "ignore": [ "index.js", "lib", "package.json", "node_modules", ".npmignore", "test/server"],
   "devDependencies": {
