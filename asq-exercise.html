@@ -55,12 +55,14 @@ Different users will see different UI according to their **role**. There are sev
         color: #fff;
         background-color: #5cb85c;
       }
-      .disabled-button {
-        background-color: #817E7E;
-      }
+      
       .edit-button {
         color: #fff;
         background-color: rgb(255, 155, 15);
+      }
+
+      .disabled-button {
+        background-color: #817E7E;
       }
 
       asq-progress::shadow paper-progress::shadow #activeProgress {
@@ -178,6 +180,15 @@ Different users will see different UI according to their **role**. There are sev
         submissions: 0,
 
         /**
+         * Represents the state. Either *ready_to_submit* or *submitted*.
+         * 
+         * @attribute state
+         * @type ready_to_submit | submitted
+         */
+        state: 'ready_to_submit',
+
+
+        /**
          * Represents the status of the submission.
          *
          * Do not change it manually.
@@ -189,7 +200,7 @@ Different users will see different UI according to their **role**. There are sev
         status: 'unsubmitted',
 
         computed: {
-          'remainingattempts': 'maxnumsubmissions == 0  \
+          'remainingattempts': 'maxnumsubmissions < 0  \
               ? "Unlimited attempts" \
               : ( maxnumsubmissions - submissions <= 0 \
                 ? "No further attempt allowed" \
@@ -198,14 +209,22 @@ Different users will see different UI according to their **role**. There are sev
                   : (maxnumsubmissions - submissions) + " attempts left" ) )'
         },
 
+        observe: {
+          maxnumsubmissions: 'refresh',
+          submissions: 'refresh'
+        },
+
+        
+
         /**
-         * Check if re-submission allowed
+         * Check if re-submission allowed. If maxnumsubmissions is less 
+         * then zero, unlimited submissions are allowed then.
          *
          * @method allowresubmit
          * @return Boolean
          */
         allowresubmit: function() {
-          return this.maxnumsubmissions === 0 ? true 
+          return this.maxnumsubmissions < 0 ? true 
                   : this.maxnumsubmissions > this.submissions ? true
                   : false;
         },
@@ -224,6 +243,7 @@ Different users will see different UI according to their **role**. There are sev
           // call disabledChanged manually because only after the dom is ready, 
           // it is possible to propagate the value to children nodes
           this.disabledChanged();
+          this.stateChanged();
         },
 
 
@@ -263,9 +283,11 @@ Different users will see different UI according to their **role**. There are sev
           evt.exercises.forEach(function(ex){
             if(ex.uid!== this.uid) return;
             this.submissions = ex.submissionNum;
+
             // since the id exists it means we have answered
             if(! this.disabled){
               this.toggleSubmit();
+              this.stateChanged();
             }
           }.bind(this));
         },
@@ -328,7 +350,7 @@ Different users will see different UI according to their **role**. There are sev
 
           this.submissions += 1;
 
-          this.toggleSubmit();
+          this.state = 'submitted';
 
           var submission = this.getSubmission();
 
@@ -339,7 +361,6 @@ Different users will see different UI according to their **role**. There are sev
             confidence = this.shadowRoot.getElementById('confidence').getConfidence();
           }
 
-          
 
           this.fire('asq-submit', {
             exerciseUid: this.uid,
@@ -376,14 +397,39 @@ Different users will see different UI according to their **role**. There are sev
          
         // event handler for tapping the *edit* button.
         edit: function() {
-          if ( this.allowresubmit() ) {
-            this.$.submit_button.hidden = false;
-            this.$.edit_button.hidden = true;
-            this.disabled = ! this.disabled;
-          } else {
-            this.$.submit_button.hidden = false;
-            this.$.edit_button.hidden = true;
+          this.state = 'ready_to_submit';
+        },
+
+        stateChanged: function() {
+
+          var flag = this.allowresubmit();
+
+          if ( this.state === 'ready_to_submit' ) {
+            if ( flag ) {
+              this.$.submit_button.disabled = false;
+              this.$.submit_button.classList.toggle('disabled-button', false);
+              this.$.submit_button.hidden = false; 
+              this.$.edit_button.hidden = true;
+            }
+            else {
+              this.$.submit_button.disabled = true;
+              this.$.submit_button.classList.toggle('disabled-button', true);
+            }
+          } else if ( this.state === 'submitted' ) {
+            if ( flag ) {
+              this.$.submit_button.hidden = true; 
+              this.$.edit_button.hidden = false;
+            }
+            else {
+              this.$.submit_button.disabled = true;
+              this.$.submit_button.classList.toggle('disabled-button', true);
+            }
+           
           }
+        },
+
+        refresh: function() {
+          this.stateChanged();
         },
 
         /**
@@ -394,13 +440,15 @@ Different users will see different UI according to their **role**. There are sev
          * 
          * @method toggleSubmit
          */
-        toggleSubmit: function() {
-          this.disabled = ! this.disabled;
-          if ( this.allowresubmit() ) {
-            this.$.submit_button.hidden = true;
-            this.$.edit_button.hidden = false;
-          }
-        },
+        // toggleSubmit: function() {
+        //   this.disabled = ! this.disabled;
+        //   if ( this.allowresubmit() ) {
+            
+        //   } else {
+        //     this.$.submit_button.hidden = false;
+        //     this.$.edit_button.hidden = true;
+        //   }
+        // },
 
 
         /**
@@ -414,11 +462,13 @@ Different users will see different UI according to their **role**. There are sev
          *      }
          *    
          */
-
         disabledChanged: function() {
           this.fire('asq-disabled', {disabled: this.disabled});
+          
           this.$.submit_button.disabled = this.disabled;
           this.$.submit_button.classList.toggle('disabled-button', this.disabled);
+          this.$.edit_button.disabled = this.disabled;
+          this.$.edit_button.classList.toggle('disabled-button', this.disabled);
 
           // propagate value of *disabled*
           for ( var x of this.getQuestions() ) {
