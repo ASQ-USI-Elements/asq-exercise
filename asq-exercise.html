@@ -168,6 +168,15 @@ Different users will see different UI according to their **role**. There are sev
            */
           maxnumsubmissions: {value: 0, reflect: true},
 
+
+          /**
+           * Setting: assessment.
+           * 
+           * @attribute assessment
+           * @type self | auto | peer
+           */
+          assessment: {value: 'self', reflect: true}
+
         },
 
         /**
@@ -257,6 +266,19 @@ Different users will see different UI according to their **role**. There are sev
           eventBus.on('asq:question_type', this.onQuestionType.bind(this));
           eventBus.on('asq:connected-clients', this.onConnectedClients.bind(this));
           eventBus.on('asq:submitted', this.onSubmitted.bind(this));
+          eventBus.on('asq:update_live_presentation_settings', this.onUpdateSettings.bind(this));
+        },
+
+        onUpdateSettings: function(evt) {
+          if ( evt.scope === 'presentation' || evt.exerciseId == this.uid ) {
+            var settings = evt.settings;
+            Object.keys(settings).forEach(function(key, index){
+              if ( this.hasAttributes(key) ) {
+                this.setAttribute(key.toLowerCase(), settings[key]);
+                this[key] = settings[key];
+              }
+            }, this);
+          }
         },
 
         onQuestionType: function(evt){
@@ -317,9 +339,6 @@ Different users will see different UI according to their **role**. There are sev
           }
         },
 
-        // statusChanged: function() {
-          
-        // },
 
         /**
          * The `asq-submit` event is fired whenever function `submit` is called.
@@ -430,25 +449,6 @@ Different users will see different UI according to their **role**. There are sev
         refresh: function() {
           this.stateChanged();
         },
-
-        /**
-         * Toggle the attribute *disabled*. Also check if 
-         * *allowresubmit*'s value. If true, display the *edit* button and 
-         * hide the *submit* button; otherwise, display a disbaled 
-         * *submit* button.
-         * 
-         * @method toggleSubmit
-         */
-        // toggleSubmit: function() {
-        //   this.disabled = ! this.disabled;
-        //   if ( this.allowresubmit() ) {
-            
-        //   } else {
-        //     this.$.submit_button.hidden = false;
-        //     this.$.edit_button.hidden = true;
-        //   }
-        // },
-
 
         /**
          * The `asq-disabled` event is fired when the value of *disabled* is
