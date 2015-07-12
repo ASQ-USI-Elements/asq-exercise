@@ -306,6 +306,10 @@ Different users will see different UI according to their **role**. There are sev
             if(ex.uid!== this.uid) return;
             this.submissions = ex.submissionNum;
 
+            if( this.confidence ){
+              this.shadowRoot.getElementById('confidence').setConfidence(ex.confidence);
+            }
+
             // since the id exists it means we have answered
             if(! this.disabled){
               this.stateChanged();
@@ -420,27 +424,33 @@ Different users will see different UI according to their **role**. There are sev
 
         stateChanged: function() {
 
-          var flag = this.allowresubmit();
+          var allowed = this.allowresubmit();
 
           if ( this.state === 'ready_to_submit' ) {
-            if ( flag ) {
-              this.$.submit_button.disabled = false;
-              this.$.submit_button.classList.toggle('disabled-button', false);
+            if ( allowed ) {
+              // this.$.submit_button.disabled = false;
+              // this.$.submit_button.classList.toggle('disabled-button', false);
               this.$.submit_button.hidden = false; 
               this.$.edit_button.hidden = true;
+
+              this.toggleInnerElements(false);
             }
             else {
-              this.$.submit_button.disabled = true;
-              this.$.submit_button.classList.toggle('disabled-button', true);
+              // this.$.submit_button.disabled = true;
+              // this.$.submit_button.classList.toggle('disabled-button', true);
+
+              this.toggleInnerElements(true);
             }
           } else if ( this.state === 'submitted' ) {
-            if ( flag ) {
+            if ( allowed ) {
               this.$.submit_button.hidden = true; 
               this.$.edit_button.hidden = false;
             }
             else {
-              this.$.submit_button.disabled = true;
-              this.$.submit_button.classList.toggle('disabled-button', true);
+              // this.$.submit_button.disabled = true;
+              // this.$.submit_button.classList.toggle('disabled-button', true);
+
+              this.toggleInnerElements(true);
             }
            
           }
@@ -464,18 +474,28 @@ Different users will see different UI according to their **role**. There are sev
         disabledChanged: function() {
           this.fire('asq-disabled', {disabled: this.disabled});
           
-          this.$.submit_button.disabled = this.disabled;
-          this.$.submit_button.classList.toggle('disabled-button', this.disabled);
-          this.$.edit_button.disabled = this.disabled;
-          this.$.edit_button.classList.toggle('disabled-button', this.disabled);
+          // this.$.submit_button.disabled = this.disabled;
+          // this.$.submit_button.classList.toggle('disabled-button', this.disabled);
+          // this.$.edit_button.disabled = this.disabled;
+          // this.$.edit_button.classList.toggle('disabled-button', this.disabled);
+
+          this.toggleInnerElements(this.disabled);
+        },
+
+        toggleInnerElements: function(flag) {
+
+          this.$.submit_button.disabled = flag;
+          this.$.submit_button.classList.toggle('disabled-button', flag);
+          this.$.edit_button.disabled = flag;
+          this.$.edit_button.classList.toggle('disabled-button', flag);
 
           // propagate value of *disabled*
           for ( var x of this.getQuestions() ) {
-            x.disabled = this.disabled;
+            x.disabled = flag;
           }
 
           if(this.confidence){
-            this.shadowRoot.getElementById('confidence').disabled = this.disabled;
+            this.shadowRoot.getElementById('confidence').disabled = flag;
           }
         }
       }
