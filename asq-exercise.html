@@ -306,7 +306,7 @@ Different users will see different UI according to their **role**. There are sev
             if(ex.uid!== this.uid) return;
             this.submissions = ex.submissionNum;
 
-            if( this.confidence ){
+            if( this.confidence && this.shadowRoot.getElementById('confidence')){
               this.shadowRoot.getElementById('confidence').setConfidence(ex.confidence);
             }
 
@@ -495,7 +495,9 @@ Different users will see different UI according to their **role**. There are sev
           }
 
           if(this.confidence){
-            this.shadowRoot.getElementById('confidence').disabled = flag;
+            if ( this.shadowRoot.getElementById('confidence') ) {
+              this.shadowRoot.getElementById('confidence').disabled = flag;
+            }
           }
         }
       }
