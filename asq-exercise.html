@@ -428,17 +428,13 @@ Different users will see different UI according to their **role**. There are sev
 
           if ( this.state === 'ready_to_submit' ) {
             if ( allowed ) {
-              // this.$.submit_button.disabled = false;
-              // this.$.submit_button.classList.toggle('disabled-button', false);
+
               this.$.submit_button.hidden = false; 
               this.$.edit_button.hidden = true;
 
               this.toggleInnerElements(false);
             }
             else {
-              // this.$.submit_button.disabled = true;
-              // this.$.submit_button.classList.toggle('disabled-button', true);
-
               this.toggleInnerElements(true);
             }
           } else if ( this.state === 'submitted' ) {
@@ -447,9 +443,6 @@ Different users will see different UI according to their **role**. There are sev
               this.$.edit_button.hidden = false;
             }
             else {
-              // this.$.submit_button.disabled = true;
-              // this.$.submit_button.classList.toggle('disabled-button', true);
-
               this.toggleInnerElements(true);
             }
            
@@ -473,21 +466,21 @@ Different users will see different UI according to their **role**. There are sev
          */
         disabledChanged: function() {
           this.fire('asq-disabled', {disabled: this.disabled});
-          
-          // this.$.submit_button.disabled = this.disabled;
-          // this.$.submit_button.classList.toggle('disabled-button', this.disabled);
-          // this.$.edit_button.disabled = this.disabled;
-          // this.$.edit_button.classList.toggle('disabled-button', this.disabled);
-
           this.toggleInnerElements(this.disabled);
         },
 
         toggleInnerElements: function(flag) {
+          if ( this.$.submit_button ) {
+            this.$.submit_button.disabled = flag;
+            this.$.submit_button.classList.toggle('disabled-button', flag);
+          }
 
-          this.$.submit_button.disabled = flag;
-          this.$.submit_button.classList.toggle('disabled-button', flag);
-          this.$.edit_button.disabled = flag;
-          this.$.edit_button.classList.toggle('disabled-button', flag);
+          if ( this.$.edit_button ) {
+            this.$.edit_button.disabled = flag;
+            this.$.edit_button.classList.toggle('disabled-button', flag);
+          }
+          
+          
 
           // propagate value of *disabled*
           for ( var x of this.getQuestions() ) {
