@@ -441,6 +441,7 @@ Different users will see different UI according to their **role**. There are sev
             if ( allowed ) {
               this.$.submit_button.hidden = true; 
               this.$.edit_button.hidden = false;
+              this.toggleInnerElements(false);
             }
             else {
               this.toggleInnerElements(true);
