@@ -5,19 +5,20 @@
 
   <title>asq-exercise | Demo</title>
 
-  <script src="../webcomponentsjs/webcomponents.js"></script>
+  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+  <link rel="import" href="../../polymer/polymer.html">
 
-  <link rel="import" href="./asq-exercise.html">
-  <link rel="import" href="../asq-option/asq-option.html">
-  <link rel="import" href="../asq-multi-choice-q/asq-multi-choice-q.html">
-  <link rel="import" href="../asq-stem/asq-stem.html">
-  <link rel="import" href="../asq-text-input-q/asq-text-input-q.html">
-  <link rel="import" href="../asq-code-q/asq-code-q.html">
-  <link rel="import" href="../asq-css-select-q/asq-css-select-q.html">
-  <link rel="import" href="../asq-js-function-body-q/asq-js-function-body-q.html">
-  <link rel="import" href="../asq-rating/asq-rating.html">
-  <link rel="import" href="../asq-buckets-q/asq-buckets-q.html">
-  <link rel="import" href="../asq-order-q/asq-order-q.html">
+  <link rel="import" href="../asq-exercise.html">
+  <!-- <link rel="import" href="../../asq-option/asq-option.html"> -->
+  <!-- <link rel="import" href="../../asq-multi-choice-q/asq-multi-choice-q.html"> -->
+  <link rel="import" href="../../asq-stem/asq-stem.html">
+  <link rel="import" href="../../asq-text-input-q/asq-text-input-q.html">
+  <link rel="import" href="../../asq-code-q/asq-code-q.html">
+  <!-- <link rel="import" href="../../asq-css-select-q/asq-css-select-q.html"> -->
+  <link rel="import" href="../../asq-js-function-body-q/asq-js-function-body-q.html">
+<!--   <link rel="import" href="../../asq-rating/asq-rating.html">
+  <link rel="import" href="../../asq-buckets-q/asq-buckets-q.html">
+  <link rel="import" href="../../asq-order-q/asq-order-q.html">-->
   
 
   <style shim-shadowdom>
@@ -44,7 +45,7 @@
 
 </head>
 <body>
-<template is="auto-binding">
+<template is="dom-bind">
 
   <style>
     asq-buckets-q [target] {
@@ -247,8 +248,7 @@
 
   <section>
 
-
-    <asq-exercise maxnumsubmissions="1" confidence> 
+    <asq-exercise max-num-submissions="1" confidence> 
       <asq-stem><h2>Geo exercises.</h2></asq-stem>
       <asq-multi-choice-q>
         <asq-stem><h3>Lugano is located in..</h3></asq-stem>
@@ -259,7 +259,7 @@
       </asq-multi-choice-q>
     </asq-exercise>
 
-    <asq-exercise confidence maxnumsubmissions="3">
+    <asq-exercise confidence max-num-submissions="3">
       <asq-stem><h2>An exercise with confidence and re-submiitabled</h2></asq-stem>
       <asq-text-input-q label="value">
         <asq-stem><h5>What's value of a[3]?</h5></asq-stem>
@@ -271,15 +271,15 @@
       </asq-text-input-q>
     </asq-exercise>
 
-    <asq-exercise confidence>
-      <asq-stem><h2>asq-js-function-body-q quesiton</h2></asq-stem>
-      <asq-js-function-body-q functionName="wrap(str, tagName)" question="wrap('hello World', 'div');">
+    <asq-exercise confidence role="presenter">
+      <asq-stem><h2>asq-js-function-body-q question</h2></asq-stem>
+      <asq-js-function-body-q functionName="wrap(str, tagName)" test-exp="wrap('hello World', 'div');">
         <asq-stem><h4>Implement a function that wraps a given string with an HTML tag:</h4></asq-stem>
       </asq-js-function-body-q>
     </asq-exercise>
 
     
-
+<!-- 
     <asq-exercise>
       <asq-stem><h2>asq-css-selecte question</h2></asq-stem>
       <asq-css-select-q htmlcode="<ul><li class='aclass'><ul id='aid'><li></li><li></li></ul></li><div><p></p><p class='bclass'></p></div></li></ul>">
@@ -334,7 +334,7 @@
           <div object name="vier">v<b>i</b>er</div>
         </div>
       </asq-buckets-q>
-    </asq-exercise>
+    </asq-exercise> -->
     
 
   </section>

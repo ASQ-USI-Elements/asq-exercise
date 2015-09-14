@@ -1,13 +1,15 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../paper-button/paper-button.html">
-<link rel="import" href="../core-tooltip/core-tooltip.html">
+<link rel="import" href="../paper-tooltip/paper-tooltip.html">
+<link rel="import" href="../iron-flex-layout/classes/iron-flex-layout.html">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
 
 <link rel="import" href="asq-confidence.html">
 <link rel="import" href="asq-progress.html">
 <link rel="import" href="../asq-base/asq-base.html">
 
 <!--
-`asq-exercise` is the container for all ASQ `question types`. It can contain several `ASQ questions`. It is the one that can communicate(submit answers) with server side.
+`asq-exercise` groups ASQ `question types`. Every question should be be a child of an `asq-exercise` element. An `asq-exercise` element should conatin one ore more  `ASQ questions`. `asq-exercise` takes care of submitting and displaying progress for a group of questions.
 
 ##### Example
     <asq-exercise 
@@ -24,7 +26,7 @@
 
 ##### 
 
-    <asq-exercise maxnumsubmissions="3">
+    <asq-exercise max-num-submissions="3">
       <asq-stem><h2>Exercise 1</h2></asq-stem>
       <asq-multi-choice-q multi>
         <asq-stem><h3>Official languages of Switzerland</h3></asq-stem>
@@ -39,39 +41,46 @@
 Different users will see different UI according to their **role**. There are several types of roles, `viewer`, `presenter`, `teaching assistant` and `ghost`.
 
 @element asq-exercise
+@demo demo/index.html
 @group ASQ Elements
 @blurb Element Container for all ASQ `question types`.
 @homepage http://github.com/ASQ-USI-Elements/asq-exercise
 -->
-<polymer-element name="asq-exercise">
+  
+<dom-module id="asq-exercise">
   <template>
     <style> 
 
-      :host{
-        display: block;
-      }
-   
-      .submit-button {
-        color: #fff;
-        background-color: #5cb85c;
-      }
-      
-      .edit-button {
-        color: #fff;
-        background-color: rgb(255, 155, 15);
-      }
+        :host{
+          display: block;
+        }
 
-      .disabled-button {
-        background-color: #817E7E;
-      }
-
-      asq-progress::shadow paper-progress::shadow #activeProgress {
-        background-color: #5C87B8;
-      }
+        #footer{
+          @apply(--layout-horizontal);
+          @apply(--layout-end-justified);
+        }
      
-    </style>
+        .submit-button {
+          color: #fff;
+          background-color: #5cb85c;
+        }
+        
+        .edit-button {
+          color: #fff;
+          background-color: rgb(255, 155, 15);
+        }
 
-    <template if="{{role==roles.VIEWER}}">
+        .disabled-button {
+          background-color: #817E7E;
+        }
+
+        asq-progress::shadow paper-progress::shadow #activeProgress {
+          background-color: #5C87B8;
+        }
+       
+      </style>
+
+    <template is="dom-if" if="{{hasRole(roles.VIEWER)}}">
       <article class="asq-exercise">
         <div>
           <content select="asq-stem"></content>
@@ -79,23 +88,22 @@ Different users will see different UI according to their **role**. There are sev
         <div>
           <content></content>
         </div>
-        <footer horizontal end-justified layout>
+        <footer id="footer">
           <!-- <div><b>{{status}}</b></div> -->
-          <div>
-            <template if="{{confidence}}">
+          <div style="height: 100%;">
+            <template is="dom-if" if="{{confidence}}">
             <asq-confidence id="confidence"></asq-confidence>
             </template>
-            <core-tooltip label="{{remainingattempts}}">
-              <paper-button id="submit_button" class="submit-button" on-tap="{{submit}}" raised="true">Submit</paper-button>
-            </core-tooltip>
-            <paper-button id="edit_button" hidden class="edit-button" on-tap="{{edit}}" raised="true">Edit</paper-button> 
+              <paper-button id="submit_button" class="submit-button" on-tap="submit" raised="true">Submit</paper-button>
+              <paper-tooltip for="submit_button">{{remainingattempts}}</paper-tooltip>
+            <paper-button id="edit_button" hidden="" class="edit-button" on-tap="edit" raised="true">Edit</paper-button> 
           </div>   
         </footer>
       </article>
     </template>
 
 
-    <template if="{{role==roles.PRESENTER}}">
+    <template is="dom-if" if="{{hasRole(roles.PRESENTER)}}">
       <article class="asq-exercise">
         <div>
           <content select="asq-stem"></content>
@@ -103,15 +111,15 @@ Different users will see different UI according to their **role**. There are sev
         <div>
           <content></content>
         </div>
-        <footer horizontal end-justified layout>
-          <div vertical layout end>
+        <footer id="footer">
+          <div class="layout vertical end">
             <asq-progress value="{{submissionsNum}}" max="{{connectedViewersNum}}"></asq-progress>
           </div>
         </footer>
       </article>
     </template> 
 
-    <template if="{{role==roles.TA}}">
+    <template is="dom-if" if="{{hasRole(roles.TA)}}">
       <article class="asq-exercise">
         <div>
           <content select="asq-stem"></content>
@@ -119,7 +127,7 @@ Different users will see different UI according to their **role**. There are sev
         <div>
           <content></content>
         </div>
-        <footer horizontal end-justified layout>
+        <footer id="footer">
           <div>
             <asq-progress></asq-progress>
           </div>
@@ -128,221 +136,224 @@ Different users will see different UI according to their **role**. There are sev
     </template> 
 
   </template>
-
   <script>
-    (function() {
-      var p = {
+    (function () {
+      Polymer({
+        is: 'asq-exercise',
 
-        publish: {
+        behaviors: [ASQ.asqElementBehavior],
 
-          connectedViewersNum: 0,
+        properties: {
+
+          /**
+           * Disable or enable the element. Changes will be also
+           * propagated to inner propagated elements.
+           */
+          disabled: { 
+            type: Boolean,
+            value: false,
+            notify: true, 
+            observer: '_disabledChanged',
+            reflectToAttribute: true
+          },
 
           /**
            * Display confidence stars in the exercise
-           *
-           * @attribute confidence
-           * @type Boolean
-           * @default false
            */
-          confidence: {value: false, reflect: true},
-
-          /**
-           * Disable or endable the element. Changes will be also propagated to 
-           * inner elements.
-           * 
-           * @attribute disabled
-           * @type boolean
-           * @default false
-           */
-          disabled: {value: false, reflect: true},
-
-          
-
+          confidence: {
+            type: Boolean,
+            value: false,
+            reflectToAttribute: true
+          },
 
           /**
            * The maximum submission attempts allowed.
+           */
+          maxNumSubmissions: { 
+            type:Number,
+            value: 0,
+            notify: true, 
+            observer: 'refresh',
+            reflectToAttribute: true
+          },
+
+          /**
+           * assessment type
+           */
+          assessment: {
+            type: String,
+            value: 'auto',
+            notify: true, 
+            reflectToAttribute: true
+          },
+
+          remainingattempts: { computed: 'computeRemainingattempts(maxNumSubmissions, submissions)' },
+
+          /**
+           * Represents the state. Either *ready_to_submit* or *submitted*.
            * 
-           * @attribute maxnumsubmissions
+           * @attribute state
+           * @type ready_to_submit | submitted
+           */
+          state: {
+            type: String,
+            value: 'ready_to_submit',
+            observer: '_stateChanged'
+          },
+          /**
+           * Represents the status of the submission.
+           *
+           * Do not change it manually.
+           * 
+           * @attribute status
+           * @type 'unsubmitted' | 'submitting' | 'success' | 'error'
+           * @default 'unsubmitted'
+           */
+          status: {
+            type: String,
+            value: 'unsubmitted'
+          },
+
+          /**
+           * Counter for submission times. 
+           *
+           * @attribute submissions
            * @type number
            * @default 0
            */
-          maxnumsubmissions: {value: 0, reflect: true},
+          submissions: {
+            type: Number,
+            value: 0,
+            observer: 'refresh'
+          },
 
-
-          /**
-           * Setting: assessment.
-           * 
-           * @attribute assessment
-           * @type self | auto | peer
+           /**
+           * Counter for submission times. 
+           *
+           * @attribute submissions
+           * @type number
+           * @default 0
            */
-          assessment: {value: 'self', reflect: true}
-
+          _initialized: {
+            type: Boolean,
+            value: false,
+            notify: true
+          }
         },
 
+        observers: [
+          'refresh(_initialized, submissions)',
+          'refresh(_initialized, maxNumSubmissions)'
+        ],
         /**
-         * Counter for submission times. 
-         *
-         * @attribute submissions
-         * @type number
-         * @default 0
-         */
-        submissions: 0,
-
-        /**
-         * Represents the state. Either *ready_to_submit* or *submitted*.
-         * 
-         * @attribute state
-         * @type ready_to_submit | submitted
-         */
-        state: 'ready_to_submit',
-
-
-        /**
-         * Represents the status of the submission.
-         *
-         * Do not change it manually.
-         * 
-         * @attribute status
-         * @type 'unsubmitted' | 'submitting' | 'success' | 'error'
-         * @default 'unsubmitted'
-         */
-        status: 'unsubmitted',
-
-        computed: {
-          'remainingattempts': 'maxnumsubmissions < 0  \
-              ? "Unlimited attempts" \
-              : ( maxnumsubmissions - submissions <= 0 \
-                ? "No further attempt allowed" \
-                : (maxnumsubmissions - submissions == 1 \
-                  ? "Last chance" \
-                  : (maxnumsubmissions - submissions) + " attempts left" ) )'
-        },
-
-        observe: {
-          maxnumsubmissions: 'refresh',
-          submissions: 'refresh'
-        },
-
-        
-
-        /**
-         * Check if re-submission allowed. If maxnumsubmissions is less 
+         * Check if re-submission allowed. If maxNumSubmissions is less 
          * then zero, unlimited submissions are allowed then.
          *
          * @method allowresubmit
          * @return Boolean
          */
-        allowresubmit: function() {
-          return this.maxnumsubmissions < 0 ? true 
-                  : this.maxnumsubmissions > this.submissions ? true
-                  : false;
+        allowresubmit: function () {
+          return this.maxNumSubmissions < 0 ? true : this.maxNumSubmissions > this.submissions ? true : false;
         },
 
-        created: function(){
-          document.addEventListener('asq-ready', function(evt){
-            try{
-              this.subscribeToEvents(evt.detail.asqEventBus)
-            }catch(err){
+        created: function () {
+          document.addEventListener('asq-ready', function (evt) {
+            try {
+              this.subscribeToEvents(evt.detail.asqEventBus);
+            } catch (err) {
               console.debug('failed to subscribeToEvents');
             }
           }.bind(this));
         },
-
-        domReady: function() {
-          // call disabledChanged manually because only after the dom is ready, 
-          // it is possible to propagate the value to children nodes
-          this.disabledChanged();
-          this.stateChanged();
-        },
-
-
         /**
          * Exercise is interested in two events: `asq:question_type`, which is emitted 
          * when answer is submitted successfully, and `asq:question_type_edit`, which is emitted
          * when editing answer.
          *
          */
-        subscribeToEvents: function(eventBus){
-          eventBus.on('asq:question_type', this.onQuestionType.bind(this));
-          eventBus.on('asq:connected-clients', this.onConnectedClients.bind(this));
-          eventBus.on('asq:submitted', this.onSubmitted.bind(this));
+        subscribeToEvents: function (eventBus) {
+          eventBus.on('asq:question_type', this._onQuestionType.bind(this));
+          eventBus.on('asq:connected-clients', this._onConnectedClients.bind(this));
+          eventBus.on('asq:submitted', this._onSubmitted.bind(this));
           eventBus.on('asq:update_live_presentation_settings', this.onUpdateSettings.bind(this));
         },
 
-        onUpdateSettings: function(evt) {
-          if ( evt.scope === 'presentation' || evt.exerciseId == this.uid ) {
+        onUpdateSettings: function (evt) {
+          if (evt.scope === 'presentation' || evt.exerciseId == this.uid) {
             var settings = evt.settings;
-            Object.keys(settings).forEach(function(key, index){
-              if ( this.hasAttributes(key) ) {
+            Object.keys(settings).forEach(function (key, index) {
+              if (this.hasAttributes(key)) {
                 this.setAttribute(key.toLowerCase(), settings[key]);
                 this[key] = settings[key];
               }
             }, this);
           }
         },
-
-        onQuestionType: function(evt){
-          if(evt && evt.questionType && evt.questionType == 'asq-exercise'){
-            if(evt.type == "progress"){
-              this.onProgress(evt.exercise)
-            }else if(evt.type =="restorePresenter"){
-              if(this.role !== this.roles.PRESENTER) return;
-              this.onRestorePresenter(evt)
-            }else if(evt.type =="restoreViewer"){
-              if(this.role !== this.roles.VIEWER) return;
-              this.onRestoreViewer(evt)
+        
+        _onQuestionType: function (evt) {
+          if (evt && evt.questionType && evt.questionType == 'asq-exercise') {
+            if (evt.type == 'progress') {
+              this._onProgress(evt.exercise);
+            } else if (evt.type == 'restorePresenter') {
+              if (this.role !== this.roles.PRESENTER)
+                return;
+              this._onRestorePresenter(evt);
+            } else if (evt.type == 'restoreViewer') {
+              if (this.role !== this.roles.VIEWER)
+                return;
+              this._onRestoreViewer(evt);
             }
           }
         },
-
-        onRestorePresenter: function(evt){
-          evt.exercises.forEach(function(ex){
-            this.onProgress(ex);
+        
+        _onRestorePresenter: function (evt) {
+          evt.exercises.forEach(function (ex) {
+            this._onProgress(ex);
           }.bind(this));
         },
 
-        onRestoreViewer: function(evt){
-          evt.exercises.forEach(function(ex){
-            if(ex.uid!== this.uid) return;
+        
+        _onRestoreViewer: function (evt) {
+          evt.exercises.forEach(function (ex) {
+            if (ex.uid !== this.uid)
+              return;
             this.submissions = ex.submissionNum;
-
-            if( this.confidence && this.shadowRoot.getElementById('confidence')){
-              this.shadowRoot.getElementById('confidence').setConfidence(ex.confidence);
+            if (this.confidence && this.$$('#confidence')) {
+              this.$$('#confidence').setConfidence(ex.confidence);
             }
-
             // since the id exists it means we have answered
-            if(! this.disabled){
-              this.stateChanged();
+            if (!this.disabled) {
+              this._stateChanged();
             }
           }.bind(this));
         },
 
-        onProgress: function(exercise){
-          if(exercise.uid !== this.uid) return;
-          if(this.role !== this.roles.PRESENTER) return;
-          this.updateProgress(exercise.submissions);
+        _onProgress: function (exercise) {
+          if (exercise.uid !== this.uid)
+            return;
+          if (this.role !== this.roles.PRESENTER)
+            return;
+          this._updateProgress(exercise.submissions);
         },
 
-        updateProgress: function(submissions){
+        _updateProgress: function (submissions) {
           this.submissionsNum = submissions.length;
         },
 
-        onConnectedClients: function(evt){
-          if(this.role !== this.roles.PRESENTER) return;
+        _onConnectedClients: function (evt) {
+          if (this.role !== this.roles.PRESENTER)
+            return;
           this.connectedViewersNum = evt.connectedViewers.length;
         },
 
-        onSubmitted: function(evt) {
-          console.log('onSubmitted', evt.status, evt.exerciseUid);
+        _onSubmitted: function (evt) {
           if (evt.exerciseUid == this.uid) {
-            console.log('     -  - ', evt.status, evt.exerciseUid);
-            if ( this.status == 'submitted' && evt.status !== 'error' ) {
-              return
+            if (this.status == 'submitted' && evt.status !== 'error') {
+              return;
             }
             this.status = evt.status;
           }
         },
-
 
         /**
          * The `asq-submit` event is fired whenever function `submit` is called.
@@ -354,7 +365,6 @@ Different users will see different UI according to their **role**. There are sev
          *       confidence: // the confidence level
          *     }
          */
-        
         /**
          * The `submit` method will submit the answer to a wrapped 'asq-exercise' instance. 
          * 
@@ -362,144 +372,139 @@ Different users will see different UI according to their **role**. There are sev
          *
          * @method submit
          */
-        submit: function() {
-          if ( this.role !== this.roles.VIEWER ) return;
-
-          if ( this.disabled ) return;
-
-          if ( !this.allowresubmit() ) return;
-
-
+        submit: function () {
+          if (this.role !== this.roles.VIEWER)
+            return;
+          if (this.disabled)
+            return;
+          if (!this.allowresubmit())
+            return;
           this.submissions += 1;
-
           this.state = 'submitted';
-
           var submission = this.getSubmission();
-
           //submitted confidence will be null if not this.confidence is false
           var confidence;
-
-          if( this.confidence ){
-            confidence = this.shadowRoot.getElementById('confidence').getConfidence();
+          if (this.confidence) {
+            confidence = this.$$('#confidence').getConfidence();
           }
-
-
           this.fire('asq-submit', {
             exerciseUid: this.uid,
             submission: submission,
             confidence: confidence
           });
-
         },
 
         /**
-         * Get all questions inside this exercise.
-         *
-         * @method getQuestions
-         */
-        getQuestions: function() {
-          return this.childNodes.array().filter(function(el) {
+        * Get all questions inside this exercise.
+        *
+        * @method getQuestions
+        */
+        getQuestions: function () {
+          return Polymer.dom(this).childNodes.filter(function (el) {
             return el.isASQElement && el.isASQQuestionTypeElement;
           });
         },
 
         /**
-         * Get all submission of all questions.
-         *
-         * @method getSubmission
-         */
-        getSubmission: function() {
+        * Get all submission of all questions.
+        *
+        * @method getSubmission
+        */
+        getSubmission: function () {
           var questions = this.getQuestions();
           var sumissions = [];
-          questions.forEach(function(elem, index) {
+          questions.forEach(function (elem, index) {
             sumissions.push(elem.submit());
           });
           return sumissions;
         },
-         
+
         // event handler for tapping the *edit* button.
-        edit: function() {
+        edit: function () {
           this.state = 'ready_to_submit';
         },
 
-        stateChanged: function() {
-
+        _stateChanged: function () {
           var allowed = this.allowresubmit();
-
-          if ( this.state === 'ready_to_submit' ) {
-            if ( allowed ) {
-
-              this.$.submit_button.hidden = false; 
-              this.$.edit_button.hidden = true;
-
+          if (this.state === 'ready_to_submit') {
+            if (allowed) {
+              this.$$('#submit_button').hidden = false;
+              this.$$('#edit_button').hidden = true;
               this.toggleInnerElements(false);
-            }
-            else {
+            } else {
               this.toggleInnerElements(true);
             }
-          } else if ( this.state === 'submitted' ) {
-            if ( allowed ) {
-              this.$.submit_button.hidden = true; 
-              this.$.edit_button.hidden = false;
+          } else if (this.state === 'submitted') {
+            if (allowed) {
+              this.$$('#submit_button').hidden = true;
+              this.$$('#edit_button').hidden = false;
               this.toggleInnerElements(false);
-            }
-            else {
+            } else {
               this.toggleInnerElements(true);
             }
-           
           }
         },
 
-        refresh: function() {
-          this.stateChanged();
+        refresh: function (_initialized) {
+          if (! _initialized) return;
+          this._stateChanged();
         },
-
         /**
-         * The `asq-disabled` event is fired when the value of *disabled* is
-         * changed. This may be caused by clicking the *submit* button.
-         *
-         * @event asq-disabled
-         *
-         *      detail: { 
-         *        disabled: this.disabled
-         *      }
-         *    
-         */
-        disabledChanged: function() {
-          this.fire('asq-disabled', {disabled: this.disabled});
+        * The `asq-disabled` event is fired when the value of *disabled* is
+        * changed. This may be caused by clicking the *submit* button.
+        *
+        * @event asq-disabled
+        *
+        *      detail: { 
+        *        disabled: this.disabled
+        *      }
+        *    
+        */
+        _disabledChanged: function () {
+          this.fire('asq-disabled', { disabled: this.disabled });
           this.toggleInnerElements(this.disabled);
         },
-
-        toggleInnerElements: function(flag) {
-          if ( this.$.submit_button ) {
-            this.$.submit_button.disabled = flag;
-            this.$.submit_button.classList.toggle('disabled-button', flag);
+        toggleInnerElements: function (flag) {
+          if (this.$$('#submit_button')) {
+            this.$$('#submit_button').disabled = flag;
+            this.$$('#submit_button').classList.toggle('disabled-button', flag);
           }
-
-          if ( this.$.edit_button ) {
-            this.$.edit_button.disabled = flag;
-            this.$.edit_button.classList.toggle('disabled-button', flag);
+          if (this.$$('#edit_button')) {
+            this.$$('#edit_button').disabled = flag;
+            this.$$('#edit_button').classList.toggle('disabled-button', flag);
           }
-          
-          
 
           // propagate value of *disabled*
-          for ( var x of this.getQuestions() ) {
+          this.getQuestions().forEach(function(x){
             x.disabled = flag;
-          }
+          });
 
-          if(this.confidence){
-            if ( this.shadowRoot.getElementById('confidence') ) {
-              this.shadowRoot.getElementById('confidence').disabled = flag;
+          if (this.confidence) {
+            if (this.$$('#confidence')) {
+              this.$$('#confidence').disabled = flag;
             }
           }
-        }
-      }
-      
-      //we use a custom mixin to avoid overwriting published properties of the prototype
-      ASQ.asqify(p);
-      Polymer('asq-exercise', p);
+        },
 
-    })();
+        attached: function () {
+          // call _disabledChanged manually because only after the dom is ready, 
+          // it is possible to propagate the value to children nodes
+
+          Polymer.dom.flush()
+
+          this._initialized = true;
+          this._disabledChanged();
+          this._stateChanged();
+        },
+
+        hasRole: function (role) {
+          return this.role == role;
+        },
+
+        computeRemainingattempts: function (maxNumSubmissions, submissions) {
+          return maxNumSubmissions < 0 ? 'Unlimited attempts' : maxNumSubmissions - submissions <= 0 ? 'No further attempt allowed' : maxNumSubmissions - submissions == 1 ? 'Last chance' : maxNumSubmissions - submissions + ' attempts left';
+        }
+      });
+    }());
   </script>
-</polymer-element>
+</dom-module>
