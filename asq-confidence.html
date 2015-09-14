@@ -1,59 +1,50 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../asq-base/asq-base.html">
 
+<link rel="import" href="asq-confidence-styles.html">
+
 <!--
 `asq-confidence` is used inside the `asq-exercise`, representing the confidence level of the students.
 
 @element asq-confidence
 @group ASQ Elements
 -->
-<polymer-element name="asq-confidence">
-  <template>  
+<dom-module id="asq-confidence">
+
+  <template>
     <style>
-      :host {
-        display: block;
-      }
+        :host {
+          display: block;
+        }
     </style>
-    <link rel="stylesheet" href="./asq-confidence.css" type="text/css" />
+    <style include="asq-confidence-styles"></style>
     
     <form id="rating" class="rating">
       <span><i>Confidence: </i></span>
-        <input type="radio" id="star5" name="rating" value="5"/><label for="star5" title="Pretty Sure">5 stars</label>
-        <input type="radio" id="star4" name="rating" value="4"/><label for="star4" title="Sure">4 stars</label>
-        <input type="radio" id="star3" name="rating" value="3"/><label for="star3" title="Good">3 stars</label> 
-        <input type="radio" id="star2" name="rating" value="2"/><label for="star2" title="Guess">2 stars</label>
-        <input type="radio" id="star1" name="rating" value="1"/><label for="star1" title="Random guess">1 star</label>
+        <input type="radio" id="star5" name="rating" value="5"><label for="star5" title="Pretty Sure">5 stars</label>
+        <input type="radio" id="star4" name="rating" value="4"><label for="star4" title="Sure">4 stars</label>
+        <input type="radio" id="star3" name="rating" value="3"><label for="star3" title="Good">3 stars</label> 
+        <input type="radio" id="star2" name="rating" value="2"><label for="star2" title="Guess">2 stars</label>
+        <input type="radio" id="star1" name="rating" value="1"><label for="star1" title="Random guess">1 star</label>
     </form>
   </template>
-
   <script>
-    (function() {
+    (function () {
+      Polymer({
 
-      var p = {
+        is: 'asq-confidence',
+        
+        behaviors: [ASQ.asqElementBehavior],
 
-        publish: {
-          
-          /**
-           * Set to true to disable the element.
-           *
-           * @attribute disabled
-           * @type boolean
-           * @default false
-           */
-          disabled: {value: false, reflect: true},
+        properties: { disabled: { observer: 'disabledChanged' } },
+        disabledChanged: function () {
+          if (!this.$.rating)
+            return;
+          var stars = Polymer.dom(this.$.rating).querySelectorAll('input[type=radio]');
 
-        },
-
-        domReady: function() {
-          this.disabledChanged();
-        },
-
-        disabledChanged: function() {
-          if ( !this.$.rating ) return;
-          var stars = this.$.rating.querySelectorAll('input[type=radio]');
-          for ( var x of stars.array() ) {
+          stars.forEach(function (x) {
             x.disabled = this.disabled;
-          }
+          });
         },
 
         /**
@@ -63,14 +54,14 @@
          * @return {string} String literal from '1' to '5'.
          */
         getConfidence: function () {
-          var stars = this.$.rating.querySelectorAll('input[type=radio]');
-          for (var i=0; i<stars.length; i++) {
+          var stars = Polymer.dom(this.$.rating).querySelectorAll('input[type=radio]');
+          for (var i = 0; i < stars.length; i++) {
             var star = stars[i];
-            if ( star.checked == true ) {
+            if (star.checked == true) {
               return star.value;
             }
           }
-          return '0';      
+          return '0';
         },
 
         /**
@@ -80,24 +71,22 @@
          * @param {number} The confidence level would be set
          * 
          */
-        setConfidence: function(level) {
-          var stars = this.$.rating.querySelectorAll('input[type=radio]').array().reverse();
-
-          for ( var i=0; i<stars.length; i++ ) {
+        setConfidence: function (level) {
+          var stars = Polymer.dom(this.$.rating).querySelectorAll('input[type=radio]').array().reverse();
+          for (var i = 0; i < stars.length; i++) {
             stars[i].checked = false;
           }
-
           level = level < 0 ? 0 : level;
           level = level > stars.length ? stars.length : level;
-          for ( var i=0; i<level; i++ ) {
+          for (var i = 0; i < level; i++) {
             stars[i].checked = true;
           }
+        },
+
+        ready: function () {
+          this.disabledChanged();
         }
-
-      }
-
-      ASQ.asqify(p);
-      Polymer('asq-confidence', p);
-    })();
+      });
+    }());
   </script>
-</polymer-element>
+</dom-module>

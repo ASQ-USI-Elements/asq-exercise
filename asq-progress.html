@@ -8,39 +8,45 @@ TODO ...
 @element asq-progress
 @group ASQ Elements
 -->
-<polymer-element name="asq-progress" attributes="max value ratio">
+<dom-module id="asq-progress">
   <template>
     <div>
       <paper-progress value="{{value}}" max="{{max}}" ratio="{{ratio}}"></paper-progress>
-      <i>{{value}} / {{max}}</i>    
+      <i><span>{{value}}</span> / <span>{{max}}</span></i>    
     </div>
   </template>
-
   <script>
-    (function() {
+    (function () {
+      Polymer({
+        is: 'asq-progress',
+        properties: {
+          /**
+           * The number that indicates the maximum value of the progress bar. 
+           */
+          max: {
+            type: Number,
+            value: 10,
+            notify: true
+          },
 
-      var p = {
-        /**
-         * The current value of the progress bar. 
-         * @attribute value
-         * @type number
-         * @default 0
-         */
-        value: 0,
-
-        /**
-         * The max value of the progress bar. 
-         * @attribute max
-         * @type number
-         * @default 10
-         */
-        max: 10
-
-
-      };
-
-      ASQ.asqify(p);
-      Polymer('asq-progress', p);
-    })();
+          /**
+           * Returns the ratio of the value.
+           */
+          ratio: { 
+            type: Number,
+            value: 0,
+            notify: true 
+          },
+          /**
+           * The number that represents the current value of the progress bar. 
+           */
+          value: {
+            type: Number,
+            value: 0,
+            notify: true
+          }
+        }
+      });
+    }());
   </script>
-</polymer-element>
+</dom-module>

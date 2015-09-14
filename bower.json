@@ -11,13 +11,27 @@
     "ASQ"
   ],
   "license": "MIT",
+  "ignore": [
+    "index.js",
+    "lib",
+    "package.json",
+    "node_modules",
+    ".npmignore",
+    "test/server"
+  ],
   "dependencies": {
-    "polymer": "Polymer/polymer#^0.5.1",
-    "paper-elements": "Polymer/paper-elements#~0.5.1",
-    "asq-base": "ASQ-USI-Elements/asq-base#master"
+    "asq-base": "ASQ-USI-Elements/asq-base#feat-polymer-1",
+    "asq-code-q": "ASQ-USI-Elements/asq-code-q#feat-polymer-1",
+    "asq-js-function-body-q": "ASQ-USI-Elements/asq-js-function-body-q#feat-polymer-1",
+    "asq-stem": "ASQ-USI-Elements/asq-stem#feat-polymer-1",
+    "asq-text-input-q": "ASQ-USI-Elements/asq-text-input-q#feat-polymer-1",
+    "paper-button": "polymerElements/paper-button#~1.0.4",
+    "paper-progress": "polymerElements/paper-progress#~1.0.4",
+    "paper-tooltip": "polymerElements/paper-tooltip#~1.1.0",
+    "polymer": "polymer/polymer#~1.1.3"
   },
-  "ignore": [ "index.js", "lib", "package.json", "node_modules", ".npmignore", "test/server"],
   "devDependencies": {
-    "web-component-tester": "Polymer/web-component-tester#^2.0.0-rc1"
+    "iron-component-page": "PolymerElements/iron-component-page#~1.0.5",
+    "web-component-tester": "Polymer/web-component-tester#~3.3.21"
   }
 }
