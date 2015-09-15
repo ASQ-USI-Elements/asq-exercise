@@ -79,7 +79,7 @@ Different users will see different UI according to their **role**. There are sev
        
       </style>
 
-    <template is="dom-if" if="{{hasRole(roles.VIEWER)}}">
+    <template is="dom-if" if="{{hasRole(role, roles.VIEWER)}}">
       <article class="asq-exercise">
         <div>
           <content select="asq-stem"></content>
@@ -102,7 +102,7 @@ Different users will see different UI according to their **role**. There are sev
     </template>
 
 
-    <template is="dom-if" if="{{hasRole(roles.PRESENTER)}}">
+    <template is="dom-if" if="{{hasRole(role, roles.PRESENTER)}}">
       <article class="asq-exercise">
         <div>
           <content select="asq-stem"></content>
@@ -118,7 +118,7 @@ Different users will see different UI according to their **role**. There are sev
       </article>
     </template> 
 
-    <template is="dom-if" if="{{hasRole(roles.TA)}}">
+    <template is="dom-if" if="{{hasRole(role, roles.TA)}}">
       <article class="asq-exercise">
         <div>
           <content select="asq-stem"></content>
@@ -446,7 +446,7 @@ Different users will see different UI according to their **role**. There are sev
 
         refresh: function (_initialized) {
           if (! _initialized) return;
-          this._stateChanged();
+          //this._stateChanged();
         },
         /**
         * The `asq-disabled` event is fired when the value of *disabled* is
@@ -493,11 +493,11 @@ Different users will see different UI according to their **role**. There are sev
 
           this._initialized = true;
           this._disabledChanged();
-          this._stateChanged();
+          //this._stateChanged();
         },
 
-        hasRole: function (role) {
-          return this.role == role;
+        hasRole: function (role, candidate) {
+          return role == candidate;
         },
 
         computeRemainingattempts: function (maxNumSubmissions, submissions) {
