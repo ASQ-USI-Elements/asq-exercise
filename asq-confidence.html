@@ -72,7 +72,7 @@
          * 
          */
         setConfidence: function (level) {
-          var stars = Polymer.dom(this.$.rating).querySelectorAll('input[type=radio]').array().reverse();
+          var stars = Polymer.dom(this.$.rating).querySelectorAll('input[type=radio]').reverse();
           for (var i = 0; i < stars.length; i++) {
             stars[i].checked = false;
           }
