@@ -79,7 +79,7 @@ Different users will see different UI according to their **role**. There are sev
        
       </style>
 
-    <template is="dom-if" if="{{hasRole(role, roles.VIEWER)}}">
+    <template is="dom-if" if="{{hasRole(role, roles.VIEWER)}}" restamp>
       <article class="asq-exercise">
         <div>
           <content select="asq-stem"></content>
@@ -102,7 +102,7 @@ Different users will see different UI according to their **role**. There are sev
     </template>
 
 
-    <template is="dom-if" if="{{hasRole(role, roles.PRESENTER)}}">
+    <template is="dom-if" if="{{hasRole(role, roles.PRESENTER)}}" restamp>
       <article class="asq-exercise">
         <div>
           <content select="asq-stem"></content>
@@ -112,13 +112,13 @@ Different users will see different UI according to their **role**. There are sev
         </div>
         <footer id="footer">
           <div class="layout vertical end">
-            <asq-progress value="{{submissionsNum}}" max="{{connectedViewersNum}}"></asq-progress>
+            <asq-progress value="[[submissionsNum]]" max="[[connectedViewersNum]]"></asq-progress>
           </div>
         </footer>
       </article>
     </template> 
 
-    <template is="dom-if" if="{{hasRole(role, roles.TA)}}">
+    <template is="dom-if" if="{{hasRole(role, roles.TA)}}" restamp>
       <article class="asq-exercise">
         <div>
           <content select="asq-stem"></content>
