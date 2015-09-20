@@ -76,6 +76,14 @@ Different users will see different UI according to their **role**. There are sev
         asq-progress::shadow paper-progress::shadow #activeProgress {
           background-color: #5C87B8;
         }
+        
+        /* no need to print the buttons 
+        fixme: when polymer support media queries for custom properties we can just apply a property to the footer and have the user provied the media query on their rules */
+        @media print{
+          #footer {
+          @apply(--layout-invisible);
+          }
+        }
        
       </style>
 
