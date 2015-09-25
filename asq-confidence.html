@@ -21,72 +21,71 @@
     
     <form id="rating" class="rating">
       <span><i>Confidence: </i></span>
-        <input type="radio" id="star5" name="rating" value="5"><label for="star5" title="Pretty Sure">5 stars</label>
-        <input type="radio" id="star4" name="rating" value="4"><label for="star4" title="Sure">4 stars</label>
-        <input type="radio" id="star3" name="rating" value="3"><label for="star3" title="Good">3 stars</label> 
-        <input type="radio" id="star2" name="rating" value="2"><label for="star2" title="Guess">2 stars</label>
-        <input type="radio" id="star1" name="rating" value="1"><label for="star1" title="Random guess">1 star</label>
+        <input type="radio" id="star5" name="rating" value="5" disabled="{{disabled}}"><label for="star5" title="Pretty Sure">5 stars</label>
+        <input type="radio" id="star4" name="rating" value="4" disabled="{{disabled}}"><label for="star4" title="Sure">4 stars</label>
+        <input type="radio" id="star3" name="rating" value="3" disabled="{{disabled}}"><label for="star3" title="Good">3 stars</label> 
+        <input type="radio" id="star2" name="rating" value="2" disabled="{{disabled}}"><label for="star2" title="Guess">2 stars</label>
+        <input type="radio" id="star1" name="rating" value="1" disabled="{{disabled}}"><label for="star1" title="Random guess">1 star</label>
     </form>
   </template>
   <script>
-    (function () {
-      Polymer({
+    Polymer({
 
-        is: 'asq-confidence',
-        
-        behaviors: [ASQ.asqElementBehavior],
+      is: 'asq-confidence',
+      
+      behaviors: [ASQ.asqElementBehavior],
 
-        properties: { disabled: { observer: 'disabledChanged' } },
-        disabledChanged: function () {
-          if (!this.$.rating)
-            return;
-          var stars = Polymer.dom(this.$.rating).querySelectorAll('input[type=radio]');
-
-          stars.forEach(function (x) {
-            x.disabled = this.disabled;
-          });
-        },
-
-        /**
-         * Return the confidence level.
-         * 
-         * @method getConfidence
-         * @return {string} String literal from '1' to '5'.
-         */
-        getConfidence: function () {
-          var stars = Polymer.dom(this.$.rating).querySelectorAll('input[type=radio]');
-          for (var i = 0; i < stars.length; i++) {
-            var star = stars[i];
-            if (star.checked == true) {
-              return star.value;
-            }
-          }
-          return '0';
-        },
-
-        /**
-         * Set the confidence level.
-         * 
-         * @method setConfidence
-         * @param {number} The confidence level would be set
-         * 
-         */
-        setConfidence: function (level) {
-          var stars = Polymer.dom(this.$.rating).querySelectorAll('input[type=radio]').reverse();
-          for (var i = 0; i < stars.length; i++) {
-            stars[i].checked = false;
-          }
-          level = level < 0 ? 0 : level;
-          level = level > stars.length ? stars.length : level;
-          for (var i = 0; i < level; i++) {
-            stars[i].checked = true;
-          }
-        },
-
-        ready: function () {
-          this.disabledChanged();
+      properties: { 
+        disabled: { 
+          type: Boolean,
+          value: false,
+          reflectToAttribute: true
         }
-      });
-    }());
+      },
+
+      get ratingItems() {
+        return Polymer.dom(this.$.rating).querySelectorAll('input[type=radio]').reverse();
+      },
+
+
+      /**
+       * Return the confidence level.
+       * 
+       * @method getConfidence
+       * @return {string} String literal from '1' to '5'.
+       */
+      get confidence() {
+        var stars = this.ratingItems;
+        for (var i = 0; i < stars.length; i++) {
+          var star = stars[i];
+          if (star.checked == true) {
+            return Number(star.value);
+          }
+        }
+        return 0;
+      },
+
+      /**
+       * Set the confidence level.
+       * 
+       * @method setConfidence
+       * @param {number} The confidence level would be set
+       * 
+       */
+      set confidence(level) {
+        var stars = this.ratingItems;
+        for (var i = 0; i < stars.length; i++) {
+          stars[i].checked = false;
+        }
+        level = level < 0 ? 0 : level;
+        level = level > stars.length ? stars.length : level;
+        for (var i = 0; i < level; i++) {
+          stars[i].checked = true;
+        }
+
+      }
+
+
+    });
   </script>
 </dom-module>

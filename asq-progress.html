@@ -19,6 +19,9 @@ TODO ...
     (function () {
       Polymer({
         is: 'asq-progress',
+
+        behaviors: [ASQ.asqElementBehavior],
+        
         properties: {
           /**
            * The number that indicates the maximum value of the progress bar. 
