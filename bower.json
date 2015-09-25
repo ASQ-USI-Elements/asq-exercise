@@ -30,7 +30,8 @@
     "paper-button": "polymerElements/paper-button#~1.0.4",
     "paper-progress": "polymerElements/paper-progress#~1.0.4",
     "paper-tooltip": "polymerElements/paper-tooltip#~1.1.0",
-    "polymer": "polymer/polymer#~1.1.3"
+    "polymer": "polymer/polymer#~1.1.3",
+    "paper-styles": "PolymerElements/paper-styles#~1.0.11"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#~1.0.5",
