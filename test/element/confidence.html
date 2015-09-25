@@ -21,35 +21,35 @@
     var m = document.querySelector('#m');
     suite('<asq-confidence>', function() {
       test('test get and set', function() {
-        assert.equal(m.getConfidenceLevel(), "0");
+        assert.equal(m.confidence, 0);
 
-        m.setConfidenceLevel(5);
-        assert.equal(m.getConfidenceLevel(), "5");
+        m.confidence = 5;
+        assert.equal(m.confidence, 5);
 
-        m.setConfidenceLevel(1);
-        assert.equal(m.getConfidenceLevel(), "1");
+        m.confidence = 1;
+        assert.equal(m.confidence, 1);
 
-        m.setConfidenceLevel(0);
-        assert.equal(m.getConfidenceLevel(), "0");
+        m.confidence = 0;
+        assert.equal(m.confidence, 0);
 
-        m.setConfidenceLevel(-1);
-        assert.equal(m.getConfidenceLevel(), "0");
+        m.confidence = -1;
+        assert.equal(m.confidence, 0);
 
-        m.setConfidenceLevel(-100);
-        assert.equal(m.getConfidenceLevel(), "0");
+        m.confidence = -100;
+        assert.equal(m.confidence, 0);
 
-        m.setConfidenceLevel(6);
-        assert.equal(m.getConfidenceLevel(), "5");
+        m.confidence = 6;
+        assert.equal(m.confidence, 5);
 
-        m.setConfidenceLevel(100);
-        assert.equal(m.getConfidenceLevel(), "5");
+        m.confidence = 100;
+        assert.equal(m.confidence, 5);
       });
 
       test('test default mixin values', function() {
         assert.isTrue(m.isASQElement);
         assert.isFalse(m.isASQQuestionTypeElement);
-        assert.equal(m.uid, "");
-        assert.equal(m.role, ASQ.RoleMixin.roles.VIEWER);
+        assert.equal(m.uid, '');
+        assert.equal(m.role, 'viewer');
       });
 
       
