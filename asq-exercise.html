@@ -204,11 +204,16 @@ Custom property                                    | Description                
         </div>
         <footer id="footer">
           <div class="layout-horizontal">
-            <paper-progress value="[[submissionsNum]]" max="[[connectedViewersNum]]"></paper-progress>
+            <!-- TODO: cannot declartively define `max`. The `max` shouldn't 
+            be zero when trying to change `value`. Otherwise, it wouldn't change.
+            The `restorePresenter happens before viewerConnected`. But it requires
+            to change the max before changing the value. 
+            -->
+            <paper-progress value="[[submissionsNum]]"></paper-progress>
             <div>
               <span>[[submissionsNum]]</span>
               <span>/<span>
-              <span>[[connectedViewersNum]]</span>
+              <span>[[_connectedViewersNum]]</span>
             </div>
           </div>
         </footer>
@@ -324,7 +329,7 @@ Custom property                                    | Description                
         },
 
 
-        connectedViewersNum: {
+        _connectedViewersNum: {
           type: Number,
           value: 0,
           notify: true
@@ -338,6 +343,15 @@ Custom property                                    | Description                
 
       },
 
+
+      get connectedViewersNum() {
+        return this._connectedViewersNum;
+      },
+
+      set connectedViewersNum(num) {
+        this._connectedViewersNum = num;
+        this.$$('paper-progress').max = num;
+      },
 
       _computeSubmittable: function (remainingAttempts) {
         if ( remainingAttempts > 0 ) return true;
@@ -452,7 +466,9 @@ Custom property                                    | Description                
       _onConnectedClients: function (evt) {
         if (this.role !== this.roles.PRESENTER)
           return;
+
         this.connectedViewersNum = evt.connectedViewers.length;
+        
       },
 
       _onSubmitted: function (evt) {
