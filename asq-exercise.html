@@ -213,7 +213,7 @@ Custom property                                    | Description                
             <div>
               <span>[[submissionsNum]]</span>
               <span>/<span>
-              <span>[[_connectedViewersNum]]</span>
+              <span>[[connectedViewersNum]]</span>
             </div>
           </div>
         </footer>
@@ -329,7 +329,7 @@ Custom property                                    | Description                
         },
 
 
-        _connectedViewersNum: {
+        connectedViewersNum: {
           type: Number,
           value: 0,
           notify: true
@@ -341,16 +341,6 @@ Custom property                                    | Description                
           notify: true
         },
 
-      },
-
-
-      get connectedViewersNum() {
-        return this._connectedViewersNum;
-      },
-
-      set connectedViewersNum(num) {
-        this._connectedViewersNum = num;
-        this.$$('paper-progress').max = num;
       },
 
       _computeSubmittable: function (remainingAttempts) {
@@ -460,6 +450,13 @@ Custom property                                    | Description                
       },
 
       _updateProgress: function (submissions) {
+        //necessary: the max and value should always be changed together
+        // to avoid the 'bug' (or 'special feature') of paper-progress.
+        
+        if ( submissions.length > this.connectedViewersNum ) {
+          this.connectedViewersNum = submissions.length
+        }
+        this.$$('paper-progress').max = this.connectedViewersNum;
         this.submissionsNum = submissions.length;
       },
 
@@ -468,6 +465,8 @@ Custom property                                    | Description                
           return;
 
         this.connectedViewersNum = evt.connectedViewers.length;
+        this.$$('paper-progress').max = this.connectedViewersNum;
+        this.$$('paper-progress').value = this.connectedViewersNum;
         
       },
 
