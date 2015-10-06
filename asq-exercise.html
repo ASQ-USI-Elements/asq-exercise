@@ -183,7 +183,7 @@ Custom property                                    | Description                
         <footer id="footer">
           <div style="height: 100%;">
             <template is="dom-if" if="{{confidence}}">
-              <asq-confidence id="confidence" disabled="{{!submittable}}"></asq-confidence>
+              <asq-confidence id="confidence" disabled="{{disabled}}"></asq-confidence>
             </template>
             <paper-button id="submit-button" class="submit-button" on-tap="submit" raised="true" disabled="{{!submittable}}">Submit</paper-button>
             <paper-tooltip for="submit-button">{{_submittableMessages}}</paper-tooltip>
@@ -520,6 +520,8 @@ Custom property                                    | Description                
           submission: submission,
           confidence: confidence
         });
+
+        this.disabled = true;
       },
 
       refresh: function(_initialized) {
@@ -556,6 +558,7 @@ Custom property                                    | Description                
       _onEdit: function () {
         this.$$('#edit-button').hidden = true;
         this.$$('#submit-button').hidden = false;
+        this.disabled = false;
       },
 
       /**
@@ -570,6 +573,7 @@ Custom property                                    | Description                
        *    
        **/
       _disabledChanged: function () {
+        if (this.role === 'presenter') return;
         this.fire('asq-disabled', { disabled: this.disabled });
         this._toggleInnerElements(this.disabled);
       },

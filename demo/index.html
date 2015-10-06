@@ -108,7 +108,7 @@
     </div>
 
     <div class="container">
-      <asq-exercise max-num-submissions="1" confidence> 
+      <asq-exercise max-num-submissions="10" confidence> 
         <asq-stem><h4>Another exercise with confidence slider where you can submit only once.</h4></asq-stem>
         <asq-buckets-q
           mode="1-3" 
@@ -231,7 +231,7 @@
 
       } else if (state == 'complete') {
         
-        var options = asqm.items;
+        var options = asqm.api.items;
         options[0].progressValue = 30;
         options[1].progressValue = 78;
         options[2].progressValue = 10;
