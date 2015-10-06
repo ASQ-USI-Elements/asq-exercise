@@ -185,7 +185,7 @@ Custom property                                    | Description                
             <template is="dom-if" if="{{confidence}}">
               <asq-confidence id="confidence" disabled="{{disabled}}"></asq-confidence>
             </template>
-            <paper-button id="submit-button" class="submit-button" on-tap="submit" raised="true" disabled="{{!submittable}}">Submit</paper-button>
+            <paper-button id="submit-button" class="submit-button" on-tap="submit" raised="true" disabled="{{_computeDisabled(disabled, submittable)}}">Submit</paper-button>
             <paper-tooltip for="submit-button">{{_submittableMessages}}</paper-tooltip>
             <paper-button id="edit-button" hidden="" class="edit-button" on-tap="_onEdit" raised="true">Edit</paper-button> 
           </div>   
@@ -273,7 +273,7 @@ Custom property                                    | Description                
          */
         maxNumSubmissions: { 
           type:Number,
-          value: 0,
+          value: 1,
           notify: true, 
           observer: 'refresh',
           reflectToAttribute: true
@@ -341,6 +341,10 @@ Custom property                                    | Description                
           notify: true
         },
 
+      },
+
+      _computeDisabled: function(disabled, submittable) {
+        return disabled && !submittable
       },
 
       _computeSubmittable: function (remainingAttempts) {
