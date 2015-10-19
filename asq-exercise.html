@@ -3,9 +3,9 @@
 <link rel="import" href="../paper-tooltip/paper-tooltip.html">
 <link rel="import" href="../iron-flex-layout/classes/iron-flex-layout.html">
 <link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
-
+<link rel="import" href="../paper-progress/paper-progress.html">
+<link rel="import" href="../paper-styles/color.html">
 <link rel="import" href="asq-confidence.html">
-<link rel="import" href="asq-progress.html">
 <link rel="import" href="../asq-base/asq-base.html">
 
 <!--
@@ -37,7 +37,69 @@ Example:
       </asq-multi-choice-q>
     </asq-exercise>
 
-Different users will see different UI according to their **role**. There are several types of roles, `viewer`, `presenter`, `teaching assistant` and `ghost`.
+Different users will see different UI according to their **role**. There are several types of roles, `viewer`, `presenter` and `TA`.
+
+###Styling `submit` and `edit` buttons (in viewer's view):
+
+To change the color and background color of `submit` button:
+
+    asq-exercise {
+      --asq-exercise-submit-button-color: white;
+      --asq-exercise-submit-button-background-color: #388E3C;
+    }
+
+
+To change the color and background color of `edit` button:
+
+    asq-exercise {
+      --asq-exercise-edit-button-color: white;
+      --asq-exercise-edit-button-background-color: #FF7043;
+    }
+
+To change the color and background color of `submit` button when disabled (a.k.a submitsions are not allowed):
+
+    asq-exercise {
+      --asq-exercise-submit-button-disabled-color: #E0E0E0;
+      --asq-exercise-submit-button-background-disabled-color: #424242;
+    }
+
+Custom property                                        | Description                                     | Default
+-------------------------------------------------------|-------------------------------------------------|----------
+--asq-exercise-submit-button-color                     | The color of submit button                      | white
+--asq-exercise-submit-button-background-color          | The background color of submit button           | #388E3C
+--asq-exercise-edit-button-color                       | The color of edit button                        | white
+--asq-exercise-edit-button-background-color            | The background color of edit button             | #FF7043
+--asq-exercise-submit-button-disabled-color            | The color of submit button when disabled        | #E0E0E0
+--asq-exercise-submit-button-background-disabled-color | The background color of submit button disabled  | #424242
+
+
+### Styling progress bar (in presenter's view):
+
+To change the active progress bar color:
+
+    asq-exercise {
+       --asq-exercise-progress-active-color: #e91e63;
+    }
+
+
+To change the progress bar background color:
+
+    asq-exercise {
+      --asq-exercise-progress-container-color: #64ffda;
+    }
+
+
+The followings are available for styling (presenter's view) ( adapted from PolymerElements/paper-progress):
+
+Custom property                                    | Description                                 | Default
+---------------------------------------------------|---------------------------------------------|----------
+--asq-exercise-progress-container-color            | Mixin applied to container                  | --google-grey-300
+--asq-exercise-progress-transition-duration        | Duration of the transition                  | 0.008s
+--asq-exercise-progress-transition-timing-function | The timing function for the transition      | ease
+--asq-exercise-progress-transition-delay           | delay for the transition                    | 0s
+--asq-exercise-progress-active-color               | The color of the active bar                 | --google-green-500
+--asq-exercise-progress-disabled-active-color      | The color of the active bar if disabled     | --google-grey-500
+--asq-exercise-progress-height                     | The height of the progress bar              | 4px
 
 @element asq-exercise
 @demo demo/index.html
@@ -58,24 +120,45 @@ Different users will see different UI according to their **role**. There are sev
         @apply(--layout-horizontal);
         @apply(--layout-end-justified);
       }
+
+      .layout-horizontal {
+        @apply(--layout-horizontal);
+        @apply(--layout-center);
+      }
+
+      paper-progress {
+        margin-right: 5px;
+      }
    
       .submit-button {
-        color: #fff;
-        background-color: #5cb85c;
+        color: var(--asq-exercise-submit-button-color, white);
+        background-color: var(--asq-exercise-submit-button-background-color, #388E3C);
       }
 
       .submit-button[disabled] {
-        background-color: #817E7E;
+        color: var(--asq-exercise-submit-button-disabled-color, #E0E0E0);
+        background-color: var(--asq-exercise-submit-button-background-disabled-color, #424242);
       }
       
       .edit-button {
-        color: #fff;
-        background-color: rgb(255, 155, 15);
+        color: var(--asq-exercise-edit-button-color, white);
+        background-color: var(--asq-exercise-edit-button-background-color, #FF7043);
       }
 
-      asq-progress::shadow paper-progress::shadow #activeProgress {
-        background-color: #5C87B8;
+      paper-progress {
+        --paper-progress-container-color: var(--asq-exercise-progress-container-color, --google-grey-300);
+
+        --paper-progress-active-color: var(--asq-exercise-progress-active-color, --google-green-500);
+
+        --paper-progress-disabled-active-color: var(--asq-exercise-progress-disabled-active-color, --google-grey-500);
+
+        --paper-progress-height: var(--asq-exercise-progress-height, 4px);
+
+        --paper-progress-transition-duration: var(--asq-exercise-progress-transition-duration, 0.08s);
+
+        --paper-progress-transition-delay: var(--asq-exercise-progress-transition-delay, 0s);
       }
+
       
       /* no need to print the buttons 
       fixme: when polymer support media queries for custom properties we can just apply a property to the footer and have the user provied the media query on their rules */
@@ -100,9 +183,9 @@ Different users will see different UI according to their **role**. There are sev
         <footer id="footer">
           <div style="height: 100%;">
             <template is="dom-if" if="{{confidence}}">
-              <asq-confidence id="confidence" disabled="{{!submittable}}"></asq-confidence>
+              <asq-confidence id="confidence" disabled="{{disabled}}"></asq-confidence>
             </template>
-            <paper-button id="submit-button" class="submit-button" on-tap="submit" raised="true" disabled="{{!submittable}}">Submit</paper-button>
+            <paper-button id="submit-button" class="submit-button" on-tap="submit" raised="true" disabled="{{_computeDisabled(disabled, submittable)}}">Submit</paper-button>
             <paper-tooltip for="submit-button">{{_submittableMessages}}</paper-tooltip>
             <paper-button id="edit-button" hidden="" class="edit-button" on-tap="_onEdit" raised="true">Edit</paper-button> 
           </div>   
@@ -120,8 +203,18 @@ Different users will see different UI according to their **role**. There are sev
           <content></content>
         </div>
         <footer id="footer">
-          <div class="layout vertical end">
-            <asq-progress value="[[submissionsNum]]" max="[[connectedViewersNum]]"></asq-progress>
+          <div class="layout-horizontal">
+            <!-- TODO: cannot declartively define `max`. The `max` shouldn't 
+            be zero when trying to change `value`. Otherwise, it wouldn't change.
+            The `restorePresenter happens before viewerConnected`. But it requires
+            to change the max before changing the value. 
+            -->
+            <paper-progress value="[[submissionsNum]]"></paper-progress>
+            <div>
+              <span>[[submissionsNum]]</span>
+              <span>/<span>
+              <span>[[connectedViewersNum]]</span>
+            </div>
           </div>
         </footer>
       </article>
@@ -180,7 +273,7 @@ Different users will see different UI according to their **role**. There are sev
          */
         maxNumSubmissions: { 
           type:Number,
-          value: 0,
+          value: 1,
           notify: true, 
           observer: 'refresh',
           reflectToAttribute: true
@@ -233,10 +326,26 @@ Different users will see different UI according to their **role**. There are sev
 
         _submittableMessages: {
           computed: '_computeSubmittableMessages(remainingAttempts)'
-        }
+        },
+
+
+        connectedViewersNum: {
+          type: Number,
+          value: 0,
+          notify: true
+        },
+
+        submissionsNum: {
+          type: Number,
+          value: 0,
+          notify: true
+        },
 
       },
 
+      _computeDisabled: function(disabled, submittable) {
+        return disabled && !submittable
+      },
 
       _computeSubmittable: function (remainingAttempts) {
         if ( remainingAttempts > 0 ) return true;
@@ -345,13 +454,24 @@ Different users will see different UI according to their **role**. There are sev
       },
 
       _updateProgress: function (submissions) {
+        //necessary: the max and value should always be changed together
+        // to avoid the 'bug' (or 'special feature') of paper-progress.
+        
+        if ( submissions.length > this.connectedViewersNum ) {
+          this.connectedViewersNum = submissions.length
+        }
+        this.$$('paper-progress').max = this.connectedViewersNum;
         this.submissionsNum = submissions.length;
       },
 
       _onConnectedClients: function (evt) {
         if (this.role !== this.roles.PRESENTER)
           return;
+
         this.connectedViewersNum = evt.connectedViewers.length;
+        this.$$('paper-progress').max = this.connectedViewersNum;
+        this.$$('paper-progress').value = this.submissionsNum;
+        
       },
 
       _onSubmitted: function (evt) {
@@ -404,6 +524,8 @@ Different users will see different UI according to their **role**. There are sev
           submission: submission,
           confidence: confidence
         });
+
+        this.disabled = true;
       },
 
       refresh: function(_initialized) {
@@ -440,6 +562,7 @@ Different users will see different UI according to their **role**. There are sev
       _onEdit: function () {
         this.$$('#edit-button').hidden = true;
         this.$$('#submit-button').hidden = false;
+        this.disabled = false;
       },
 
       /**
@@ -454,6 +577,7 @@ Different users will see different UI according to their **role**. There are sev
        *    
        **/
       _disabledChanged: function () {
+        if (this.role === 'presenter') return;
         this.fire('asq-disabled', { disabled: this.disabled });
         this._toggleInnerElements(this.disabled);
       },
@@ -471,9 +595,9 @@ Different users will see different UI according to their **role**. There are sev
         this._initialized = true;
       },
 
-      hasRole: function (role, candidate) {
-        return role == candidate;
-      }
+      // hasRole: function (role, candidate) {
+      //   return role == candidate;
+      // }
       
     });
   </script>
