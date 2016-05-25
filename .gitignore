@@ -27,6 +27,7 @@
 !/.gitignore
 !/.gitattributes
 !/.npmignore
+!/.travis.yml
 
 # Node.js #
 #################
