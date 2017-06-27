@@ -13,7 +13,7 @@
 
 Example:
 
-    <asq-exercise 
+    <asq-exercise
       <asq-stem><h2>Exercise 1-1</h2></asq-stem>
       <asq-multi-choice-q>
         <asq-stem><h3>Select a functional language.</h3></asq-stem>
@@ -75,12 +75,30 @@ Custom property                                        | Description            
 
 ### Styling progress bar (in presenter's view):
 
-To change the active progress bar color:
+To change the submitted progress bar color:
 
     asq-exercise {
-       --asq-exercise-progress-active-color: #e91e63;
+       --asq-exercise-progress-submitted-color: #e91e63;
     }
 
+
+To change the working progress bar color:
+
+    asq-exercise {
+       --asq-exercise-progress-working-color: #e91e63;
+    }
+
+To change the focused progress bar color:
+
+    asq-exercise {
+       --asq-exercise-progress-focused-color: #e91e63;
+    }
+
+To change the idle progress bar color:
+
+    asq-exercise {
+       --asq-exercise-progress-idle-color: #e91e63;
+    }
 
 To change the progress bar background color:
 
@@ -107,10 +125,10 @@ Custom property                                    | Description                
 @blurb Element Container for all ASQ `question types`.
 @homepage http://github.com/ASQ-USI-Elements/asq-exercise
 -->
-  
+
 <dom-module id="asq-exercise">
   <template>
-    <style include="iron-flex"> 
+    <style include="iron-flex">
 
       :host{
         display: block;
@@ -122,10 +140,15 @@ Custom property                                    | Description                
         @apply(--asq-exercise-footer);
       }
 
-      paper-progress {
-        margin-right: 5px;
+      .progress-bar-container{
+        @apply(--layout-horizontal);
+        @apply(--layout-center);
       }
-   
+
+      paper-progress {
+        @apply(--layout-flex);
+      }
+
       .submit-button {
         color: var(--asq-exercise-submit-button-color, white);
         background-color: var(--asq-exercise-submit-button-background-color, #388E3C);
@@ -135,7 +158,7 @@ Custom property                                    | Description                
         color: var(--asq-exercise-submit-button-disabled-color, #E0E0E0);
         background-color: var(--asq-exercise-submit-button-background-disabled-color, #424242);
       }
-      
+
       .edit-button {
         color: var(--asq-exercise-edit-button-color, white);
         background-color: var(--asq-exercise-edit-button-background-color, #FF7043);
@@ -144,10 +167,6 @@ Custom property                                    | Description                
       paper-progress {
         --paper-progress-container-color: var(--asq-exercise-progress-container-color, --google-grey-300);
 
-        --paper-progress-active-color: var(--asq-exercise-progress-active-color, --google-green-500);
-
-        --paper-progress-disabled-active-color: var(--asq-exercise-progress-disabled-active-color, --google-grey-500);
-
         --paper-progress-height: var(--asq-exercise-progress-height, 4px);
 
         --paper-progress-transition-duration: var(--asq-exercise-progress-transition-duration, 0.08s);
@@ -155,8 +174,28 @@ Custom property                                    | Description                
         --paper-progress-transition-delay: var(--asq-exercise-progress-transition-delay, 0s);
       }
 
-      
-      /* no need to print the buttons 
+      #submitted-paper-progress {
+        --paper-progress-active-color: var(--asq-exercise-progress-submitted-color, --google-green-500);
+      }
+
+      #working-paper-progress {
+        --paper-progress-active-color: var(--asq-exercise-progress-working-color, --paper-orange-500);
+      }
+
+      #focused-paper-progress {
+        --paper-progress-active-color: var(--asq-exercise-progress-focused-color, --paper-blue-200);
+      }
+
+      #idle-paper-progress {
+        --paper-progress-active-color: var(--asq-exercise-progress-idle-color, --google-grey-500);
+      }
+
+      #progress-num {
+        padding-left: 10px;
+        @apply(--asq-exercise-progress-num-mixin);
+      }
+
+      /* no need to print the buttons
       fixme: when polymer support media queries for custom properties we can just apply a property to the footer and have the user provide the media query on their rules */
       @media print{
         #footer {
@@ -164,8 +203,6 @@ Custom property                                    | Description                
         }
       }
 
-
-     
     </style>
 
     <template is="dom-if" if="{{hasRole(role, roles.VIEWER)}}" restamp>
@@ -183,8 +220,8 @@ Custom property                                    | Description                
             </template>
             <paper-button id="submit-button" class="submit-button" on-tap="submit" raised="true" disabled="{{_computeDisabled(disabled, submittable)}}">Submit</paper-button>
             <paper-tooltip for="submit-button">{{_submittableMessages}}</paper-tooltip>
-            <paper-button id="edit-button" hidden="" class="edit-button" on-tap="_onEdit" raised="true">Edit</paper-button> 
-          </div>   
+            <paper-button id="edit-button" hidden="" class="edit-button" on-tap="_onEdit" raised="true">Edit</paper-button>
+          </div>
         </footer>
       </article>
     </template>
@@ -200,21 +237,31 @@ Custom property                                    | Description                
         </div>
         <footer id="footer">
           <div class="layout horizontal center">
-            <!-- TODO: cannot declartively define `max`. The `max` shouldn't 
+            <!-- TODO: cannot declartively define `max`. The `max` shouldn't
             be zero when trying to change `value`. Otherwise, it wouldn't change.
             The `restorePresenter happens before viewerConnected`. But it requires
-            to change the max before changing the value. 
+            to change the max before changing the value.
             -->
-            <paper-progress value="[[submissionsNum]]"></paper-progress>
-            <div>
-              <span>[[submissionsNum]]</span>
-              <span>/<span>
-              <span>[[connectedViewersNum]]</span>
+
+            <!-- submission -->
+            <div class="progress-bar-container">
+              <paper-progress id="submitted-paper-progress" value="100" style$=[[_calcFlex(submissionsNum)]]></paper-progress>
+              <paper-progress id="working-paper-progress" value="100" style$=[[_calcFlex(workingUsersNum)]]></paper-progress>
+              <paper-progress id="focused-paper-progress" value="100" style$=[[_calcFlex(focusedUsersNum)]]></paper-progress>
+              <paper-progress id="idle-paper-progress" value="100" style$=[[_calcFlex(idleUsersNum)]]></paper-progress>
+
+              <div id="progress-num">
+                <span>[[submissionsNum]]</span>
+                <span>/<span>
+                <span>[[_connectedViewersNum]]</span>
+              </div>
+
             </div>
+
           </div>
         </footer>
       </article>
-    </template> 
+    </template>
 
     <template is="dom-if" if="{{hasRole(role, roles.TA)}}" restamp>
       <article class="asq-exercise">
@@ -230,7 +277,7 @@ Custom property                                    | Description                
           </div>
         </footer>
       </article>
-    </template> 
+    </template>
 
   </template>
   <script>
@@ -239,17 +286,17 @@ Custom property                                    | Description                
 
       behaviors: [ASQ.asqElementBehavior],
 
- 
+
       properties: {
 
         /**
          * Disable or enable the element. Changes will be also
          * propagated to inner propagated elements.
          */
-        disabled: { 
+        disabled: {
           type: Boolean,
           value: false,
-          notify: true, 
+          notify: true,
           observer: '_disabledChanged',
           reflectToAttribute: true
         },
@@ -267,10 +314,10 @@ Custom property                                    | Description                
         /**
          * The maximum submission attempts allowed.
          */
-        maxNumSubmissions: { 
+        maxNumSubmissions: {
           type:Number,
           value: 1,
-          notify: true, 
+          notify: true,
           observer: 'refresh',
           reflectToAttribute: true
         },
@@ -281,13 +328,13 @@ Custom property                                    | Description                
         assessment: {
           type: String,
           value: 'auto',
-          notify: true, 
+          notify: true,
           reflectToAttribute: true
         },
 
 
         /**
-         * Counter for submission times. 
+         * Counter for submission times.
          *
          * @attribute submissions
          * @type number
@@ -300,7 +347,7 @@ Custom property                                    | Description                
         },
 
          /**
-         * Counter for submission times. 
+         * Counter for submission times.
          *
          * @attribute submissions
          * @type number
@@ -324,18 +371,40 @@ Custom property                                    | Description                
           computed: '_computeSubmittableMessages(remainingAttempts)'
         },
 
-
-        connectedViewersNum: {
-          type: Number,
-          value: 0,
-          notify: true
+        _users: {
+          type: Object,
+          value: {},
         },
 
-        submissionsNum: {
+        _connectedViewersNum: {
+          type: Number,
+          notify: true,
+          value: 0,
+        },
+
+        _submissionsNum: {
+          type: Number,
+          notify: true,
+          value: 0,
+        },
+
+        _workingUsersNum:{
           type: Number,
           value: 0,
-          notify: true
+          computed: '_computeWorkingUsersNum(_users)'
         },
+
+       _focusedUsersNum:{
+          type: Number,
+          value: 0,
+          computed: '_computeFocusedUsersNum(_users)'
+       },
+
+       _idleUsersNum:{
+          type: Number,
+          value: 0,
+          computed: '_computeIdleUsersNum(_users)'
+       },
 
       },
 
@@ -344,36 +413,117 @@ Custom property                                    | Description                
       },
 
       _computeSubmittable: function (remainingAttempts) {
-        if ( remainingAttempts > 0 ) return true;
-        return false
+        return (remainingAttempts > 0);
       },
 
       _computeRemainingAttempts: function(maxNumSubmissions, submissions) {
-        if ( maxNumSubmissions < 0 ) 
-          return Number.MAX_VALUE;
+        if (maxNumSubmissions < 0) return Number.MAX_VALUE;
 
         var remainingAttempts = maxNumSubmissions - submissions;
 
-        if ( remainingAttempts <= 0)
-          return 0;
+        if (remainingAttempts <= 0) return 0;
 
         return remainingAttempts;
       },
 
       _computeSubmittableMessages: function(remainingAttempts) {
-        if ( remainingAttempts === Number.MAX_VALUE ) 
+        if (remainingAttempts === Number.MAX_VALUE)
           return 'Unlimited attempts';
 
-        if ( remainingAttempts <= 0)
+        if (remainingAttempts <= 0)
           return 'No further attempt allowed';
 
-        if ( remainingAttempts === 1 ) 
+        if (remainingAttempts === 1)
           return 'Last chance'
 
         return remainingAttempts + ' attempts left';
       },
 
-      created: function () {
+      // function to add fake users, will be removed later
+      _addUsers: function() {
+        user1 = {_id: '111', name: 'user1', working: true, focused: false, idle: false};
+        user2 = {_id: '222', name: 'user2', working: false, focused: true, idle: false};
+        user3 = {_id: '333', name: 'user3', working: false, focused: false, idle: true};
+        user4 = {_id: '444', name: 'user4', working: true, focused: false, idle: false};
+        user5 = {_id: '555', name: 'user5', working: false, focused: true, idle: false};
+        this._users[111] = user1;
+        this._users[222] = user2;
+        this._users[333] = user3;
+        this._users[444] = user4;
+        this._users[555] = user5;
+      },
+
+      _computeWorkingUsersNum: function() {
+        let users = this._users;
+        return Object.keys(users).reduce(function(acc, userId) {
+          if(users[userId].working) return ++acc;
+          return acc;
+        }, 0);
+      },
+
+      _computeFocusedUsersNum: function() {
+        let users = this._users;
+        return Object.keys(users).reduce(function(acc, userId) {
+          if(users[userId].focused && !users[userId].idle) return ++acc;
+          return acc;
+        }, 0);
+      },
+
+      _computeIdleUsersNum: function() {
+        let users = this._users;
+        return Object.keys(users).reduce(function(acc, userId) {
+          if(users[userId].idle || users[userId].disconnected) return ++acc
+          return acc;
+        }, 0);
+      },
+
+      _calcFlex: function(num) {
+        return "flex:" + num + ";";
+      },
+
+      _makeSureUserExists: function(userToFind) {
+        _users[userToFind._id] = _users[userToFind._id] || userToFind
+      },
+
+      _userWorked: function(user) {
+        makeSureUserExists(user);
+        resetUser(user);
+        user.working = true;
+      },
+
+      _userFocused: function(user) {
+        makeSureUserExists(user);
+        resetUser(user);
+        user.focused = true;
+      },
+
+      _userMadeTabVisible: function(user) {
+        makeSureUserExists(user);
+        user.idle = false;
+      },
+
+      _userIdled: function(user) {
+        makeSureUserExists(user);
+        resetUser(user);
+        user.idle = true;
+      },
+
+      _userMadeTabHidden: function(user) {
+        makeSureUserExists(user);
+        user.idle = false;
+      },
+
+      _userBlurred: function(user) {
+        makeSureUserExists(user);
+      },
+
+      _resetUser: function(user) {
+        user.working = false;
+        user.focused = false;
+        user.idle = false;
+      },
+
+      created: function() {
         document.addEventListener('asq-ready', function (evt) {
           try {
             this._subscribeToEvents(evt.detail.asqEventBus);
@@ -382,8 +532,13 @@ Custom property                                    | Description                
           }
         }.bind(this));
       },
+
+      ready: function() {
+        this._addUsers();
+      },
+
       /**
-       * Exercise is interested in two events: `asq:question_type`, which is emitted 
+       * Exercise is interested in two events: `asq:question_type`, which is emitted
        * when answer is submitted successfully, and `asq:question_type_edit`, which is emitted
        * when editing answer.
        *
@@ -405,7 +560,7 @@ Custom property                                    | Description                
           }, this);
         }
       },
-      
+
       _onQuestionType: function (evt) {
         if (evt && evt.questionType && evt.questionType == 'asq-exercise') {
           if (evt.type == 'progress') {
@@ -421,14 +576,14 @@ Custom property                                    | Description                
           }
         }
       },
-      
+
       _onRestorePresenter: function (evt) {
         evt.exercises.forEach(function (ex) {
           this._onProgress(ex);
         }.bind(this));
       },
 
-      
+
       _onRestoreViewer: function (evt) {
         evt.exercises.forEach(function (ex) {
           if (ex.uid !== this.uid)
@@ -452,11 +607,11 @@ Custom property                                    | Description                
       _updateProgress: function (submissions) {
         //necessary: the max and value should always be changed together
         // to avoid the 'bug' (or 'special feature') of paper-progress.
-        
-        if ( submissions.length > this.connectedViewersNum ) {
-          this.connectedViewersNum = submissions.length
+
+        if ( submissions.length > this._connectedViewersNum ) {
+          this._connectedViewersNum = submissions.length
         }
-        this.$$('paper-progress').max = this.connectedViewersNum;
+        this.$$('paper-progress').max = this._connectedViewersNum;
         this.submissionsNum = submissions.length;
       },
 
@@ -464,8 +619,8 @@ Custom property                                    | Description                
         if (this.role !== this.roles.PRESENTER)
           return;
 
-        this.connectedViewersNum = evt.connectedViewers.length;
-        this.$$('paper-progress').max = this.connectedViewersNum;
+        this._connectedViewersNum = evt._connectedViewers.length;
+        this.$$('paper-progress').max = this._connectedViewersNum;
         this.$$('paper-progress').value = this.submissionsNum;
       },
 
@@ -486,8 +641,8 @@ Custom property                                    | Description                
        *     }
        */
       /**
-       * The `submit` method will submit the answer to a wrapped 'asq-exercise' instance. 
-       * 
+       * The `submit` method will submit the answer to a wrapped 'asq-exercise' instance.
+       *
        * Only useful when the `role` is <b>viewer</b>.
        *
        * @method submit
@@ -524,7 +679,7 @@ Custom property                                    | Description                
       },
 
       refresh: function(_initialized) {
-        if ( !_initialized ) 
+        if ( !_initialized )
           return;
       },
 
@@ -570,10 +725,10 @@ Custom property                                    | Description                
        *
        * @event asq-disabled
        *
-       *      detail: { 
+       *      detail: {
        *        disabled: this.disabled
        *      }
-       *    
+       *
        **/
       _disabledChanged: function () {
         if (this.role === 'presenter') return;
@@ -597,7 +752,7 @@ Custom property                                    | Description                
       // hasRole: function (role, candidate) {
       //   return role == candidate;
       // }
-      
+
     });
   </script>
 </dom-module>
