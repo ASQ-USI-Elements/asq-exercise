@@ -1,7 +1,6 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../asq-base/asq-base.html">
-
-<link rel="import" href="asq-confidence-styles.html">
+<link rel="import" href="asq-confidence-style.html">
 
 <!--
 `asq-confidence` is used inside the `asq-exercise`, representing the confidence level of the students.
@@ -17,13 +16,13 @@
           display: block;
         }
     </style>
-    <style include="asq-confidence-styles"></style>
-    
+    <style include="asq-confidence-style"></style>
+
     <form id="rating" class="rating">
       <span><i>Confidence: </i></span>
         <input type="radio" id="star5" name="rating" value="5" disabled="{{disabled}}"><label for="star5" title="Pretty Sure">5 stars</label>
         <input type="radio" id="star4" name="rating" value="4" disabled="{{disabled}}"><label for="star4" title="Sure">4 stars</label>
-        <input type="radio" id="star3" name="rating" value="3" disabled="{{disabled}}"><label for="star3" title="Good">3 stars</label> 
+        <input type="radio" id="star3" name="rating" value="3" disabled="{{disabled}}"><label for="star3" title="Good">3 stars</label>
         <input type="radio" id="star2" name="rating" value="2" disabled="{{disabled}}"><label for="star2" title="Guess">2 stars</label>
         <input type="radio" id="star1" name="rating" value="1" disabled="{{disabled}}"><label for="star1" title="Random guess">1 star</label>
     </form>
@@ -32,11 +31,11 @@
     Polymer({
 
       is: 'asq-confidence',
-      
+
       behaviors: [ASQ.asqElementBehavior],
 
-      properties: { 
-        disabled: { 
+      properties: {
+        disabled: {
           type: Boolean,
           value: false,
           reflectToAttribute: true
@@ -50,7 +49,7 @@
 
       /**
        * Return the confidence level.
-       * 
+       *
        * @method getConfidence
        * @return {string} String literal from '1' to '5'.
        */
@@ -67,10 +66,10 @@
 
       /**
        * Set the confidence level.
-       * 
+       *
        * @method setConfidence
        * @param {number} The confidence level would be set
-       * 
+       *
        */
       set confidence(level) {
         var stars = this.ratingItems;

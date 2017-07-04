@@ -6,10 +6,14 @@
 <link rel="import" href="../paper-progress/paper-progress.html">
 <link rel="import" href="../paper-styles/color.html">
 <link rel="import" href="asq-confidence.html">
+<link rel="import" href="asq-progress.html">
 <link rel="import" href="../asq-base/asq-base.html">
 
 <!--
-`asq-exercise` groups ASQ `question types`. Every question should be be a child of an `asq-exercise` element. An `asq-exercise` element should conatin one ore more  `ASQ questions`. `asq-exercise` takes care of submitting and displaying progress for a group of questions.
+`asq-exercise` groups ASQ `question types`. Every question should be be a child
+of an `asq-exercise` element. An `asq-exercise` element should conatin one ore
+more  `ASQ questions`. `asq-exercise` takes care of submitting and displaying
+progress for a group of questions.
 
 Example:
 
@@ -37,7 +41,8 @@ Example:
       </asq-multi-choice-q>
     </asq-exercise>
 
-Different users will see different UI according to their **role**. There are several types of roles, `viewer`, `presenter` and `TA`.
+Different users will see different UI according to their **role**. There are
+several types of roles, `viewer`, `presenter` and `TA`.
 
 ###Styling `submit` and `edit` buttons (in viewer's view):
 
@@ -80,7 +85,6 @@ To change the submitted progress bar color:
     asq-exercise {
        --asq-exercise-progress-submitted-color: #e91e63;
     }
-
 
 To change the working progress bar color:
 
@@ -140,15 +144,6 @@ Custom property                                    | Description                
         @apply(--asq-exercise-footer);
       }
 
-      .progress-bar-container{
-        @apply(--layout-horizontal);
-        @apply(--layout-center);
-      }
-
-      paper-progress {
-        @apply(--layout-flex);
-      }
-
       .submit-button {
         color: var(--asq-exercise-submit-button-color, white);
         background-color: var(--asq-exercise-submit-button-background-color, #388E3C);
@@ -162,54 +157,6 @@ Custom property                                    | Description                
       .edit-button {
         color: var(--asq-exercise-edit-button-color, white);
         background-color: var(--asq-exercise-edit-button-background-color, #FF7043);
-      }
-
-      paper-progress {
-        --paper-progress-container-color: var(--asq-exercise-progress-container-color, --google-grey-300);
-
-        --paper-progress-height: var(--asq-exercise-progress-height, 4px);
-
-        --paper-progress-transition-duration: var(--asq-exercise-progress-transition-duration, 0.08s);
-
-        --paper-progress-transition-delay: var(--asq-exercise-progress-transition-delay, 0s);
-      }
-
-      .submitted-paper-progress {
-        --paper-progress-active-color: var(--asq-exercise-progress-submitted-color, --google-green-500);
-      }
-
-      .submitted-paper-progress:first-child {
-        --paper-progress-active-color: var(--asq-exercise-progress-submitted-color, #117947);
-        --paper-progress-indeterminate-cycle-duration: 1s;
-      }
-
-      .working-paper-progress {
-        --paper-progress-active-color: var(--asq-exercise-progress-working-color, --paper-orange-500);
-      }
-
-      .test2 {
-        --paper-progress-active-color: var(--asq-exercise-progress-working-color, #ab6d12);
-        --paper-progress-indeterminate-cycle-duration: 0s;
-      }
-
-      .focused-paper-progress {
-        --paper-progress-active-color: var(--asq-exercise-progress-focused-color, --paper-blue-200);
-      }
-
-      .test {
-        --paper-progress-active-color: var(--asq-exercise-progress-submitted-color, #88b0d0);
-        --paper-progress-indeterminate-cycle-duration: 20s;
-      }
-
-      .idle-paper-progress {
-        --paper-progress-active-color: var(--asq-exercise-progress-idle-color, --google-grey-500);
-      }
-
-      .back {
-        --paper-progress-height: var(--asq-exercise-progress-height, 6px);
-        --paper-progress-container-color: rgba(0, 0, 0, 0);
-        position: relative;
-        left: calc(50% - 21px);
       }
 
       #progress-num {
@@ -267,23 +214,13 @@ Custom property                                    | Description                
 
             <!-- submission -->
             <div class="progress-bar-container">
-              <paper-progress class="submitted-paper-progress back" indeterminate  style$=[[_calcFlex(submissionsNum)]]></paper-progress>
-              <paper-progress class="working-paper-progress back test2" indeterminate  style$=[[_calcFlex(workingUsersNum)]]></paper-progress>
-              <paper-progress class="focused-paper-progress back test" indeterminate  style$=[[_calcFlex(focusedUsersNum)]]></paper-progress>
-              <paper-progress class="idle-paper-progress back" indeterminate  style$=[[_calcFlex(idleUsersNum)]]></paper-progress>
-
-              <paper-progress class="submitted-paper-progress" value="100" style$=[[_calcFlex(submissionsNum)]]></paper-progress>
-              <paper-progress class="working-paper-progress" value="100" style$=[[_calcFlex(workingUsersNum)]]></paper-progress>
-              <paper-progress class="focused-paper-progress" value="100" style$=[[_calcFlex(focusedUsersNum)]]></paper-progress>
-              <paper-progress class="idle-paper-progress" value="100" style$=[[_calcFlex(idleUsersNum)]]></paper-progress>
+              <asq-progress></asq-progress>
 
               <div id="progress-num">
                 <span>[[submissionsNum]]</span>
                 <span>/<span>
                 <span>[[_connectedViewersNum]]</span>
               </div>
-
-            </div>
 
           </div>
         </footer>
@@ -398,11 +335,6 @@ Custom property                                    | Description                
           computed: '_computeSubmittableMessages(remainingAttempts)'
         },
 
-        _users: {
-          type: Object,
-          value: {},
-        },
-
         _connectedViewersNum: {
           type: Number,
           notify: true,
@@ -414,24 +346,6 @@ Custom property                                    | Description                
           notify: true,
           value: 0,
         },
-
-        _workingUsersNum:{
-          type: Number,
-          value: 0,
-          computed: '_computeWorkingUsersNum(_users)'
-        },
-
-       _focusedUsersNum:{
-          type: Number,
-          value: 0,
-          computed: '_computeFocusedUsersNum(_users)'
-       },
-
-       _idleUsersNum:{
-          type: Number,
-          value: 0,
-          computed: '_computeIdleUsersNum(_users)'
-       },
 
       },
 
@@ -466,90 +380,6 @@ Custom property                                    | Description                
         return remainingAttempts + ' attempts left';
       },
 
-      // function to add fake users, will be removed later
-      _addUsers: function() {
-        user1 = {_id: '111', name: 'user1', working: true, focused: false, idle: false};
-        user2 = {_id: '222', name: 'user2', working: false, focused: true, idle: false};
-        user3 = {_id: '333', name: 'user3', working: false, focused: false, idle: true};
-        user4 = {_id: '444', name: 'user4', working: true, focused: false, idle: false};
-        user5 = {_id: '555', name: 'user5', working: false, focused: true, idle: false};
-        this._users[111] = user1;
-        this._users[222] = user2;
-        this._users[333] = user3;
-        this._users[444] = user4;
-        this._users[555] = user5;
-      },
-
-      _computeWorkingUsersNum: function() {
-        let users = this._users;
-        return Object.keys(users).reduce(function(acc, userId) {
-          if(users[userId].working) return ++acc;
-          return acc;
-        }, 0);
-      },
-
-      _computeFocusedUsersNum: function() {
-        let users = this._users;
-        return Object.keys(users).reduce(function(acc, userId) {
-          if(users[userId].focused && !users[userId].idle) return ++acc;
-          return acc;
-        }, 0);
-      },
-
-      _computeIdleUsersNum: function() {
-        let users = this._users;
-        return Object.keys(users).reduce(function(acc, userId) {
-          if(users[userId].idle || users[userId].disconnected) return ++acc
-          return acc;
-        }, 0);
-      },
-
-      _calcFlex: function(num) {
-        return "flex:" + num + ";";
-      },
-
-      _makeSureUserExists: function(userToFind) {
-        _users[userToFind._id] = _users[userToFind._id] || userToFind
-      },
-
-      _userWorked: function(user) {
-        makeSureUserExists(user);
-        resetUser(user);
-        user.working = true;
-      },
-
-      _userFocused: function(user) {
-        makeSureUserExists(user);
-        resetUser(user);
-        user.focused = true;
-      },
-
-      _userMadeTabVisible: function(user) {
-        makeSureUserExists(user);
-        user.idle = false;
-      },
-
-      _userIdled: function(user) {
-        makeSureUserExists(user);
-        resetUser(user);
-        user.idle = true;
-      },
-
-      _userMadeTabHidden: function(user) {
-        makeSureUserExists(user);
-        user.idle = false;
-      },
-
-      _userBlurred: function(user) {
-        makeSureUserExists(user);
-      },
-
-      _resetUser: function(user) {
-        user.working = false;
-        user.focused = false;
-        user.idle = false;
-      },
-
       created: function() {
         document.addEventListener('asq-ready', function (evt) {
           try {
@@ -558,10 +388,6 @@ Custom property                                    | Description                
             console.debug('failed to _subscribeToEvents');
           }
         }.bind(this));
-      },
-
-      ready: function() {
-        this._addUsers();
       },
 
       /**
@@ -609,7 +435,6 @@ Custom property                                    | Description                
           this._onProgress(ex);
         }.bind(this));
       },
-
 
       _onRestoreViewer: function (evt) {
         evt.exercises.forEach(function (ex) {
@@ -771,7 +596,7 @@ Custom property                                    | Description                
       },
 
       attached: function () {
-        Polymer.dom.flush()
+        Polymer.dom.flush();
 
         this._initialized = true;
       },

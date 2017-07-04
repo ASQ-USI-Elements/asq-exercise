@@ -1,0 +1,62 @@
+<dom-module id="asq-progress-style">
+  <template>
+    <style>
+
+      .progress-bar-container {
+        @apply(--layout-horizontal);
+        @apply(--layout-center);
+      }
+
+      .background-progress {
+        position: absolute;
+
+        --paper-progress-height: var(--asq-exercise-background-progress-height, 6px);
+        --paper-progress-container-color: rgba(0, 0, 0, 0);
+      }
+
+      paper-progress {
+        @apply(--layout-flex);
+
+        --paper-progress-container-color: var(--asq-exercise-progress-container-color, --google-grey-300);
+        --paper-progress-height: var(--asq-exercise-progress-height, 4px);
+      }
+
+      #submitted-progress {
+        --paper-progress-active-color: var(--asq-exercise-progress-submitted-color, --google-green-500);
+      }
+
+      #background-submitted-progress {
+        --paper-progress-active-color: var(--asq-exercise-background-progress-submitted-color, #117947);
+        --paper-progress-indeterminate-cycle-duration: 1s;
+      }
+
+      #working-progress {
+        --paper-progress-active-color: var(--asq-exercise-progress-working-color, --paper-orange-500);
+      }
+
+      #background-working-progress {
+        --paper-progress-active-color: var(--asq-exercise-background-progress-working-color, #ab6d12);
+        --paper-progress-indeterminate-cycle-duration: 0s;
+      }
+
+      #focused-progress {
+        --paper-progress-active-color: var(--asq-exercise-progress-focused-color, --paper-blue-200);
+      }
+
+      #background-focused-progress {
+        --paper-progress-active-color: var(--asq-exercise-background-progress-submitted-color, #88b0d0);
+        --paper-progress-indeterminate-cycle-duration: 20s;
+      }
+
+      #idle-progress {
+        --paper-progress-active-color: var(--asq-exercise-progress-idle-color, --google-grey-500);
+      }
+
+      #background-idle-progress {
+        --paper-progress-active-color: var(--asq-exercise-background-progress-idle-color, black);
+        --paper-progress-indeterminate-cycle-duration: 4s;
+      }
+
+    </style>
+  </template>
+</dom-module>

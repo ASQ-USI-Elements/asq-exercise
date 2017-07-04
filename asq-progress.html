@@ -1,13 +1,162 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../asq-base/asq-base.html">
+<link rel="import" href="asq-progress-style.html">
 
-<dom-module id="asq-exercise">
+<dom-module id="asq-progress">
   <template>
     <style include="iron-flex">
       :host {
-        display: flex;
+        display: block;
       }
     </style>
-    <style include="asq-progress-styles"></style>
+
+    <style include="asq-progress-style"></style>
+
+    <div class="progress-bar-container background-progress">
+      <paper-progress id="background-submitted-progress" indeterminate style$=[[_calcFlex(submissionsNum)]]></paper-progress>
+      <paper-progress id="background-working-progress" indeterminate style$=[[_calcFlex(workingUsersNum)]]></paper-progress>
+      <paper-progress id="background-focused-progress" indeterminate style$=[[_calcFlex(focusedUsersNum)]]></paper-progress>
+      <paper-progress id="background-idle-progress" indeterminate style$=[[_calcFlex(idleUsersNum)]]></paper-progress>
+    </div>
+
+    <div class="progress-bar-container">
+      <paper-progress id="submitted-progress" value="100" style$=[[_calcFlex(submissionsNum)]]></paper-progress>
+      <paper-progress id="working-progress" value="100" style$=[[_calcFlex(workingUsersNum)]]></paper-progress>
+      <paper-progress id="focused-progress" value="100" style$=[[_calcFlex(focusedUsersNum)]]></paper-progress>
+      <paper-progress id="idle-progress" value="100" style$=[[_calcFlex(idleUsersNum)]]></paper-progress>
+    </div>
+
   </template>
+
+  <script>
+
+  Polymer({
+
+    is: 'asq-progress',
+
+    behaviors: [ASQ.asqElementBehavior],
+
+    properties: {
+
+      _users: {
+        type: Object,
+        value: undefined,
+      },
+
+      _workingUsersNum:{
+        type: Number,
+        value: 0,
+        computed: '_computeWorkingUsersNum(_users)',
+      },
+
+     _focusedUsersNum:{
+        type: Number,
+        value: 0,
+        computed: '_computeFocusedUsersNum(_users)',
+     },
+
+     _idleUsersNum:{
+        type: Number,
+        value: 0,
+        computed: '_computeIdleUsersNum(_users)',
+     },
+
+    },
+
+    // function to add fake users, will be removed later
+    _addUsers: function() {
+      _users = {};
+      user1 = {_id: '111', name: 'user1', working: true, focused: false, idle: false};
+      user2 = {_id: '222', name: 'user2', working: false, focused: true, idle: false};
+      user3 = {_id: '333', name: 'user3', working: false, focused: false, idle: true};
+      user4 = {_id: '444', name: 'user4', working: true, focused: false, idle: false};
+      user5 = {_id: '555', name: 'user5', working: false, focused: true, idle: false};
+      _users[111] = user1;
+      _users[222] = user2;
+      _users[333] = user3;
+      _users[444] = user4;
+      _users[555] = user5;
+
+      this._users = _users;
+    },
+
+    _computeWorkingUsersNum: function() {
+      let users = this._users;
+      let num = Object.keys(users).reduce(function(acc, userId) {
+        if(users[userId].working) return ++acc;
+        return acc;
+      }, 0);
+      return num;
+    },
+
+    _computeFocusedUsersNum: function() {
+      let users = this._users;
+      return Object.keys(users).reduce(function(acc, userId) {
+        if(users[userId].focused && !users[userId].idle) return ++acc;
+        return acc;
+      }, 0);
+    },
+
+    _computeIdleUsersNum: function() {
+      let users = this._users;
+      return Object.keys(users).reduce(function(acc, userId) {
+        if(users[userId].idle || users[userId].disconnected) return ++acc
+        return acc;
+      }, 0);
+    },
+
+    _calcFlex: function(num) {
+      return "flex:" + num + ";";
+    },
+
+    _makeSureUserExists: function(userToFind) {
+      _users[userToFind._id] = _users[userToFind._id] || userToFind
+    },
+
+    _userWorked: function(user) {
+      makeSureUserExists(user);
+      resetUser(user);
+      user.working = true;
+    },
+
+    _userFocused: function(user) {
+      makeSureUserExists(user);
+      resetUser(user);
+      user.focused = true;
+    },
+
+    _userMadeTabVisible: function(user) {
+      makeSureUserExists(user);
+      user.idle = false;
+    },
+
+    _userIdled: function(user) {
+      makeSureUserExists(user);
+      resetUser(user);
+      user.idle = true;
+    },
+
+    _userMadeTabHidden: function(user) {
+      makeSureUserExists(user);
+      user.idle = false;
+    },
+
+    _userBlurred: function(user) {
+      makeSureUserExists(user);
+    },
+
+    _resetUser: function(user) {
+      user.working = false;
+      user.focused = false;
+      user.idle = false;
+    },
+
+    ready: function() {
+      this._addUsers();
+    },
+
+  });
+
+  </script>
+
 </dom-module>
