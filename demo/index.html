@@ -62,12 +62,12 @@
       --asq-exercise-submit-button-background-color: #9C27B0;
     }
 
-    asq-exercise#ex2 {
+    /*asq-exercise#ex2 {
       --asq-exercise-progress-submitted-color: pink;
       --asq-exercise-progress-working-color: cyan;
       --asq-exercise-progress-focused-color: green;
       --asq-exercise-progress-idle-color: red;
-    }
+    }*/
 
   </style>
 
@@ -233,15 +233,12 @@
       if (state == 'interactive') {
 
       } else if (state == 'complete') {
-
         var options = asqm.api.items;
         options[0].progressValue = 30;
         options[1].progressValue = 78;
         options[2].progressValue = 10;
         options[3].progressValue = 40;
         options[4].progressValue = 50;
-
-
 
         ex2._connectedViewersNum = 8;
         ex2.submissionsNum = 3;
@@ -253,7 +250,6 @@
 
   <script>
     window.onmessage = function(e){
-
       if (typeof e.data.role == "string" && e.data.role.length > 0) {
         var allAsqElements = document.querySelectorAll('html /deep/ *');
         allAsqElements = Array.prototype.slice.call(allAsqElements).filter(function(el) {

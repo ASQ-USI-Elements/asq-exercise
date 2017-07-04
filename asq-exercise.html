@@ -56,7 +56,7 @@ To change the color and background color of `edit` button:
       --asq-exercise-edit-button-background-color: #FF7043;
     }
 
-To change the color and background color of `submit` button when disabled (a.k.a submitsions are not allowed):
+To change the color and background color of `submit` button when disabled (a.k.a submissions are not allowed):
 
     asq-exercise {
       --asq-exercise-submit-button-disabled-color: #E0E0E0;
@@ -174,20 +174,42 @@ Custom property                                    | Description                
         --paper-progress-transition-delay: var(--asq-exercise-progress-transition-delay, 0s);
       }
 
-      #submitted-paper-progress {
+      .submitted-paper-progress {
         --paper-progress-active-color: var(--asq-exercise-progress-submitted-color, --google-green-500);
       }
 
-      #working-paper-progress {
+      .submitted-paper-progress:first-child {
+        --paper-progress-active-color: var(--asq-exercise-progress-submitted-color, #117947);
+        --paper-progress-indeterminate-cycle-duration: 1s;
+      }
+
+      .working-paper-progress {
         --paper-progress-active-color: var(--asq-exercise-progress-working-color, --paper-orange-500);
       }
 
-      #focused-paper-progress {
+      .test2 {
+        --paper-progress-active-color: var(--asq-exercise-progress-working-color, #ab6d12);
+        --paper-progress-indeterminate-cycle-duration: 0s;
+      }
+
+      .focused-paper-progress {
         --paper-progress-active-color: var(--asq-exercise-progress-focused-color, --paper-blue-200);
       }
 
-      #idle-paper-progress {
+      .test {
+        --paper-progress-active-color: var(--asq-exercise-progress-submitted-color, #88b0d0);
+        --paper-progress-indeterminate-cycle-duration: 20s;
+      }
+
+      .idle-paper-progress {
         --paper-progress-active-color: var(--asq-exercise-progress-idle-color, --google-grey-500);
+      }
+
+      .back {
+        --paper-progress-height: var(--asq-exercise-progress-height, 6px);
+        --paper-progress-container-color: rgba(0, 0, 0, 0);
+        position: relative;
+        left: calc(50% - 21px);
       }
 
       #progress-num {
@@ -245,10 +267,15 @@ Custom property                                    | Description                
 
             <!-- submission -->
             <div class="progress-bar-container">
-              <paper-progress id="submitted-paper-progress" value="100" style$=[[_calcFlex(submissionsNum)]]></paper-progress>
-              <paper-progress id="working-paper-progress" value="100" style$=[[_calcFlex(workingUsersNum)]]></paper-progress>
-              <paper-progress id="focused-paper-progress" value="100" style$=[[_calcFlex(focusedUsersNum)]]></paper-progress>
-              <paper-progress id="idle-paper-progress" value="100" style$=[[_calcFlex(idleUsersNum)]]></paper-progress>
+              <paper-progress class="submitted-paper-progress back" indeterminate  style$=[[_calcFlex(submissionsNum)]]></paper-progress>
+              <paper-progress class="working-paper-progress back test2" indeterminate  style$=[[_calcFlex(workingUsersNum)]]></paper-progress>
+              <paper-progress class="focused-paper-progress back test" indeterminate  style$=[[_calcFlex(focusedUsersNum)]]></paper-progress>
+              <paper-progress class="idle-paper-progress back" indeterminate  style$=[[_calcFlex(idleUsersNum)]]></paper-progress>
+
+              <paper-progress class="submitted-paper-progress" value="100" style$=[[_calcFlex(submissionsNum)]]></paper-progress>
+              <paper-progress class="working-paper-progress" value="100" style$=[[_calcFlex(workingUsersNum)]]></paper-progress>
+              <paper-progress class="focused-paper-progress" value="100" style$=[[_calcFlex(focusedUsersNum)]]></paper-progress>
+              <paper-progress class="idle-paper-progress" value="100" style$=[[_calcFlex(idleUsersNum)]]></paper-progress>
 
               <div id="progress-num">
                 <span>[[submissionsNum]]</span>
