@@ -1,8 +1,8 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../asq-base/asq-base.html">
-<link rel="import" href="asq-progress-style.html">
+<link rel="import" href="asq-exercise-progress-style.html">
 
-<dom-module id="asq-progress">
+<dom-module id="asq-exercise-progress">
   <template>
     <style include="iron-flex">
       :host {
@@ -14,7 +14,7 @@
       }
     </style>
 
-    <style include="asq-progress-style"></style>
+    <style include="asq-exercise-progress-style"></style>
 
     <div class="progress-bar-container background-progress">
       <paper-progress id="background-submitted-progress" indeterminate style$=[[_calcFlex(submissionsNum)]]></paper-progress>
@@ -42,7 +42,7 @@
 
   Polymer({
 
-    is: 'asq-progress',
+    is: 'asq-exercise-progress',
 
     behaviors: [ASQ.asqElementBehavior],
 
