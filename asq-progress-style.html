@@ -9,9 +9,6 @@
 
       .background-progress {
         position: absolute;
-
-        --paper-progress-height: var(--asq-exercise-background-progress-height, 6px);
-        --paper-progress-container-color: rgba(0, 0, 0, 0);
       }
 
       paper-progress {
@@ -19,6 +16,11 @@
 
         --paper-progress-container-color: var(--asq-exercise-progress-container-color, --google-grey-300);
         --paper-progress-height: var(--asq-exercise-progress-height, 4px);
+      }
+
+      .background-progress paper-progress {
+        --paper-progress-height: var(--asq-exercise-background-progress-height, 6px);
+        --paper-progress-container-color: rgba(0, 0, 0, 0);
       }
 
       #submitted-progress {

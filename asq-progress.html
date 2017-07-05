@@ -7,6 +7,9 @@
     <style include="iron-flex">
       :host {
         display: block;
+        position: relative;
+        @apply(--layout-horizontal);
+        @apply(--layout-center);
       }
     </style>
 
@@ -14,16 +17,16 @@
 
     <div class="progress-bar-container background-progress">
       <paper-progress id="background-submitted-progress" indeterminate style$=[[_calcFlex(submissionsNum)]]></paper-progress>
-      <paper-progress id="background-working-progress" indeterminate style$=[[_calcFlex(workingUsersNum)]]></paper-progress>
-      <paper-progress id="background-focused-progress" indeterminate style$=[[_calcFlex(focusedUsersNum)]]></paper-progress>
-      <paper-progress id="background-idle-progress" indeterminate style$=[[_calcFlex(idleUsersNum)]]></paper-progress>
+      <paper-progress id="background-working-progress" indeterminate style$=[[_calcFlex(_workingUsersNum)]]></paper-progress>
+      <paper-progress id="background-focused-progress" indeterminate style$=[[_calcFlex(_focusedUsersNum)]]></paper-progress>
+      <paper-progress id="background-idle-progress" indeterminate style$=[[_calcFlex(_idleUsersNum)]]></paper-progress>
     </div>
 
     <div class="progress-bar-container">
       <paper-progress id="submitted-progress" value="100" style$=[[_calcFlex(submissionsNum)]]></paper-progress>
-      <paper-progress id="working-progress" value="100" style$=[[_calcFlex(workingUsersNum)]]></paper-progress>
-      <paper-progress id="focused-progress" value="100" style$=[[_calcFlex(focusedUsersNum)]]></paper-progress>
-      <paper-progress id="idle-progress" value="100" style$=[[_calcFlex(idleUsersNum)]]></paper-progress>
+      <paper-progress id="working-progress" value="100" style$=[[_calcFlex(_workingUsersNum)]]></paper-progress>
+      <paper-progress id="focused-progress" value="100" style$=[[_calcFlex(_focusedUsersNum)]]></paper-progress>
+      <paper-progress id="idle-progress" value="100" style$=[[_calcFlex(_idleUsersNum)]]></paper-progress>
     </div>
 
   </template>
@@ -41,6 +44,10 @@
       _users: {
         type: Object,
         value: undefined,
+      },
+
+      submissionsNum: {
+        observer: '_changedSubmissionsNum'
       },
 
       _workingUsersNum:{
@@ -151,10 +158,13 @@
       user.idle = false;
     },
 
-    ready: function() {
-      this._addUsers();
+    _changedSubmissionsNum: function() {
+      // console.log(this.submissionsNum)
     },
 
+    ready: function() {
+      this._addUsers();
+    }
   });
 
   </script>
