@@ -22,9 +22,8 @@
   </test-fixture>
 
   <script>
-    var m = document.querySelector('#m');
     suite('<asq-exersise-progress>', function() {
-      test('test that flex values are calculated correctely', function(done) {
+      test('test that flex values are calculated correctely', function() {
         var aep = fixture('aep-fixture');
 
         aep.submissionsNum = 8;
@@ -44,8 +43,6 @@
 
         assert.equal(aep._idleUsersNum, aep.children[0].children[3].style.flex.split(' ')[0]);
         assert.equal(aep._idleUsersNum, aep.children[1].children[3].style.flex.split(' ')[0]);
-
-        done();
       });
 
       test('test default mixin values', function() {

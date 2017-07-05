@@ -16,28 +16,67 @@
 <body>
 
   <!-- You use the document as a place to set up your fixtures. -->
-  <asq-exercise id="single-question">
-    <asq-text-input-q>
-      <asq-stem><h3>What's the result of '2 * 4'</h3></asq-stem>
-    </asq-text-input-q>
-  </asq-exercise>
+  <test-fixture id="ae-viewer-fixture">
+    <template>
+
+      <asq-exercise role="viewer">
+        <asq-text-input-q>
+          <asq-stem><h3>What's the result of '2 * 4'</h3></asq-stem>
+        </asq-text-input-q>
+      </asq-exercise>
+
+    </template>
+    </test-fixture>
+
+    <test-fixture id="ae-presenter-fixture">
+      <template>
+
+      <asq-exercise role="presenter">
+        <asq-text-input-q>
+          <asq-stem><h3>What's the result of '2 * 4'</h3></asq-stem>
+        </asq-text-input-q>
+      </asq-exercise>
+
+    </template>
+    </test-fixture>
+
 
   <script>
-    var sq = document.querySelector('#single-question');
+
     suite('<asq-exercise>', function() {
       test('test _getQuestions()', function() {
-        assert.isTrue(Array.isArray(sq._getQuestions()));
-        assert.equal(sq._getQuestions().length, 1);
-        assert.equal(sq._getQuestions()[0].nodeName, "ASQ-TEXT-INPUT-Q");
+        var aep = fixture('ae-presenter-fixture');
+
+        assert.isTrue(Array.isArray(aep._getQuestions()));
+        assert.equal(aep._getQuestions().length, 1);
+        assert.equal(aep._getQuestions()[0].nodeName, "ASQ-TEXT-INPUT-Q");
+      });
+
+      test("Show the progress bar when the role is presenter", function() {
+        var aep = fixture('ae-presenter-fixture');
+
+        let progressBar = aep.querySelector('asq-exercise-progress');
+
+        assert.isTrue(!progressBar == false);
+      });
+
+      test("Don't show the progress bar when the role is viewer", function() {
+        var aev = fixture('ae-viewer-fixture');
+
+        let progressBar = aev.querySelector('#viewer asq-exercise-progress');
+
+        assert.isTrue(!progressBar);
       });
 
       test('test default mixin values', function() {
-        assert.isTrue(sq.isASQElement);
-        assert.isFalse(sq.isASQQuestionTypeElement);
-        assert.equal(sq.uid, '');
-        assert.equal(sq.role, 'viewer');
+        var aev = fixture('ae-viewer-fixture');
+
+        assert.isTrue(aev.isASQElement);
+        assert.isFalse(aev.isASQQuestionTypeElement);
+        assert.equal(aev.uid, '');
+        assert.equal(aev.role, 'viewer');
       });
-      
+
     });
   </script>
 
