@@ -159,11 +159,6 @@ Custom property                                    | Description                
         background-color: var(--asq-exercise-edit-button-background-color, #FF7043);
       }
 
-      #progress-num {
-        padding-left: 10px;
-        @apply(--asq-exercise-progress-num-mixin);
-      }
-
       /* no need to print the buttons
       fixme: when polymer support media queries for custom properties we can just apply a property to the footer and have the user provide the media query on their rules */
       @media print{
@@ -213,16 +208,7 @@ Custom property                                    | Description                
             -->
 
             <!-- submission -->
-            <div class="progress-bar-container">
-              <asq-progress submissions-num="[[submissionsNum]]"></asq-progress>
-
-              <div id="progress-num">
-                <span>[[submissionsNum]]</span>
-                <span>/<span>
-                <span>[[_connectedViewersNum]]</span>
-              </div>
-
-          </div>
+            <asq-progress submissions-num="[[submissionsNum]]" connected-viewers-num="[[connectedViewersNum]]"></asq-progress>
         </footer>
       </article>
     </template>
@@ -335,7 +321,7 @@ Custom property                                    | Description                
           computed: '_computeSubmittableMessages(remainingAttempts)'
         },
 
-        _connectedViewersNum: {
+        connectedViewersNum: {
           type: Number,
           notify: true,
           value: 0,
@@ -460,10 +446,10 @@ Custom property                                    | Description                
         //necessary: the max and value should always be changed together
         // to avoid the 'bug' (or 'special feature') of paper-progress.
 
-        if ( submissions.length > this._connectedViewersNum ) {
-          this._connectedViewersNum = submissions.length
+        if ( submissions.length > this.connectedViewersNum ) {
+          this.connectedViewersNum = submissions.length
         }
-        this.$$('paper-progress').max = this._connectedViewersNum;
+        this.$$('paper-progress').max = this.connectedViewersNum;
         this.submissionsNum = submissions.length;
       },
 
@@ -471,8 +457,8 @@ Custom property                                    | Description                
         if (this.role !== this.roles.PRESENTER)
           return;
 
-        this._connectedViewersNum = evt._connectedViewers.length;
-        this.$$('paper-progress').max = this._connectedViewersNum;
+        this.connectedViewersNum = evt.connectedViewers.length;
+        this.$$('paper-progress').max = this.connectedViewersNum;
         this.$$('paper-progress').value = this.submissionsNum;
       },
 

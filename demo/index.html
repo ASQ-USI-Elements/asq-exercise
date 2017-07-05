@@ -228,23 +228,17 @@
 
     var ex2 = document.querySelector('#ex2');
     var asqm = document.querySelector('asq-multi-choice-q[role="presenter"]');
-    document.onreadystatechange = function () {
-      var state = document.readyState;
-      if (state == 'interactive') {
+    document.addEventListener('WebComponentsReady', function(){
+      var options = asqm.api.items;
+      options[0].progressValue = 30;
+      options[1].progressValue = 78;
+      options[2].progressValue = 10;
+      options[3].progressValue = 40;
+      options[4].progressValue = 50;
 
-      } else if (state == 'complete') {
-        var options = asqm.api.items;
-        options[0].progressValue = 30;
-        options[1].progressValue = 78;
-        options[2].progressValue = 10;
-        options[3].progressValue = 40;
-        options[4].progressValue = 50;
-
-        ex2._connectedViewersNum = 8;
-        ex2.submissionsNum = 3;
-      }
-    }
-
+      ex2.connectedViewersNum = 8;
+      ex2.submissionsNum = 3;
+    })
   </script>
 
 

@@ -10,6 +10,7 @@
         position: relative;
         @apply(--layout-horizontal);
         @apply(--layout-center);
+        margin: 10px 0 5px 0;
       }
     </style>
 
@@ -29,6 +30,12 @@
       <paper-progress id="idle-progress" value="100" style$=[[_calcFlex(_idleUsersNum)]]></paper-progress>
     </div>
 
+    <div id="progress-num">
+      <span>[[submissionsNum]]</span>
+      <span>/</span>
+      <span>[[connectedViewersNum]]</span>
+    </div>
+
   </template>
 
   <script>
@@ -46,8 +53,14 @@
         value: undefined,
       },
 
+      connectedViewersNum: {
+        type: Number,
+        value: 0,
+      },
+
       submissionsNum: {
-        observer: '_changedSubmissionsNum'
+        type: Number,
+        value: 0,
       },
 
       _workingUsersNum:{
@@ -158,12 +171,23 @@
       user.idle = false;
     },
 
-    _changedSubmissionsNum: function() {
-      // console.log(this.submissionsNum)
+    _setVelocity:  function(property, velocity) {
+      let that = this;
+      this.customStyle[property] = velocity + 's';
+      this.updateStyles();
+      setTimeout(function() {
+        that.customStyle[property] = '0s';
+        that.updateStyles();
+      }, velocity * 1000);
+    },
+
+    _calcChange: function() {
+
     },
 
     ready: function() {
       this._addUsers();
+      this._setVelocity('--submitted-bar-duration', 2);
     }
   });
 
