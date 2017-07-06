@@ -15,44 +15,51 @@
 <body>
 
   <!-- You use the document as a place to set up your fixtures. -->
- <asq-confidence id="m"></asq-confidence>
+  <test-fixture id="aec-fixture">
+    <template>
+      <asq-confidence></asq-confidence>
+    </template>
+  </test-fixture>
 
   <script>
-    var m = document.querySelector('#m');
     suite('<asq-confidence>', function() {
       test('test get and set', function() {
-        assert.equal(m.confidence, 0);
+        var aec = fixture('aec-fixture');
 
-        m.confidence = 5;
-        assert.equal(m.confidence, 5);
+        assert.equal(aec.confidence, 0);
 
-        m.confidence = 1;
-        assert.equal(m.confidence, 1);
+        aec.confidence = 5;
+        assert.equal(aec.confidence, 5);
 
-        m.confidence = 0;
-        assert.equal(m.confidence, 0);
+        aec.confidence = 1;
+        assert.equal(aec.confidence, 1);
 
-        m.confidence = -1;
-        assert.equal(m.confidence, 0);
+        aec.confidence = 0;
+        assert.equal(aec.confidence, 0);
 
-        m.confidence = -100;
-        assert.equal(m.confidence, 0);
+        aec.confidence = -1;
+        assert.equal(aec.confidence, 0);
 
-        m.confidence = 6;
-        assert.equal(m.confidence, 5);
+        aec.confidence = -100;
+        assert.equal(aec.confidence, 0);
 
-        m.confidence = 100;
-        assert.equal(m.confidence, 5);
+        aec.confidence = 6;
+        assert.equal(aec.confidence, 5);
+
+        aec.confidence = 100;
+        assert.equal(aec.confidence, 5);
       });
 
       test('test default mixin values', function() {
-        assert.isTrue(m.isASQElement);
-        assert.isFalse(m.isASQQuestionTypeElement);
-        assert.equal(m.uid, '');
-        assert.equal(m.role, 'viewer');
+        var aec = fixture('aec-fixture');
+
+        assert.isTrue(aec.isASQElement);
+        assert.isFalse(aec.isASQQuestionTypeElement);
+        assert.equal(aec.uid, '');
+        assert.equal(aec.role, 'viewer');
       });
 
-      
+
     });
   </script>
 
