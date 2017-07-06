@@ -55,11 +55,13 @@
 
       connectedViewersNum: {
         type: Number,
+        notify: true,
         value: 0,
       },
 
       submissionsNum: {
         type: Number,
+        notify: true,
         value: 0,
       },
 
@@ -181,7 +183,7 @@
 
     _userDisconnected: function() {
       this.connectedViewersNum--;
-    }
+    },
 
     _setVelocity:  function(property, velocity) {
       let that = this;
@@ -207,10 +209,9 @@
       }.bind(this));
     },
 
-    _subscribeToEvents: function() {
-      eventBus.on('asq:sessionEventCockpit', (evt) => {
+    _subscribeToEvents: function(eventBus) {
+      eventBus.on('asq:sessionEventBeamer', function(evt) {
         const user = evt.data.sessionEvent.user;
-        console.log(user);
 
         switch (evt.data.sessionEvent.type) {
           case 'folo-connected':
@@ -244,12 +245,8 @@
             return this._userBlurred(user);
         }
       });
-    }
-
-    ready: function() {
-      this._addUsers();
-      this._setVelocity('--submitted-bar-duration', 2);
     },
+
   });
 
   </script>

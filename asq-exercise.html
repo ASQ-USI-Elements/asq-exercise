@@ -452,8 +452,6 @@ Custom property                                    | Description                
           return;
 
         this.connectedViewersNum = evt.connectedViewers.length;
-        this.$$('paper-progress').max = this.connectedViewersNum;
-        this.$$('paper-progress').value = this.submissionsNum;
       },
 
       _onSubmitted: function (evt) {
