@@ -171,6 +171,18 @@
       user.idle = false;
     },
 
+    _userSubmitted: function() {
+      this.submissionsNum++;
+    },
+
+    _userConnected: function() {
+      this.connectedViewersNum++;
+    },
+
+    _userDisconnected: function() {
+      this.connectedViewersNum--;
+    }
+
     _setVelocity:  function(property, velocity) {
       let that = this;
       this.customStyle[property] = velocity + 's';
@@ -185,15 +197,54 @@
 
     },
 
-    // created: function() {
-    //   document.addEventListener('asq-ready', function (evt) {
-    //     try {
-    //       this._subscribeToEvents(evt.detail.asqEventBus);
-    //     } catch (err) {
-    //       console.debug('failed to _subscribeToEvents');
-    //     }
-    //   }.bind(this));
-    // },
+    created: function() {
+      document.addEventListener('asq-ready', function(evt) {
+        try {
+          this._subscribeToEvents(evt.detail.asqEventBus);
+        } catch (err) {
+          console.debug('failed to _subscribeToEvents');
+        }
+      }.bind(this));
+    },
+
+    _subscribeToEvents: function() {
+      eventBus.on('asq:sessionEventCockpit', (evt) => {
+        const user = evt.data.sessionEvent.user;
+        console.log(user);
+
+        switch (evt.data.sessionEvent.type) {
+          case 'folo-connected':
+          case 'ctrl-connected':
+          case 'ghost-connected':
+            return this._userConnected();
+          case 'folo-disconnected':
+          case 'ctrl-disconnected':
+          case 'ghost-disconnected':
+            return this._userDisconnected();
+          case 'answer-submitted':
+            return this._userSubmitted();
+          case 'viewer-idle':
+            return this._userIdled(user);
+          case 'questioninput':
+          case 'copy':
+          case 'paste':
+          case 'cut':
+          case 'input':
+            return this._userFocused(user);
+          case 'tabvisible':
+            return this._userMadeTabVisible(user);
+          case 'tabhidden':
+            return this._userMadeTabHidden(user);
+          case 'focusin':
+          case 'exercisefocus':
+          case 'windowfocus':
+            return this._userWorked(user);
+          case 'exerciseblur':
+          case 'windowblur':
+            return this._userBlurred(user);
+        }
+      });
+    }
 
     ready: function() {
       this._addUsers();
