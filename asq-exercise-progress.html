@@ -65,10 +65,20 @@
         value: 0,
       },
 
+      _submissionCounter: {
+        type: Number,
+        value: 0,
+      },
+
       _workingUsersNum:{
         type: Number,
         value: 0,
         computed: '_computeWorkingUsersNum(_users)',
+      },
+
+      _workingCounter: {
+        type: Number,
+        value: 0,
       },
 
      _focusedUsersNum:{
@@ -77,10 +87,20 @@
         computed: '_computeFocusedUsersNum(_users)',
      },
 
+     _focusedCounter: {
+       type: Number,
+       value: 0,
+     },
+
      _idleUsersNum:{
         type: Number,
         value: 0,
         computed: '_computeIdleUsersNum(_users)',
+     },
+
+     _idleCounter: {
+       type: Number,
+       value: 0,
      },
 
     },
@@ -122,12 +142,14 @@
       makeSureUserExists(user);
       resetUser(user);
       user.working = true;
+      this._workingCounter++;
     },
 
     _userFocused: function(user) {
       makeSureUserExists(user);
       resetUser(user);
       user.focused = true;
+      this._focusedCounter++;
     },
 
     _userMadeTabVisible: function(user) {
@@ -139,6 +161,7 @@
       makeSureUserExists(user);
       resetUser(user);
       user.idle = true;
+      this._idleCounter++;
     },
 
     _userMadeTabHidden: function(user) {
@@ -158,6 +181,7 @@
 
     _userSubmitted: function() {
       this.submissionsNum++;
+      this._submissionCounter++;
     },
 
     _userConnected: function() {
@@ -178,8 +202,39 @@
       }, velocity * 1000);
     },
 
-    _calcChange: function() {
+    _visualizeChange: function() {
+      setInterval(function() {
+        let submissionChange = this._calcChange(this._submissionCounter);
+        let workingChange = this._calcChange(this._workingCounter);
+        let focusedChange = this._calcChange(this._focusedCounter);
+        let idleChange = this._calcChange(this._idleCounter);
 
+        this._setVelocity('--submitted-bar-duration', _determineVelocity(submissionChange));
+        this._setVelocity('--working-bar-duration', _determineVelocity(workingChange));
+        this._setVelocity('--focused-bar-duration', _determineVelocity(focusedChange));
+        this._setVelocity('--idle-bar-duration', _determineVelocity(idleChange));
+
+        this._submissionCounter = 0;
+        this._workingCounter = 0;
+        this._focusedCounter = 0;
+        this._idleCounter = 0;
+      }, 10000);
+    },
+
+    _calcChange: function(num) {
+      let total = this.submissionsNum + this._workingUsersNum + this._focusedUsersNum + this._idleUsersNum;
+      return num/total * 100;
+    },
+
+    _determineVelocity: function(num) {
+      if (num == 0) return 0;
+      else if(num < 5) return 10;
+      else if(num < 15) return 8;
+      else if(num < 30) return 6;
+      else if(num < 50) return 4;
+      else if(num < 75) return 2;
+      else if(num <= 100) return 1;
+      else return 0 // change was higher than 100%
     },
 
     created: function() {
