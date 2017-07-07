@@ -227,6 +227,7 @@
   <script>
 
     var ex2 = document.querySelector('#ex2');
+    var ex2p = document.querySelector('#ex2 asq-exercise-progress');
     var asqm = document.querySelector('asq-multi-choice-q[role="presenter"]');
     document.addEventListener('WebComponentsReady', function(){
       var options = asqm.api.items;
@@ -235,9 +236,15 @@
       options[2].progressValue = 10;
       options[3].progressValue = 40;
       options[4].progressValue = 50;
-
-      ex2.connectedViewersNum = 8;
-      ex2.submissionsNum = 3;
+      ex2p.connectedViewersNum = 8;
+      ex2p.submissionsNum = 3;
+      ex2p._users = {
+        111: {_id: '111', name: 'user1', working: true, focused: false, idle: false},
+        222: {_id: '222', name: 'user2', working: false, focused: true, idle: false},
+        333: {_id: '333', name: 'user3', working: false, focused: false, idle: true},
+        444: {_id: '444', name: 'user4', working: true, focused: false, idle: false},
+        555: {_id: '555', name: 'user5', working: false, focused: true, idle: false},
+      }
     })
   </script>
 

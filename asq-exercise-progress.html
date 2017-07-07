@@ -85,23 +85,6 @@
 
     },
 
-    // function to add fake users, will be removed later
-    _addUsers: function() {
-      _users = {};
-      user1 = {_id: '111', name: 'user1', working: true, focused: false, idle: false};
-      user2 = {_id: '222', name: 'user2', working: false, focused: true, idle: false};
-      user3 = {_id: '333', name: 'user3', working: false, focused: false, idle: true};
-      user4 = {_id: '444', name: 'user4', working: true, focused: false, idle: false};
-      user5 = {_id: '555', name: 'user5', working: false, focused: true, idle: false};
-      _users[111] = user1;
-      _users[222] = user2;
-      _users[333] = user3;
-      _users[444] = user4;
-      _users[555] = user5;
-
-      this._users = _users;
-    },
-
     _computeWorkingUsersNum: function() {
       let users = this._users;
       let num = Object.keys(users).reduce(function(acc, userId) {
