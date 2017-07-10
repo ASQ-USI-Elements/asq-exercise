@@ -321,10 +321,15 @@ Custom property                                    | Description                
           value: 0,
         },
 
-        _submissionsNum: {
+        submissionsNum: {
           type: Number,
           notify: true,
           value: 0,
+        },
+
+        eventBus: {
+          type: Object,
+          notify: true
         },
 
       },
@@ -437,9 +442,6 @@ Custom property                                    | Description                
       },
 
       _updateProgress: function (submissions) {
-        //necessary: the max and value should always be changed together
-        // to avoid the 'bug' (or 'special feature') of paper-progress.
-
         if ( submissions.length > this.connectedViewersNum ) {
           this.connectedViewersNum = submissions.length
         }
@@ -451,12 +453,6 @@ Custom property                                    | Description                
           return;
 
         this.connectedViewersNum = evt.connectedViewers.length;
-      },
-
-      _onSubmitted: function (evt) {
-        if (evt.exerciseUid == this.uid) {
-
-        }
       },
 
       /**
@@ -542,7 +538,6 @@ Custom property                                    | Description                
         this.$$('#edit-button').hidden = true;
         this.$$('#submit-button').hidden = false;
         this.disabled = false;
-
         this.fire('exercise-edit', {
           exerciseUid: this.uid
         });

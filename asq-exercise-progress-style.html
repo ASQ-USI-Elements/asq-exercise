@@ -5,6 +5,7 @@
       .progress-bar-container {
         @apply(--layout-horizontal);
         @apply(--layout-center);
+        background-color: var(--asq-exercise-progressbar-background-color, --google-grey-300);
       }
 
       .background-progress {
@@ -12,12 +13,10 @@
       }
 
       paper-progress {
-        --paper-progress-container-color: var(--asq-exercise-progress-container-color, --google-grey-300);
         --paper-progress-height: var(--asq-exercise-progress-height, 4px);
       }
 
       .background-progress paper-progress {
-        --paper-progress-height: var(--asq-exercise-background-progress-height, 6px);
         --paper-progress-container-color: rgba(0, 0, 0, 0);
       }
 

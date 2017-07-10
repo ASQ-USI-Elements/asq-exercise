@@ -17,21 +17,21 @@
     <style include="asq-exercise-progress-style"></style>
 
     <div class="progress-bar-container background-progress">
-      <paper-progress id="background-submitted-progress" indeterminate style$=[[_calcFlex(submissionsNum)]]></paper-progress>
+      <paper-progress id="background-submitted-progress" indeterminate style$=[[_calcFlex(_submissionsNum)]]></paper-progress>
       <paper-progress id="background-working-progress" indeterminate style$=[[_calcFlex(_workingUsersNum)]]></paper-progress>
       <paper-progress id="background-focused-progress" indeterminate style$=[[_calcFlex(_focusedUsersNum)]]></paper-progress>
       <paper-progress id="background-idle-progress" indeterminate style$=[[_calcFlex(_idleUsersNum)]]></paper-progress>
     </div>
 
     <div class="progress-bar-container">
-      <paper-progress id="submitted-progress" value="100" style$=[[_calcFlex(submissionsNum)]]></paper-progress>
+      <paper-progress id="submitted-progress" value="100" style$=[[_calcFlex(_submissionsNum)]]></paper-progress>
       <paper-progress id="working-progress" value="100" style$=[[_calcFlex(_workingUsersNum)]]></paper-progress>
       <paper-progress id="focused-progress" value="100" style$=[[_calcFlex(_focusedUsersNum)]]></paper-progress>
       <paper-progress id="idle-progress" value="100" style$=[[_calcFlex(_idleUsersNum)]]></paper-progress>
     </div>
 
     <div id="progress-num">
-      <span>[[submissionsNum]]</span>
+      <span>[[_submissionsNum]]</span>
       <span>/</span>
       <span>[[connectedViewersNum]]</span>
     </div>
@@ -50,7 +50,7 @@
 
       _users: {
         type: Object,
-        value: undefined,
+        value: {},
       },
 
       connectedViewersNum: {
@@ -59,10 +59,10 @@
         value: 0,
       },
 
-      submissionsNum: {
+      _submissionsNum: {
         type: Number,
-        notify: true,
         value: 0,
+        computed: '_computeSubmittedUsersNum(_users)',
       },
 
       _submissionCounter: {
@@ -105,6 +105,15 @@
 
     },
 
+    _computeSubmittedUsersNum: function() {
+      let users = this._users;
+      let num = Object.keys(users).reduce(function(acc, userId) {
+        if(users[userId].submitted) return ++acc;
+        return acc;
+      }, 0);
+      return num;
+    },
+
     _computeWorkingUsersNum: function() {
       let users = this._users;
       let num = Object.keys(users).reduce(function(acc, userId) {
@@ -135,52 +144,63 @@
     },
 
     _makeSureUserExists: function(userToFind) {
-      _users[userToFind._id] = _users[userToFind._id] || userToFind
+      this._users[userToFind.id] = this._users[userToFind.id] || userToFind;
+      this._notifyPolymer();
     },
 
     _userWorked: function(user) {
-      makeSureUserExists(user);
-      resetUser(user);
-      user.working = true;
-      this._workingCounter++;
+      this._makeSureUserExists(user);
+      if (!this._users[user.id].working) this._workingCounter++;
+      this._resetUser(user);
+      this._users[user.id].working = true;
+      this._notifyPolymer();
     },
 
     _userFocused: function(user) {
-      makeSureUserExists(user);
-      resetUser(user);
-      user.focused = true;
-      this._focusedCounter++;
+      this._makeSureUserExists(user);
+      if (this._users[user.id].submitted) return;
+      if (!this._users[user.id].focused) this._focusedCounter++;
+      this._resetUser(user);
+      this._users[user.id].focused = true;
+      this._notifyPolymer();
     },
 
     _userMadeTabVisible: function(user) {
-      makeSureUserExists(user);
-      user.idle = false;
+      this._makeSureUserExists(user);
+      this._users[user.id].idle = false;
+      this._notifyPolymer();
     },
 
     _userIdled: function(user) {
-      makeSureUserExists(user);
-      resetUser(user);
-      user.idle = true;
-      this._idleCounter++;
+      this._makeSureUserExists(user);
+      if (this._users[user.id].submitted) return;
+      if (!this._users[user.id].idle) this._idleCounter++;
+      this._resetUser(user);
+      this._users[user.id].idle = true;
+      this._notifyPolymer();
     },
 
     _userMadeTabHidden: function(user) {
-      makeSureUserExists(user);
-      user.idle = false;
+      this._makeSureUserExists(user);
+      this._users[user.id].idle = false;
+      this._notifyPolymer();
     },
 
     _userBlurred: function(user) {
-      makeSureUserExists(user);
+      this._makeSureUserExists(user);
     },
 
     _resetUser: function(user) {
-      user.working = false;
-      user.focused = false;
-      user.idle = false;
+      this._users[user.id].submitted = false;
+      this._users[user.id].working = false;
+      this._users[user.id].focused = false;
+      this._users[user.id].idle = false;
     },
 
-    _userSubmitted: function() {
-      this.submissionsNum++;
+    _userSubmitted: function(user) {
+      this._makeSureUserExists(user);
+      this._resetUser(user);
+      this._users[user.id].submitted = true;
       this._submissionCounter++;
     },
 
@@ -190,6 +210,12 @@
 
     _userDisconnected: function() {
       this.connectedViewersNum--;
+    },
+
+    _notifyPolymer: function() {
+      _users = this._users;
+      this._users = {};
+      this._users = _users;
     },
 
     _setVelocity:  function(property, velocity) {
@@ -222,7 +248,7 @@
     },
 
     _calcChange: function(num) {
-      let total = this.submissionsNum + this._workingUsersNum + this._focusedUsersNum + this._idleUsersNum;
+      let total = this._submissionsNum + this._workingUsersNum + this._focusedUsersNum + this._idleUsersNum;
       return num/total * 100;
     },
 
@@ -248,39 +274,38 @@
     },
 
     _subscribeToEvents: function(eventBus) {
+      let that = this;
       eventBus.on('asq:sessionEventBeamer', function(evt) {
         const user = evt.data.sessionEvent.user;
 
         switch (evt.data.sessionEvent.type) {
           case 'folo-connected':
-          case 'ctrl-connected':
           case 'ghost-connected':
-            return this._userConnected();
+            return that._userConnected();
           case 'folo-disconnected':
-          case 'ctrl-disconnected':
           case 'ghost-disconnected':
-            return this._userDisconnected();
+            return that._userDisconnected();
           case 'answer-submitted':
-            return this._userSubmitted();
+            return that._userSubmitted(evt.data.sessionEvent.answeree);
           case 'viewer-idle':
-            return this._userIdled(user);
+            return that._userIdled(user);
           case 'questioninput':
           case 'copy':
           case 'paste':
           case 'cut':
           case 'input':
-            return this._userFocused(user);
+            return that._userWorked(user);
           case 'tabvisible':
-            return this._userMadeTabVisible(user);
+            return that._userMadeTabVisible(user);
           case 'tabhidden':
-            return this._userMadeTabHidden(user);
+            return that._userMadeTabHidden(user);
           case 'focusin':
           case 'exercisefocus':
           case 'windowfocus':
-            return this._userWorked(user);
+            return that._userFocused(user);
           case 'exerciseblur':
           case 'windowblur':
-            return this._userBlurred(user);
+            return that._userBlurred(user);
         }
       });
     },
