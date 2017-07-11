@@ -48,55 +48,130 @@
 
     properties: {
 
+      /**
+      * Object that contains users with their activity information.
+      *
+      * @attribute _users
+      * @type Object
+      * @default {}
+      */
       _users: {
         type: Object,
         value: {},
       },
 
+      /**
+      * Counts the number of currently connected viewers.
+      *
+      * @attribute connectedViewersNum
+      * @type Number
+      * @default 0
+      */
       connectedViewersNum: {
         type: Number,
         notify: true,
         value: 0,
       },
 
+      /**
+      * Counts the number of submissions, inherited from asq-exercise.
+      *
+      * @attribute submissionsNum
+      * @type Number
+      * @default 0
+      */
       submissionsNum: {
         type: Number,
         value: 0,
       },
 
+      /**
+      * Counts the number of submissions during a given time interval
+      * by the _visualizeChange function.
+      *
+      * @attribute _submissionCounter
+      * @type Number
+      * @default 0
+      */
       _submissionCounter: {
         type: Number,
         value: 0,
       },
 
+      /**
+      * Counts the number of working users,, calculated with the function given
+      * in its computed property.
+      * @attribute _workingUsersNum
+      * @type Number
+      * @default 0
+      */
       _workingUsersNum:{
         type: Number,
         value: 0,
         computed: '_computeWorkingUsersNum(_users)',
       },
 
+      /**
+      * Counts the number of working users during a given time interval
+      * by the _visualizeChange function.
+      *
+      * @attribute _workingCounter
+      * @type Number
+      * @default 0
+      */
       _workingCounter: {
         type: Number,
         value: 0,
       },
 
+      /**
+      * Counts the number of focused users,, calculated with the function given
+      * in its computed property.
+      * @attribute _focusedUsersNum
+      * @type Number
+      * @default 0
+      */
      _focusedUsersNum:{
         type: Number,
         value: 0,
         computed: '_computeFocusedUsersNum(_users)',
      },
 
+     /**
+     * Counts the number of focused users during a given time interval
+     * by the _visualizeChange function.
+     *
+     * @attribute _focusedCounter
+     * @type Number
+     * @default 0
+     */
      _focusedCounter: {
        type: Number,
        value: 0,
      },
 
+     /**
+     * Counts the number of idle users, calculated with the function given
+     * in its computed property.
+     *
+     * @attribute _focusedUsersNum
+     * @type Number
+     * @default 0
+     */
      _idleUsersNum:{
         type: Number,
         value: 0,
         computed: '_computeIdleUsersNum(_users)',
      },
 
+     /**
+     * Counts the number of idle users during a given time interval
+     * by the _visualizeChange function.
+     *
+     * @attribute _focusedCounter
+     * @type Number
+     * @default 0
+     */
      _idleCounter: {
        type: Number,
        value: 0,
@@ -104,6 +179,11 @@
 
     },
 
+    /**
+    * Computes the amount of working users from the _users object.
+    *
+    * @return {number} Number of working users.
+    */
     _computeWorkingUsersNum: function() {
       let users = this._users;
       let num = Object.keys(users).reduce(function(acc, userId) {
@@ -113,6 +193,12 @@
       return num;
     },
 
+    /**
+    * Computes the amount of focused users from the _users object.
+    *
+    * @return {number} Number of focused users.
+    */
+
     _computeFocusedUsersNum: function() {
       let users = this._users;
       return Object.keys(users).reduce(function(acc, userId) {
@@ -120,6 +206,12 @@
         return acc;
       }, 0);
     },
+
+    /**
+    * Computes the amount of idle users from the _users object.
+    *
+    * @return {number} Number of idle users.
+    */
 
     _computeIdleUsersNum: function() {
       let users = this._users;
@@ -129,15 +221,33 @@
       }, 0);
     },
 
+    /**
+    * Returns a CSS declaration as a string to change the width of the progress bar
+    * by changing its flex property.
+    *
+    * @param {number} The new flex value.
+    * @return {string} String of the form "flex: num"
+    */
     _calcFlex: function(num) {
       return "flex:" + num + ";";
     },
 
+    /**
+    * If the given user is not already in the _users object, add him and notify
+    * the observers that the _users object changed.
+    *
+    * @param {object} A user object.
+    */
     _makeSureUserExists: function(userToFind) {
       this._users[userToFind.id] = this._users[userToFind.id] || userToFind;
       this._notifyPolymer();
     },
 
+    /**
+    * Mark the given user as working.
+    *
+    * @param {object} A user object.
+    */
     _userWorked: function(user) {
       this._makeSureUserExists(user);
       if (!this._users[user.id].working) this._workingCounter++;
@@ -146,6 +256,11 @@
       this._notifyPolymer();
     },
 
+    /**
+    * Mark the given user as focused.
+    *
+    * @param {object} A user object.
+    */
     _userFocused: function(user) {
       this._makeSureUserExists(user);
       if (this._users[user.id].submitted) return;
@@ -155,12 +270,22 @@
       this._notifyPolymer();
     },
 
+    /**
+    * If the given user was idle, change his idle property and mark him as not idle.
+    *
+    * @param {object} A user object.
+    */
     _userMadeTabVisible: function(user) {
       this._makeSureUserExists(user);
       this._users[user.id].idle = false;
       this._notifyPolymer();
     },
 
+    /**
+    * Mark the given user as idle.
+    *
+    * @param {object} A user object.
+    */
     _userIdled: function(user) {
       this._makeSureUserExists(user);
       if (this._users[user.id].submitted) return;
@@ -170,16 +295,31 @@
       this._notifyPolymer();
     },
 
+    /**
+    * If the given user was idle, change his idle property and mark him as not idle.
+    *
+    * @param {object} A user object.
+    */
     _userMadeTabHidden: function(user) {
       this._makeSureUserExists(user);
       this._users[user.id].idle = false;
       this._notifyPolymer();
     },
 
+    /**
+    * If the given blurred, make sure that he's already in the _users object.
+    *
+    * @param {object} A user object.
+    */
     _userBlurred: function(user) {
       this._makeSureUserExists(user);
     },
 
+    /**
+    * Reset all the activity properties of the given user.
+    *
+    * @param {object} A user object.
+    */
     _resetUser: function(user) {
       this._users[user.id].submitted = false;
       this._users[user.id].working = false;
@@ -187,6 +327,12 @@
       this._users[user.id].idle = false;
     },
 
+    /**
+    * Mark that the given user submitted and change the corresponding counter.
+    *
+    *
+    * @param {object} A user object.
+    */
     _userSubmitted: function(user) {
       this._makeSureUserExists(user);
       this._resetUser(user);
@@ -194,20 +340,41 @@
       this._submissionCounter++;
     },
 
+    /**
+    * Change the number of connected users.
+    *
+    * @param {object} A user object.
+    */
     _userConnected: function() {
       this.connectedViewersNum++;
     },
 
+
+    /**
+    * Change the number of connected users.
+    *
+    * @param {object} A user object.
+    */
     _userDisconnected: function() {
       this.connectedViewersNum--;
     },
 
+    /**
+    * Function to trigger the observers.
+    *
+    */
     _notifyPolymer: function() {
       _users = this._users;
       this._users = {};
       this._users = _users;
     },
 
+    /**
+    * Changes the css variable for the paper progress indeterminate cycle duration.
+    *
+    * @param {string} The css variable that will be changed.
+    * @param {number} Duration of the animation cycle, given in seconds.
+    */
     _setVelocity:  function(property, velocity) {
       let that = this;
       this.customStyle[property] = velocity + 's';
@@ -218,6 +385,10 @@
       }, velocity * 1000);
     },
 
+    /**
+    * Animates the progress bar every 5 seconds depending on the activity.
+    *
+    */
     _visualizeChange: function() {
       let that = this;
 
@@ -239,11 +410,24 @@
       }, 5000);
     },
 
+    /**
+    * Change the number of connected users.
+    *
+    * @param {number} A number that is smaller than or equal to the total number of users.
+    * @return {number} The amount of change in percent and in proportion to the number of users.
+    */
     _calcChange: function(num) {
       let total = this.submissionsNum + this._workingUsersNum + this._focusedUsersNum + this._idleUsersNum;
       return num/total * 100;
     },
 
+    /**
+    * Change the number of connected users.
+    *
+    * @param {number} A number in percent.
+    * @return {number} Returns a number in seconds for the duration of one paper progress
+    * indeterminate cycle.
+    */
     _determineVelocity: function(num) {
       if (num == 0) return 0;
       else if(num < 5) return 10;
@@ -267,40 +451,39 @@
     },
 
     _subscribeToEvents: function(eventBus) {
-      let that = this;
       eventBus.on('asq:sessionEventBeamer', function(evt) {
         const user = evt.data.sessionEvent.user;
 
         switch (evt.data.sessionEvent.type) {
           case 'folo-connected':
           case 'ghost-connected':
-            return that._userConnected();
+            return this._userConnected();
           case 'folo-disconnected':
           case 'ghost-disconnected':
-            return that._userDisconnected();
+            return this._userDisconnected();
           case 'answer-submitted':
-            return that._userSubmitted(evt.data.sessionEvent.answeree);
+            return this._userSubmitted(evt.data.sessionEvent.answeree);
           case 'viewer-idle':
-            return that._userIdled(user);
+            return this._userIdled(user);
           case 'questioninput':
           case 'copy':
           case 'paste':
           case 'cut':
           case 'input':
-            return that._userWorked(user);
+            return this._userWorked(user);
           case 'tabvisible':
-            return that._userMadeTabVisible(user);
+            return this._userMadeTabVisible(user);
           case 'tabhidden':
-            return that._userMadeTabHidden(user);
+            return this._userMadeTabHidden(user);
           case 'focusin':
           case 'exercisefocus':
           case 'windowfocus':
-            return that._userFocused(user);
+            return this._userFocused(user);
           case 'exerciseblur':
           case 'windowblur':
-            return that._userBlurred(user);
+            return this._userBlurred(user);
         }
-      });
+      }.bind(this));
     },
 
   });
