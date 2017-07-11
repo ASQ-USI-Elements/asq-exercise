@@ -72,7 +72,7 @@
       _workingUsersNum:{
         type: Number,
         value: 0,
-        // computed: '_computeWorkingUsersNum(_users)',
+        computed: '_computeWorkingUsersNum(_users)',
       },
 
       _workingCounter: {
@@ -83,7 +83,7 @@
      _focusedUsersNum:{
         type: Number,
         value: 0,
-        // computed: '_computeFocusedUsersNum(_users)',
+        computed: '_computeFocusedUsersNum(_users)',
      },
 
      _focusedCounter: {
@@ -94,7 +94,7 @@
      _idleUsersNum:{
         type: Number,
         value: 0,
-        // computed: '_computeIdleUsersNum(_users)',
+        computed: '_computeIdleUsersNum(_users)',
      },
 
      _idleCounter: {
@@ -222,10 +222,6 @@
       let that = this;
 
       setInterval(function() {
-        that._workingUsersNum = that._computeWorkingUsersNum();
-        that._focusedUsersNum = that._computeFocusedUsersNum();
-        that._idleUsersNum = that._computeIdleUsersNum();
-
         let submissionChange = that._calcChange(that._submissionCounter);
         let workingChange = that._calcChange(that._workingCounter);
         let focusedChange = that._calcChange(that._focusedCounter);
