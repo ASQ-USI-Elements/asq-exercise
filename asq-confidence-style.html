@@ -3,42 +3,41 @@
     <style>
 
       .rating {
-          float:left;
+        float: right;
       }
 
       /* :not(:checked) is a filter, so that browsers that don’t support :checked don’t
          follow these rules. Every browser that supports :checked also supports :not(), so
          it doesn’t make the test unnecessarily selective */
       .rating:not(:checked) > input {
-          position:absolute;
-          /*top:-9999px;*/
-          clip:rect(0,0,0,0);
+        position:absolute;
+        /*top:-9999px;*/
+        clip:rect(0,0,0,0);
       }
 
       .rating:not(:checked) > label {
-          float:right;
-          width:1em;
-          padding:0 .1em;
-          overflow:hidden;
-          white-space:nowrap;
-          cursor:pointer;
-          font-size:100%;
-          line-height:1.2;
-          color: var(--google-grey-500);
-
+        float:right;
+        width:1em;
+        padding:0 .1em;
+        overflow:hidden;
+        white-space:nowrap;
+        cursor:pointer;
+        font-size:100%;
+        line-height:1.2;
+        color: var(--google-grey-500);
       }
 
       .rating:not(:checked) > label:before {
-          content: '★ ';
+        content: '★ ';
       }
 
       .rating > input:checked ~ label {
-          color: var(--paper-orange-700);
+        color: var(--paper-orange-700);
       }
 
       .rating:not(:checked) > label:hover,
       .rating:not(:checked) > label:hover ~ label {
-          color: var(--paper-amber-400);
+        color: var(--paper-amber-400);
       }
 
       .rating > input:checked + label:hover,
@@ -46,31 +45,31 @@
       .rating > input:checked ~ label:hover,
       .rating > input:checked ~ label:hover ~ label,
       .rating > label:hover ~ input:checked ~ label {
-          color: var(--paper-orange-500);
+        color: var(--paper-orange-500);
       }
 
       .rating > label:active {
-          position:relative;
-          top:2px;
-          left:2px;
+        position:relative;
+        top:2px;
+        left:2px;
       }
 
       /* when disabled */
       .rating:not(:checked)[disabled] > label:before {
-          content: '★ ';
+        content: '★ ';
       }
 
       .rating > input[disabled] ~ label {
-          color: var(--google-grey-500);
+        color: var(--google-grey-500);
       }
 
       .rating > input:checked[disabled] ~ label {
-          color: var(--paper-red-400);
+        color: var(--paper-red-400);
       }
 
       .rating:not(:checked)[disabled] > label:hover,
       .rating:not(:checked)[disabled] > label:hover ~ label {
-          color: var(--google-grey-500);
+        color: var(--google-grey-500);
       }
 
       .rating > input:not(:checked)[disabled] + label:hover,
@@ -78,7 +77,7 @@
       .rating > input:not(:checked)[disabled] ~ label:hover,
       .rating > input:not(:checked)[disabled] ~ label:hover ~ label,
       .rating > label:hover ~ input:not(:checked)[disabled] ~ label {
-          color: var(--google-grey-500);
+        color: var(--google-grey-500);
       }
 
       .rating > input:checked[disabled] + label:hover,
@@ -86,16 +85,18 @@
       .rating > input:checked[disabled] ~ label:hover,
       .rating > input:checked[disabled] ~ label:hover ~ label,
       .rating > label:hover ~ input:checked[disabled] ~ label {
-          color: var(--paper-red-400);
+        color: var(--paper-red-400);
       }
 
       .rating > [disabled],
       .rating > [disabled] ~ label {
-          cursor: auto;
+        cursor: auto;
       }
 
       span {
-          font-size: smaller;
+        font-size: smaller;
+        position: relative;
+        bottom: 7px;
       }
 
     </style>

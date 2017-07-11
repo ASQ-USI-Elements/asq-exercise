@@ -138,15 +138,11 @@ Custom property                                    | Description                
         display: block;
       }
 
-      #footer{
-        @apply(--layout-horizontal);
-        @apply(--layout-end-justified);
-        @apply(--asq-exercise-footer);
-      }
-
       .submit-button {
         color: var(--asq-exercise-submit-button-color, white);
         background-color: var(--asq-exercise-submit-button-background-color, #388E3C);
+        float: right;
+        clear: right;
       }
 
       .submit-button[disabled] {
