@@ -17,21 +17,21 @@
     <style include="asq-exercise-progress-style"></style>
 
     <div class="progress-bar-container background-progress">
-      <paper-progress id="background-submitted-progress" indeterminate style$=[[_calcFlex(_submissionsNum)]]></paper-progress>
+      <paper-progress id="background-submitted-progress" indeterminate style$=[[_calcFlex(submissionsNum)]]></paper-progress>
       <paper-progress id="background-working-progress" indeterminate style$=[[_calcFlex(_workingUsersNum)]]></paper-progress>
       <paper-progress id="background-focused-progress" indeterminate style$=[[_calcFlex(_focusedUsersNum)]]></paper-progress>
       <paper-progress id="background-idle-progress" indeterminate style$=[[_calcFlex(_idleUsersNum)]]></paper-progress>
     </div>
 
     <div class="progress-bar-container">
-      <paper-progress id="submitted-progress" value="100" style$=[[_calcFlex(_submissionsNum)]]></paper-progress>
+      <paper-progress id="submitted-progress" value="100" style$=[[_calcFlex(submissionsNum)]]></paper-progress>
       <paper-progress id="working-progress" value="100" style$=[[_calcFlex(_workingUsersNum)]]></paper-progress>
       <paper-progress id="focused-progress" value="100" style$=[[_calcFlex(_focusedUsersNum)]]></paper-progress>
       <paper-progress id="idle-progress" value="100" style$=[[_calcFlex(_idleUsersNum)]]></paper-progress>
     </div>
 
     <div id="progress-num">
-      <span>[[_submissionsNum]]</span>
+      <span>[[submissionsNum]]</span>
       <span>/</span>
       <span>[[connectedViewersNum]]</span>
     </div>
@@ -59,10 +59,9 @@
         value: 0,
       },
 
-      _submissionsNum: {
+      submissionsNum: {
         type: Number,
         value: 0,
-        computed: '_computeSubmittedUsersNum(_users)',
       },
 
       _submissionCounter: {
@@ -73,7 +72,7 @@
       _workingUsersNum:{
         type: Number,
         value: 0,
-        computed: '_computeWorkingUsersNum(_users)',
+        // computed: '_computeWorkingUsersNum(_users)',
       },
 
       _workingCounter: {
@@ -84,7 +83,7 @@
      _focusedUsersNum:{
         type: Number,
         value: 0,
-        computed: '_computeFocusedUsersNum(_users)',
+        // computed: '_computeFocusedUsersNum(_users)',
      },
 
      _focusedCounter: {
@@ -95,7 +94,7 @@
      _idleUsersNum:{
         type: Number,
         value: 0,
-        computed: '_computeIdleUsersNum(_users)',
+        // computed: '_computeIdleUsersNum(_users)',
      },
 
      _idleCounter: {
@@ -103,15 +102,6 @@
        value: 0,
      },
 
-    },
-
-    _computeSubmittedUsersNum: function() {
-      let users = this._users;
-      let num = Object.keys(users).reduce(function(acc, userId) {
-        if(users[userId].submitted) return ++acc;
-        return acc;
-      }, 0);
-      return num;
     },
 
     _computeWorkingUsersNum: function() {
@@ -229,26 +219,32 @@
     },
 
     _visualizeChange: function() {
+      let that = this;
+
       setInterval(function() {
-        let submissionChange = this._calcChange(this._submissionCounter);
-        let workingChange = this._calcChange(this._workingCounter);
-        let focusedChange = this._calcChange(this._focusedCounter);
-        let idleChange = this._calcChange(this._idleCounter);
+        that._workingUsersNum = that._computeWorkingUsersNum();
+        that._focusedUsersNum = that._computeFocusedUsersNum();
+        that._idleUsersNum = that._computeIdleUsersNum();
 
-        this._setVelocity('--submitted-bar-duration', _determineVelocity(submissionChange));
-        this._setVelocity('--working-bar-duration', _determineVelocity(workingChange));
-        this._setVelocity('--focused-bar-duration', _determineVelocity(focusedChange));
-        this._setVelocity('--idle-bar-duration', _determineVelocity(idleChange));
+        let submissionChange = that._calcChange(that._submissionCounter);
+        let workingChange = that._calcChange(that._workingCounter);
+        let focusedChange = that._calcChange(that._focusedCounter);
+        let idleChange = that._calcChange(that._idleCounter);
 
-        this._submissionCounter = 0;
-        this._workingCounter = 0;
-        this._focusedCounter = 0;
-        this._idleCounter = 0;
-      }, 10000);
+        that._setVelocity('--submitted-bar-duration', that._determineVelocity(submissionChange));
+        that._setVelocity('--working-bar-duration',  that._determineVelocity(workingChange));
+        that._setVelocity('--focused-bar-duration',  that._determineVelocity(focusedChange));
+        that._setVelocity('--idle-bar-duration',  that._determineVelocity(idleChange));
+
+        that._submissionCounter = 0;
+        that._workingCounter = 0;
+        that._focusedCounter = 0;
+        that._idleCounter = 0;
+      }, 5000);
     },
 
     _calcChange: function(num) {
-      let total = this._submissionsNum + this._workingUsersNum + this._focusedUsersNum + this._idleUsersNum;
+      let total = this.submissionsNum + this._workingUsersNum + this._focusedUsersNum + this._idleUsersNum;
       return num/total * 100;
     },
 
@@ -271,6 +267,7 @@
           console.debug('failed to _subscribeToEvents');
         }
       }.bind(this));
+      this._visualizeChange();
     },
 
     _subscribeToEvents: function(eventBus) {
