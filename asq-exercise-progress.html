@@ -99,7 +99,7 @@
       },
 
       /**
-      * Counts the number of working users,, calculated with the function given
+      * Counts the number of working users, calculated with the function given
       * in its computed property.
       * @attribute _workingUsersNum
       * @type Number
@@ -125,7 +125,7 @@
       },
 
       /**
-      * Counts the number of focused users,, calculated with the function given
+      * Counts the number of focused users, calculated with the function given
       * in its computed property.
       * @attribute _focusedUsersNum
       * @type Number
@@ -226,7 +226,7 @@
     * by changing its flex property.
     *
     * @param {number} The new flex value.
-    * @return {string} String of the form "flex: num"
+    * @return {string} String of the form "flex: num;"
     */
     _calcFlex: function(num) {
       return "flex:" + num + ";";
@@ -321,7 +321,6 @@
     * @param {object} A user object.
     */
     _resetUser: function(user) {
-      this._users[user.id].submitted = false;
       this._users[user.id].working = false;
       this._users[user.id].focused = false;
       this._users[user.id].idle = false;
@@ -329,7 +328,6 @@
 
     /**
     * Mark that the given user submitted and change the corresponding counter.
-    *
     *
     * @param {object} A user object.
     */
@@ -355,8 +353,10 @@
     *
     * @param {object} A user object.
     */
-    _userDisconnected: function() {
+    _userDisconnected: function(user) {
       this.connectedViewersNum--;
+      this._resetUser(user);
+      this._notifyPolymer();
     },
 
     /**
@@ -411,7 +411,7 @@
     },
 
     /**
-    * Change the number of connected users.
+    * Calculate the amount of change of a given activity.
     *
     * @param {number} A number that is smaller than or equal to the total number of users.
     * @return {number} The amount of change in percent and in proportion to the number of users.
@@ -422,7 +422,7 @@
     },
 
     /**
-    * Change the number of connected users.
+    * Get the velocity for the paper progress indeterminate cycle.
     *
     * @param {number} A number in percent.
     * @return {number} Returns a number in seconds for the duration of one paper progress
@@ -460,7 +460,8 @@
             return this._userConnected();
           case 'folo-disconnected':
           case 'ghost-disconnected':
-            return this._userDisconnected();
+          case 'ctrl-disconnected':
+            return this._userDisconnected(user);
           case 'answer-submitted':
             return this._userSubmitted(evt.data.sessionEvent.answeree);
           case 'viewer-idle':
