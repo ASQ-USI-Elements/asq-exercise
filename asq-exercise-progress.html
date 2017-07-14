@@ -17,21 +17,21 @@
     <style include="asq-exercise-progress-style"></style>
 
     <div class="progress-bar-container background-progress">
-      <paper-progress id="background-submitted-progress" indeterminate style$=[[_calcFlex(submissionsNum)]]></paper-progress>
-      <paper-progress id="background-working-progress" indeterminate style$=[[_calcFlex(_workingUsersNum)]]></paper-progress>
-      <paper-progress id="background-focused-progress" indeterminate style$=[[_calcFlex(_focusedUsersNum)]]></paper-progress>
-      <paper-progress id="background-idle-progress" indeterminate style$=[[_calcFlex(_idleUsersNum)]]></paper-progress>
+      <paper-progress id="background-submitted-progress" indeterminate style$=[[_calcFlex(_submissionsNum)]]></paper-progress>
+      <paper-progress id="background-working-progress" indeterminate style$=[[_calcFlex(_workingViewersNum)]]></paper-progress>
+      <paper-progress id="background-focused-progress" indeterminate style$=[[_calcFlex(_focusedViewersNum)]]></paper-progress>
+      <paper-progress id="background-idle-progress" indeterminate style$=[[_calcFlex(_idleViewersNum)]]></paper-progress>
     </div>
 
     <div class="progress-bar-container">
-      <paper-progress id="submitted-progress" value="100" style$=[[_calcFlex(submissionsNum)]]></paper-progress>
-      <paper-progress id="working-progress" value="100" style$=[[_calcFlex(_workingUsersNum)]]></paper-progress>
-      <paper-progress id="focused-progress" value="100" style$=[[_calcFlex(_focusedUsersNum)]]></paper-progress>
-      <paper-progress id="idle-progress" value="100" style$=[[_calcFlex(_idleUsersNum)]]></paper-progress>
+      <paper-progress id="submitted-progress" value="100" style$=[[_calcFlex(_submissionsNum)]]></paper-progress>
+      <paper-progress id="working-progress" value="100" style$=[[_calcFlex(_workingViewersNum)]]></paper-progress>
+      <paper-progress id="focused-progress" value="100" style$=[[_calcFlex(_focusedViewersNum)]]></paper-progress>
+      <paper-progress id="idle-progress" value="100" style$=[[_calcFlex(_idleViewersNum)]]></paper-progress>
     </div>
 
     <div id="progress-num">
-      <span>[[submissionsNum]]</span>
+      <span>[[_submissionsNum]]</span>
       <span>/</span>
       <span>[[connectedViewersNum]]</span>
     </div>
@@ -49,13 +49,13 @@
     properties: {
 
       /**
-      * Object that contains users with their activity information.
+      * Object that contains viewers with their activity information.
       *
-      * @attribute _users
+      * @attribute _viewers
       * @type Object
       * @default {}
       */
-      _users: {
+      _viewers: {
         type: Object,
         value: {},
       },
@@ -69,20 +69,20 @@
       */
       connectedViewersNum: {
         type: Number,
-        notify: true,
         value: 0,
       },
 
       /**
       * Counts the number of submissions, inherited from asq-exercise.
       *
-      * @attribute submissionsNum
+      * @attribute _submissionsNum
       * @type Number
       * @default 0
       */
-      submissionsNum: {
+      _submissionsNum: {
         type: Number,
         value: 0,
+        computed: '_computeSubmittedViewersNum(_viewers)',
       },
 
       /**
@@ -101,14 +101,14 @@
       /**
       * Counts the number of working users, calculated with the function given
       * in its computed property.
-      * @attribute _workingUsersNum
+      * @attribute _workingViewersNum
       * @type Number
       * @default 0
       */
-      _workingUsersNum:{
+      _workingViewersNum:{
         type: Number,
         value: 0,
-        computed: '_computeWorkingUsersNum(_users)',
+        computed: '_computeWorkingViewersNum(_viewers)',
       },
 
       /**
@@ -127,14 +127,14 @@
       /**
       * Counts the number of focused users, calculated with the function given
       * in its computed property.
-      * @attribute _focusedUsersNum
+      * @attribute _focusedViewersNum
       * @type Number
       * @default 0
       */
-     _focusedUsersNum:{
+     _focusedViewersNum:{
         type: Number,
         value: 0,
-        computed: '_computeFocusedUsersNum(_users)',
+        computed: '_computeFocusedViewersNum(_viewers)',
      },
 
      /**
@@ -154,14 +154,14 @@
      * Counts the number of idle users, calculated with the function given
      * in its computed property.
      *
-     * @attribute _focusedUsersNum
+     * @attribute _focusedViewersNum
      * @type Number
      * @default 0
      */
-     _idleUsersNum:{
+     _idleViewersNum:{
         type: Number,
         value: 0,
-        computed: '_computeIdleUsersNum(_users)',
+        computed: '_computeIdleViewersNum(_viewers)',
      },
 
      /**
@@ -177,46 +177,71 @@
        value: 0,
      },
 
+    //  /**
+    //  * The id of the exercise to which this progress bar belongs.
+    //  *
+    //  * @attribute exUid
+    //  * @type String
+    //  */
+    //  ex: {
+    //    type: String,
+    //    value: '',
+    //  },
+
     },
 
     /**
-    * Computes the amount of working users from the _users object.
+    * Computes the amount of users that have submitted from the _viewers object.
     *
     * @return {number} Number of working users.
     */
-    _computeWorkingUsersNum: function() {
-      let users = this._users;
-      let num = Object.keys(users).reduce(function(acc, userId) {
-        if(users[userId].working) return ++acc;
+    _computeSubmittedViewersNum: function() {
+      let viewers = this._viewers;
+      let num = Object.keys(viewers).reduce(function(acc, userId) {
+        if(viewers[userId].submitted) return ++acc;
         return acc;
       }, 0);
       return num;
     },
 
     /**
-    * Computes the amount of focused users from the _users object.
+    * Computes the amount of working users from the _viewers object.
+    *
+    * @return {number} Number of working users.
+    */
+    _computeWorkingViewersNum: function() {
+      let viewers = this._viewers;
+      let num = Object.keys(viewers).reduce(function(acc, userId) {
+        if(viewers[userId].working) return ++acc;
+        return acc;
+      }, 0);
+      return num;
+    },
+
+    /**
+    * Computes the amount of focused users from the _viewers object.
     *
     * @return {number} Number of focused users.
     */
 
-    _computeFocusedUsersNum: function() {
-      let users = this._users;
-      return Object.keys(users).reduce(function(acc, userId) {
-        if(users[userId].focused && !users[userId].idle) return ++acc;
+    _computeFocusedViewersNum: function() {
+      let viewers = this._viewers;
+      return Object.keys(viewers).reduce(function(acc, userId) {
+        if(viewers[userId].focused && !viewers[userId].idle) return ++acc;
         return acc;
       }, 0);
     },
 
     /**
-    * Computes the amount of idle users from the _users object.
+    * Computes the amount of idle users from the _viewers object.
     *
     * @return {number} Number of idle users.
     */
 
-    _computeIdleUsersNum: function() {
-      let users = this._users;
-      return Object.keys(users).reduce(function(acc, userId) {
-        if(users[userId].idle || users[userId].disconnected) return ++acc
+    _computeIdleViewersNum: function() {
+      let viewers = this._viewers;
+      return Object.keys(viewers).reduce(function(acc, userId) {
+        if(viewers[userId].idle || viewers[userId].disconnected) return ++acc
         return acc;
       }, 0);
     },
@@ -233,14 +258,17 @@
     },
 
     /**
-    * If the given user is not already in the _users object, add him and notify
-    * the observers that the _users object changed.
+    * If the given user is not already in the _viewers object, add him and notify
+    * the observers that the _viewers object changed.
     *
     * @param {object} A user object.
     */
-    _makeSureUserExists: function(userToFind) {
-      this._users[userToFind.id] = this._users[userToFind.id] || userToFind;
-      this._notifyPolymer();
+    _makeSureViewerExists: function(viewerToFind) {
+      if (viewerToFind.role === 'viewer') {
+        this._viewers[viewerToFind.whitelistEntry] = this._viewers[viewerToFind.whitelistEntry] || viewerToFind;
+        this._notifyPolymer();
+      }
+      return this._viewers[viewerToFind.whitelistEntry];
     },
 
     /**
@@ -249,11 +277,13 @@
     * @param {object} A user object.
     */
     _userWorked: function(user) {
-      this._makeSureUserExists(user);
-      if (!this._users[user.id].working) this._workingCounter++;
-      this._resetUser(user);
-      this._users[user.id].working = true;
-      this._notifyPolymer();
+      if (this._makeSureViewerExists(user)) {
+        if (this._viewers[user.whitelistEntry].submitted) return;
+        if (!this._viewers[user.whitelistEntry].working) this._workingCounter++;
+        this._resetUser(user);
+        this._viewers[user.whitelistEntry].working = true;
+        this._notifyPolymer();
+      }
     },
 
     /**
@@ -262,12 +292,13 @@
     * @param {object} A user object.
     */
     _userFocused: function(user) {
-      this._makeSureUserExists(user);
-      if (this._users[user.id].submitted) return;
-      if (!this._users[user.id].focused) this._focusedCounter++;
-      this._resetUser(user);
-      this._users[user.id].focused = true;
-      this._notifyPolymer();
+      if (this._makeSureViewerExists(user)) {
+        if (this._viewers[user.whitelistEntry].submitted) return;
+        if (!this._viewers[user.whitelistEntry].focused) this._focusedCounter++;
+        this._resetUser(user);
+        this._viewers[user.whitelistEntry].focused = true;
+        this._notifyPolymer();
+      }
     },
 
     /**
@@ -276,9 +307,10 @@
     * @param {object} A user object.
     */
     _userMadeTabVisible: function(user) {
-      this._makeSureUserExists(user);
-      this._users[user.id].idle = false;
-      this._notifyPolymer();
+      if (this._makeSureViewerExists(user)) {
+        this._viewers[user.whitelistEntry].idle = false;
+        this._notifyPolymer();
+      }
     },
 
     /**
@@ -287,12 +319,13 @@
     * @param {object} A user object.
     */
     _userIdled: function(user) {
-      this._makeSureUserExists(user);
-      if (this._users[user.id].submitted) return;
-      if (!this._users[user.id].idle) this._idleCounter++;
-      this._resetUser(user);
-      this._users[user.id].idle = true;
-      this._notifyPolymer();
+      if (this._makeSureViewerExists(user)) {
+        if (this._viewers[user.whitelistEntry].submitted) return;
+        if (!this._viewers[user.whitelistEntry].idle) this._idleCounter++;
+        this._resetUser(user);
+        this._viewers[user.whitelistEntry].idle = true;
+        this._notifyPolymer();
+      }
     },
 
     /**
@@ -301,18 +334,19 @@
     * @param {object} A user object.
     */
     _userMadeTabHidden: function(user) {
-      this._makeSureUserExists(user);
-      this._users[user.id].idle = false;
-      this._notifyPolymer();
+      if (this._makeSureViewerExists(user)) {
+        this._viewers[user.whitelistEntry].idle = false;
+        this._notifyPolymer();
+      }
     },
 
     /**
-    * If the given blurred, make sure that he's already in the _users object.
+    * If the given blurred, make sure that he's already in the _viewers object.
     *
     * @param {object} A user object.
     */
     _userBlurred: function(user) {
-      this._makeSureUserExists(user);
+      this._makeSureViewerExists(user)
     },
 
     /**
@@ -321,9 +355,10 @@
     * @param {object} A user object.
     */
     _resetUser: function(user) {
-      this._users[user.id].working = false;
-      this._users[user.id].focused = false;
-      this._users[user.id].idle = false;
+      this._viewers[user.whitelistEntry].submitted = false;
+      this._viewers[user.whitelistEntry].working = false;
+      this._viewers[user.whitelistEntry].focused = false;
+      this._viewers[user.whitelistEntry].idle = false;
     },
 
     /**
@@ -331,32 +366,22 @@
     *
     * @param {object} A user object.
     */
-    _userSubmitted: function(user) {
-      this._makeSureUserExists(user);
-      this._resetUser(user);
-      this._users[user.id].submitted = true;
-      this._submissionCounter++;
+    _userSubmitted: function(data) {
+      if (data.answer.exercise.id == this.ex && this._makeSureViewerExists(data.answeree)) {
+        this._resetUser(data.answeree);
+        this._viewers[data.answeree.whitelistEntry].submitted = true;
+        this._submissionCounter++;
+        this._notifyPolymer();
+      }
     },
 
     /**
     * Change the number of connected users.
     *
-    * @param {object} A user object.
+    * @param {object} An event object.
     */
-    _userConnected: function() {
-      this.connectedViewersNum++;
-    },
-
-
-    /**
-    * Change the number of connected users.
-    *
-    * @param {object} A user object.
-    */
-    _userDisconnected: function(user) {
-      this.connectedViewersNum--;
-      this._resetUser(user);
-      this._notifyPolymer();
+    _onConnectedClients: function (evt) {
+      this.connectedViewersNum = evt.connectedViewers.length;
     },
 
     /**
@@ -364,9 +389,9 @@
     *
     */
     _notifyPolymer: function() {
-      _users = this._users;
-      this._users = {};
-      this._users = _users;
+      _viewers = this._viewers;
+      this._viewers = {};
+      this._viewers = _viewers;
     },
 
     /**
@@ -417,7 +442,7 @@
     * @return {number} The amount of change in percent and in proportion to the number of users.
     */
     _calcChange: function(num) {
-      let total = this.submissionsNum + this._workingUsersNum + this._focusedUsersNum + this._idleUsersNum;
+      let total = this._submissionsNum + this._workingViewersNum + this._focusedViewersNum + this._idleViewersNum;
       return num/total * 100;
     },
 
@@ -451,19 +476,13 @@
     },
 
     _subscribeToEvents: function(eventBus) {
+      eventBus.on('asq:connected-clients', this._onConnectedClients.bind(this));
       eventBus.on('asq:sessionEventBeamer', function(evt) {
         const user = evt.data.sessionEvent.user;
 
         switch (evt.data.sessionEvent.type) {
-          case 'folo-connected':
-          case 'ghost-connected':
-            return this._userConnected();
-          case 'folo-disconnected':
-          case 'ghost-disconnected':
-          case 'ctrl-disconnected':
-            return this._userDisconnected(user);
           case 'answer-submitted':
-            return this._userSubmitted(evt.data.sessionEvent.answeree);
+            return this._userSubmitted(evt.data.sessionEvent);
           case 'viewer-idle':
             return this._userIdled(user);
           case 'questioninput':
