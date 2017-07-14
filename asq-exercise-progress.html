@@ -82,7 +82,7 @@
       _submissionsNum: {
         type: Number,
         value: 0,
-        computed: '_computeSubmittedViewersNum(_viewers)',
+        computed: '_computeSubmittedViewersNum(_viewers.*)',
       },
 
       /**
@@ -108,7 +108,7 @@
       _workingViewersNum:{
         type: Number,
         value: 0,
-        computed: '_computeWorkingViewersNum(_viewers)',
+        computed: '_computeWorkingViewersNum(_viewers.*)',
       },
 
       /**
@@ -134,7 +134,7 @@
      _focusedViewersNum:{
         type: Number,
         value: 0,
-        computed: '_computeFocusedViewersNum(_viewers)',
+        computed: '_computeFocusedViewersNum(_viewers.*)',
      },
 
      /**
@@ -161,7 +161,7 @@
      _idleViewersNum:{
         type: Number,
         value: 0,
-        computed: '_computeIdleViewersNum(_viewers)',
+        computed: '_computeIdleViewersNum(_viewers.*)',
      },
 
      /**
@@ -196,9 +196,10 @@
     * @return {number} Number of working users.
     */
     _computeSubmittedViewersNum: function() {
-      let viewers = this._viewers;
-      let num = Object.keys(viewers).reduce(function(acc, userId) {
-        if(viewers[userId].submitted) return ++acc;
+      var viewers = this._viewers;
+      var that = this;
+      var num = Object.keys(viewers).reduce(function(acc, userId) {
+        if(viewers[userId].submitted == that.exUid) return ++acc;
         return acc;
       }, 0);
       return num;
@@ -210,8 +211,8 @@
     * @return {number} Number of working users.
     */
     _computeWorkingViewersNum: function() {
-      let viewers = this._viewers;
-      let num = Object.keys(viewers).reduce(function(acc, userId) {
+      var viewers = this._viewers;
+      var num = Object.keys(viewers).reduce(function(acc, userId) {
         if(viewers[userId].working) return ++acc;
         return acc;
       }, 0);
@@ -225,7 +226,7 @@
     */
 
     _computeFocusedViewersNum: function() {
-      let viewers = this._viewers;
+      var viewers = this._viewers;
       return Object.keys(viewers).reduce(function(acc, userId) {
         if(viewers[userId].focused && !viewers[userId].idle) return ++acc;
         return acc;
@@ -239,7 +240,7 @@
     */
 
     _computeIdleViewersNum: function() {
-      let viewers = this._viewers;
+      var viewers = this._viewers;
       return Object.keys(viewers).reduce(function(acc, userId) {
         if(viewers[userId].idle || viewers[userId].disconnected) return ++acc
         return acc;
@@ -266,7 +267,7 @@
     _makeSureViewerExists: function(viewerToFind) {
       if (viewerToFind.role === 'viewer') {
         this._viewers[viewerToFind.id] = this._viewers[viewerToFind.id] || viewerToFind;
-        this._notifyPolymer();
+        this.notifyPath('_viewers.' + viewerToFind.id);
       }
       return this._viewers[viewerToFind.id];
     },
@@ -282,7 +283,7 @@
         if (!this._viewers[user.id].working) this._workingCounter++;
         this._resetUser(user);
         this._viewers[user.id].working = true;
-        this._notifyPolymer();
+        this.notifyPath('_viewers.' + user.id + '.' + 'working');
       }
     },
 
@@ -297,7 +298,7 @@
         if (!this._viewers[user.id].focused) this._focusedCounter++;
         this._resetUser(user);
         this._viewers[user.id].focused = true;
-        this._notifyPolymer();
+        this.notifyPath('_viewers.' + user.id + '.' + 'focused');
       }
     },
 
@@ -309,7 +310,7 @@
     _userMadeTabVisible: function(user) {
       if (this._makeSureViewerExists(user)) {
         this._viewers[user.id].idle = false;
-        this._notifyPolymer();
+        this.notifyPath('_viewers.' + user.id + '.' + 'idle');
       }
     },
 
@@ -324,7 +325,7 @@
         if (!this._viewers[user.id].idle) this._idleCounter++;
         this._resetUser(user);
         this._viewers[user.id].idle = true;
-        this._notifyPolymer();
+        this.notifyPath('_viewers.' + user.id + '.' + 'idle');
       }
     },
 
@@ -336,7 +337,7 @@
     _userMadeTabHidden: function(user) {
       if (this._makeSureViewerExists(user)) {
         this._viewers[user.id].idle = false;
-        this._notifyPolymer();
+        this.notifyPath('_viewers.' + user.id + '.' + 'idle');
       }
     },
 
@@ -356,9 +357,13 @@
     */
     _resetUser: function(user) {
       this._viewers[user.id].submitted = false;
+      this.notifyPath('_viewers.' + user.id + '.' + 'submitted');
       this._viewers[user.id].working = false;
+      this.notifyPath('_viewers.' + user.id + '.' + 'working');
       this._viewers[user.id].focused = false;
+      this.notifyPath('_viewers.' + user.id + '.' + 'focused');
       this._viewers[user.id].idle = false;
+      this.notifyPath('_viewers.' + user.id + '.' + 'idle');
     },
 
     /**
@@ -367,17 +372,13 @@
     * @param {object} Data from the session event.
     */
     _userSubmitted: function(data) {
-      console.log("viewers before: ");
-      console.log(this._viewers[data.answeree.id].submitted);
-      if (data.answer.exercise.id == this.ex && this._makeSureViewerExists(data.answeree)) {
-        console.log("yep, I am tha exercise");
+      if (data.answer.exercise.id == this.exUid && this._makeSureViewerExists(data.answeree)) {
         this._resetUser(data.answeree);
-        this._viewers[data.answeree.id].submitted = true;
+        this._viewers[data.answeree.id].submitted = data.answer.exercise.id;
+        var path = '_viewers.' + data.answeree.id + '.' + 'submitted';
+        this.notifyPath(path, data.answer.exercise.id);
         this._submissionCounter++;
-        this._notifyPolymer();
       }
-      console.log("viewers after:");
-      console.log(this._viewers[data.answeree.id].submitted);
     },
 
     /**
@@ -390,23 +391,13 @@
     },
 
     /**
-    * Function to trigger the observers.
-    *
-    */
-    _notifyPolymer: function() {
-      _viewers = this._viewers;
-      this._viewers = function() { return {} }();
-      this._viewers = function() { return _viewers; }();
-    },
-
-    /**
     * Changes the css variable for the paper progress indeterminate cycle duration.
     *
     * @param {string} The css variable that will be changed.
     * @param {number} Duration of the animation cycle, given in seconds.
     */
     _setVelocity:  function(property, velocity) {
-      let that = this;
+      var that = this;
       this.customStyle[property] = velocity + 's';
       this.updateStyles();
       setTimeout(function() {
@@ -420,13 +411,13 @@
     *
     */
     _visualizeChange: function() {
-      let that = this;
+      var that = this;
 
       setInterval(function() {
-        let submissionChange = that._calcChange(that._submissionCounter);
-        let workingChange = that._calcChange(that._workingCounter);
-        let focusedChange = that._calcChange(that._focusedCounter);
-        let idleChange = that._calcChange(that._idleCounter);
+        var submissionChange = that._calcChange(that._submissionCounter);
+        var workingChange = that._calcChange(that._workingCounter);
+        var focusedChange = that._calcChange(that._focusedCounter);
+        var idleChange = that._calcChange(that._idleCounter);
 
         that._setVelocity('--submitted-bar-duration', that._determineVelocity(submissionChange));
         that._setVelocity('--working-bar-duration',  that._determineVelocity(workingChange));
@@ -447,7 +438,7 @@
     * @return {number} The amount of change in percent and in proportion to the number of users.
     */
     _calcChange: function(num) {
-      let total = this._submissionsNum + this._workingViewersNum + this._focusedViewersNum + this._idleViewersNum;
+      var total = this._submissionsNum + this._workingViewersNum + this._focusedViewersNum + this._idleViewersNum;
       return num/total * 100;
     },
 
