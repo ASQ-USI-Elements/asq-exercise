@@ -57,7 +57,7 @@
       */
       _viewers: {
         type: Object,
-        value: {},
+        value: function() { return {}; },
       },
 
       /**
@@ -265,10 +265,10 @@
     */
     _makeSureViewerExists: function(viewerToFind) {
       if (viewerToFind.role === 'viewer') {
-        this._viewers[viewerToFind.whitelistEntry] = this._viewers[viewerToFind.whitelistEntry] || viewerToFind;
+        this._viewers[viewerToFind.id] = this._viewers[viewerToFind.id] || viewerToFind;
         this._notifyPolymer();
       }
-      return this._viewers[viewerToFind.whitelistEntry];
+      return this._viewers[viewerToFind.id];
     },
 
     /**
@@ -278,10 +278,10 @@
     */
     _userWorked: function(user) {
       if (this._makeSureViewerExists(user)) {
-        if (this._viewers[user.whitelistEntry].submitted) return;
-        if (!this._viewers[user.whitelistEntry].working) this._workingCounter++;
+        if (this._viewers[user.id].submitted) return;
+        if (!this._viewers[user.id].working) this._workingCounter++;
         this._resetUser(user);
-        this._viewers[user.whitelistEntry].working = true;
+        this._viewers[user.id].working = true;
         this._notifyPolymer();
       }
     },
@@ -293,10 +293,10 @@
     */
     _userFocused: function(user) {
       if (this._makeSureViewerExists(user)) {
-        if (this._viewers[user.whitelistEntry].submitted) return;
-        if (!this._viewers[user.whitelistEntry].focused) this._focusedCounter++;
+        if (this._viewers[user.id].submitted) return;
+        if (!this._viewers[user.id].focused) this._focusedCounter++;
         this._resetUser(user);
-        this._viewers[user.whitelistEntry].focused = true;
+        this._viewers[user.id].focused = true;
         this._notifyPolymer();
       }
     },
@@ -308,7 +308,7 @@
     */
     _userMadeTabVisible: function(user) {
       if (this._makeSureViewerExists(user)) {
-        this._viewers[user.whitelistEntry].idle = false;
+        this._viewers[user.id].idle = false;
         this._notifyPolymer();
       }
     },
@@ -320,10 +320,10 @@
     */
     _userIdled: function(user) {
       if (this._makeSureViewerExists(user)) {
-        if (this._viewers[user.whitelistEntry].submitted) return;
-        if (!this._viewers[user.whitelistEntry].idle) this._idleCounter++;
+        if (this._viewers[user.id].submitted) return;
+        if (!this._viewers[user.id].idle) this._idleCounter++;
         this._resetUser(user);
-        this._viewers[user.whitelistEntry].idle = true;
+        this._viewers[user.id].idle = true;
         this._notifyPolymer();
       }
     },
@@ -335,7 +335,7 @@
     */
     _userMadeTabHidden: function(user) {
       if (this._makeSureViewerExists(user)) {
-        this._viewers[user.whitelistEntry].idle = false;
+        this._viewers[user.id].idle = false;
         this._notifyPolymer();
       }
     },
@@ -355,24 +355,29 @@
     * @param {object} A user object.
     */
     _resetUser: function(user) {
-      this._viewers[user.whitelistEntry].submitted = false;
-      this._viewers[user.whitelistEntry].working = false;
-      this._viewers[user.whitelistEntry].focused = false;
-      this._viewers[user.whitelistEntry].idle = false;
+      this._viewers[user.id].submitted = false;
+      this._viewers[user.id].working = false;
+      this._viewers[user.id].focused = false;
+      this._viewers[user.id].idle = false;
     },
 
     /**
     * Mark that the given user submitted and change the corresponding counter.
     *
-    * @param {object} A user object.
+    * @param {object} Data from the session event.
     */
     _userSubmitted: function(data) {
+      console.log("viewers before: ");
+      console.log(this._viewers[data.answeree.id].submitted);
       if (data.answer.exercise.id == this.ex && this._makeSureViewerExists(data.answeree)) {
+        console.log("yep, I am tha exercise");
         this._resetUser(data.answeree);
-        this._viewers[data.answeree.whitelistEntry].submitted = true;
+        this._viewers[data.answeree.id].submitted = true;
         this._submissionCounter++;
         this._notifyPolymer();
       }
+      console.log("viewers after:");
+      console.log(this._viewers[data.answeree.id].submitted);
     },
 
     /**
@@ -390,8 +395,8 @@
     */
     _notifyPolymer: function() {
       _viewers = this._viewers;
-      this._viewers = {};
-      this._viewers = _viewers;
+      this._viewers = function() { return {} }();
+      this._viewers = function() { return _viewers; }();
     },
 
     /**
