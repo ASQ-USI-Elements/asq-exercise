@@ -4,7 +4,7 @@
 
 <dom-module id="asq-exercise-progress">
   <template>
-    <style include="iron-flex">
+    <style include="iron-flex asq-exercise-progress-style">
       :host {
         display: block;
         position: relative;
@@ -13,8 +13,6 @@
         margin: 10px 0 5px 0;
       }
     </style>
-
-    <style include="asq-exercise-progress-style"></style>
 
     <div class="progress-bar-container background-progress">
       <paper-progress id="background-submitted-progress" indeterminate style$=[[_calcFlex(_submissionsNum)]]></paper-progress>
@@ -197,11 +195,10 @@
     */
     _computeSubmittedViewersNum: function() {
       var viewers = this._viewers;
-      var that = this;
       var num = Object.keys(viewers).reduce(function(acc, userId) {
-        if(viewers[userId].submitted == that.exUid) return ++acc;
+        if(viewers[userId].submitted == this.exUid) return ++acc;
         return acc;
-      }, 0);
+      }.bind(this), 0);
       return num;
     },
 
@@ -252,10 +249,10 @@
     * by changing its flex property.
     *
     * @param {number} The new flex value.
-    * @return {string} String of the form "flex: num;"
+    * @return {string} String of the form 'flex: num;'
     */
     _calcFlex: function(num) {
-      return "flex:" + num + ";";
+      return 'flex:' + num + ';';
     },
 
     /**
@@ -397,13 +394,12 @@
     * @param {number} Duration of the animation cycle, given in seconds.
     */
     _setVelocity:  function(property, velocity) {
-      var that = this;
       this.customStyle[property] = velocity + 's';
       this.updateStyles();
       setTimeout(function() {
-        that.customStyle[property] = '0s';
-        that.updateStyles();
-      }, velocity * 1000);
+        this.customStyle[property] = '0s';
+        this.updateStyles();
+      }.bind(this), velocity * 1000);
     },
 
     /**
@@ -411,24 +407,22 @@
     *
     */
     _visualizeChange: function() {
-      var that = this;
-
       setInterval(function() {
-        var submissionChange = that._calcChange(that._submissionCounter);
-        var workingChange = that._calcChange(that._workingCounter);
-        var focusedChange = that._calcChange(that._focusedCounter);
-        var idleChange = that._calcChange(that._idleCounter);
+        var submissionChange = this._calcChange(this._submissionCounter);
+        var workingChange = this._calcChange(this._workingCounter);
+        var focusedChange = this._calcChange(this._focusedCounter);
+        var idleChange = this._calcChange(this._idleCounter);
 
-        that._setVelocity('--submitted-bar-duration', that._determineVelocity(submissionChange));
-        that._setVelocity('--working-bar-duration',  that._determineVelocity(workingChange));
-        that._setVelocity('--focused-bar-duration',  that._determineVelocity(focusedChange));
-        that._setVelocity('--idle-bar-duration',  that._determineVelocity(idleChange));
+        this._setVelocity('--submitted-bar-duration', this._determineVelocity(submissionChange));
+        this._setVelocity('--working-bar-duration',  this._determineVelocity(workingChange));
+        this._setVelocity('--focused-bar-duration',  this._determineVelocity(focusedChange));
+        this._setVelocity('--idle-bar-duration',  this._determineVelocity(idleChange));
 
-        that._submissionCounter = 0;
-        that._workingCounter = 0;
-        that._focusedCounter = 0;
-        that._idleCounter = 0;
-      }, 5000);
+        this._submissionCounter = 0;
+        this._workingCounter = 0;
+        this._focusedCounter = 0;
+        this._idleCounter = 0;
+      }.bind(this), 5000);
     },
 
     /**
