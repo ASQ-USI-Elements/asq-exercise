@@ -388,6 +388,39 @@
     },
 
     /**
+    * Event handler for session event beamer events.
+    *
+    * @param {object} An event object.
+    */
+    _onSessionEventBeamer: function(evt) {
+      const user = evt.data.sessionEvent.user;
+
+      switch (evt.data.sessionEvent.type) {
+        case 'answer-submitted':
+          return this._userSubmitted(evt.data.sessionEvent);
+        case 'viewer-idle':
+          return this._userIdled(user);
+        case 'questioninput':
+        case 'copy':
+        case 'paste':
+        case 'cut':
+        case 'input':
+          return this._userWorked(user);
+        case 'tabvisible':
+          return this._userMadeTabVisible(user);
+        case 'tabhidden':
+          return this._userMadeTabHidden(user);
+        case 'focusin':
+        case 'exercisefocus':
+        case 'windowfocus':
+          return this._userFocused(user);
+        case 'exerciseblur':
+        case 'windowblur':
+          return this._userBlurred(user);
+      }
+    }
+
+    /**
     * Changes the css variable for the paper progress indeterminate cycle duration.
     *
     * @param {string} The css variable that will be changed.
@@ -467,33 +500,7 @@
 
     _subscribeToEvents: function(eventBus) {
       eventBus.on('asq:connected-clients', this._onConnectedClients.bind(this));
-      eventBus.on('asq:sessionEventBeamer', function(evt) {
-        const user = evt.data.sessionEvent.user;
-
-        switch (evt.data.sessionEvent.type) {
-          case 'answer-submitted':
-            return this._userSubmitted(evt.data.sessionEvent);
-          case 'viewer-idle':
-            return this._userIdled(user);
-          case 'questioninput':
-          case 'copy':
-          case 'paste':
-          case 'cut':
-          case 'input':
-            return this._userWorked(user);
-          case 'tabvisible':
-            return this._userMadeTabVisible(user);
-          case 'tabhidden':
-            return this._userMadeTabHidden(user);
-          case 'focusin':
-          case 'exercisefocus':
-          case 'windowfocus':
-            return this._userFocused(user);
-          case 'exerciseblur':
-          case 'windowblur':
-            return this._userBlurred(user);
-        }
-      }.bind(this));
+      eventBus.on('asq:sessionEventBeamer', this._onSessionEventBeamer.bind(this));
     },
 
   });
