@@ -2,6 +2,47 @@
 <link rel="import" href="../asq-base/asq-base.html">
 <link rel="import" href="asq-exercise-progress-style.html">
 
+<!--
+### Styling progress bar (in presenter's view):
+
+The followings are available for styling (presenter's view):
+
+Custom property                                    | Description                                 | Default
+---------------------------------------------------|---------------------------------------------|----------
+--asq-exercise-progress-height                     | The height of the progress bar              | 4px
+--asq-exercise-progress-submitted-color            | The color of the submission bar.            | --google-green-500
+--asq-exercise-progress-working-color              | The color of the working users bar.         | --paper-orange-500
+--asq-exercise-progress-focused-color              | The color of the focused users bar.         | --paper-blue-200
+--asq-exercise-progress-idle-color                 | The color of the idle users bar.            | --google-grey-500
+--asq-exercise-progressbar-background-color        | The color of the empty progress bar.        | --google-grey-300
+--asq-exercise-progress-num-mixin                  | The mixin to style the progress numbers of the progress bar. | { }
+
+
+Examples:
+
+- To change the submitted progress bar color:
+      asq-exercise {
+        --asq-exercise-progress-submitted-color: #e91e63;
+      }
+
+- To change the style of the progress numbers:
+      asq-exercise {
+        --asq-exercise-progress-progress-num-mixin: {
+          font-size: 20px;
+          padding: 2px;
+        };
+      }
+
+
+@element asq-exercise-progress
+@demo demo/asq-exercise-progress.html
+@group ASQ Elements
+@blurb Element Container the progress bar.
+@homepage http://github.com/ASQ-USI-Elements/asq-exercise/asq-exercise-progress.html
+
+-->
+
+
 <dom-module id="asq-exercise-progress">
   <template>
     <style include="iron-flex asq-exercise-progress-style">
@@ -418,7 +459,7 @@
         case 'windowblur':
           return this._userBlurred(user);
       }
-    }
+    },
 
     /**
     * Changes the css variable for the paper progress indeterminate cycle duration.

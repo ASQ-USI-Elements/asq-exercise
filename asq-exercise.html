@@ -77,51 +77,7 @@ Custom property                                        | Description            
 --asq-exercise-submit-button-disabled-color            | The color of submit button when disabled        | #E0E0E0
 --asq-exercise-submit-button-background-disabled-color | The background color of submit button disabled  | #424242
 
-
-### Styling progress bar (in presenter's view):
-
-To change the submitted progress bar color:
-
-    asq-exercise {
-       --asq-exercise-progress-submitted-color: #e91e63;
-    }
-
-To change the working progress bar color:
-
-    asq-exercise {
-       --asq-exercise-progress-working-color: #e91e63;
-    }
-
-To change the focused progress bar color:
-
-    asq-exercise {
-       --asq-exercise-progress-focused-color: #e91e63;
-    }
-
-To change the idle progress bar color:
-
-    asq-exercise {
-       --asq-exercise-progress-idle-color: #e91e63;
-    }
-
-To change the progress bar background color:
-
-    asq-exercise {
-      --asq-exercise-progress-container-color: #64ffda;
-    }
-
-
-The followings are available for styling (presenter's view) ( adapted from PolymerElements/paper-progress):
-
-Custom property                                    | Description                                 | Default
----------------------------------------------------|---------------------------------------------|----------
---asq-exercise-progress-container-color            | Mixin applied to container                  | --google-grey-300
---asq-exercise-progress-transition-duration        | Duration of the transition                  | 0.008s
---asq-exercise-progress-transition-timing-function | The timing function for the transition      | ease
---asq-exercise-progress-transition-delay           | delay for the transition                    | 0s
---asq-exercise-progress-active-color               | The color of the active bar                 | --google-green-500
---asq-exercise-progress-disabled-active-color      | The color of the active bar if disabled     | --google-grey-500
---asq-exercise-progress-height                     | The height of the progress bar              | 4px
+To see how to style the progressbar, go to the asq-exercise-progress docs.
 
 @element asq-exercise
 @demo demo/index.html

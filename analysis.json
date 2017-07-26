@@ -450,7 +450,7 @@
       "tagname": "asq-confidence"
     },
     {
-      "description": "",
+      "description": "### Styling progress bar (in presenter's view):\n\nThe followings are available for styling (presenter's view):\n\nCustom property                                    | Description                                 | Default\n---------------------------------------------------|---------------------------------------------|----------\n--asq-exercise-progress-height                     | The height of the progress bar              | 4px\n--asq-exercise-progress-submitted-color            | The color of the submission bar.            | --google-green-500\n--asq-exercise-progress-working-color              | The color of the working users bar.         | --paper-orange-500\n--asq-exercise-progress-focused-color              | The color of the focused users bar.         | --paper-blue-200\n--asq-exercise-progress-idle-color                 | The color of the idle users bar.            | --google-grey-500\n--asq-exercise-progressbar-background-color        | The color of the empty progress bar.        | --google-grey-300\n--asq-exercise-progress-num-mixin                  | The mixin to style the progress numbers of the progress bar. | { }\n\n\nExamples:\n\n- To change the submitted progress bar color:\n      asq-exercise {\n        --asq-exercise-progress-submitted-color: #e91e63;\n      }\n\n- To change the style of the progress numbers:\n      asq-exercise {\n        --asq-exercise-progress-progress-num-mixin: {\n          font-size: 20px;\n          padding: 2px;\n        };\n      }",
       "summary": "",
       "path": "asq-exercise-progress.html",
       "properties": [
@@ -575,57 +575,57 @@
           "inheritedFrom": "roleBehavior"
         },
         {
-          "name": "_users",
+          "name": "_viewers",
           "type": "Object",
-          "description": "",
+          "description": "Object that contains viewers with their activity information.",
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 43,
+              "line": 96,
               "column": 6
             },
             "end": {
-              "line": 46,
+              "line": 99,
               "column": 7
             }
           },
           "metadata": {
             "polymer": {}
-          }
+          },
+          "defaultValue": "{}"
         },
         {
-          "name": "submissionsNum",
-          "type": "?",
-          "description": "",
+          "name": "connectedViewersNum",
+          "type": "number",
+          "description": "Counts the number of currently connected viewers.",
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 48,
+              "line": 108,
               "column": 6
             },
             "end": {
-              "line": 50,
+              "line": 111,
               "column": 7
             }
           },
           "metadata": {
-            "polymer": {
-              "observer": "\"_changedSubmissionsNum\""
-            }
-          }
+            "polymer": {}
+          },
+          "defaultValue": "0"
         },
         {
-          "name": "_workingUsersNum",
+          "name": "_submissionsNum",
           "type": "number",
-          "description": "",
+          "description": "Counts the number of submissions, inherited from asq-exercise.",
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 52,
+              "line": 120,
               "column": 6
             },
             "end": {
-              "line": 56,
+              "line": 124,
               "column": 7
             }
           },
@@ -637,17 +637,79 @@
           "defaultValue": "0"
         },
         {
-          "name": "_focusedUsersNum",
+          "name": "_submissionCounter",
           "type": "number",
-          "description": "",
+          "description": "Counts the number of submissions during a given time interval\nby the _visualizeChange function.",
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 58,
+              "line": 134,
+              "column": 6
+            },
+            "end": {
+              "line": 137,
+              "column": 7
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          },
+          "defaultValue": "0"
+        },
+        {
+          "name": "_workingViewersNum",
+          "type": "number",
+          "description": "Counts the number of working users, calculated with the function given\nin its computed property.",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 146,
+              "column": 6
+            },
+            "end": {
+              "line": 150,
+              "column": 7
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "readOnly": true
+            }
+          },
+          "defaultValue": "0"
+        },
+        {
+          "name": "_workingCounter",
+          "type": "number",
+          "description": "Counts the number of working users during a given time interval\nby the _visualizeChange function.",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 160,
+              "column": 6
+            },
+            "end": {
+              "line": 163,
+              "column": 7
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          },
+          "defaultValue": "0"
+        },
+        {
+          "name": "_focusedViewersNum",
+          "type": "number",
+          "description": "Counts the number of focused users, calculated with the function given\nin its computed property.",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 172,
               "column": 5
             },
             "end": {
-              "line": 62,
+              "line": 176,
               "column": 6
             }
           },
@@ -659,17 +721,37 @@
           "defaultValue": "0"
         },
         {
-          "name": "_idleUsersNum",
+          "name": "_focusedCounter",
           "type": "number",
-          "description": "",
+          "description": "Counts the number of focused users during a given time interval\nby the _visualizeChange function.",
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 64,
+              "line": 186,
               "column": 5
             },
             "end": {
-              "line": 68,
+              "line": 189,
+              "column": 6
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          },
+          "defaultValue": "0"
+        },
+        {
+          "name": "_idleViewersNum",
+          "type": "number",
+          "description": "Counts the number of idle users, calculated with the function given\nin its computed property.",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 199,
+              "column": 5
+            },
+            "end": {
+              "line": 203,
               "column": 6
             }
           },
@@ -677,6 +759,26 @@
             "polymer": {
               "readOnly": true
             }
+          },
+          "defaultValue": "0"
+        },
+        {
+          "name": "_idleCounter",
+          "type": "number",
+          "description": "Counts the number of idle users during a given time interval\nby the _visualizeChange function.",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 213,
+              "column": 5
+            },
+            "end": {
+              "line": 216,
+              "column": 6
+            }
+          },
+          "metadata": {
+            "polymer": {}
           },
           "defaultValue": "0"
         }
@@ -781,16 +883,58 @@
           "inheritedFrom": "roleBehavior"
         },
         {
-          "name": "_addUsers",
-          "description": "function to add fake users, will be removed later",
+          "name": "_computeSubmittedViewersNum",
+          "description": "Computes the amount of users that have submitted from the _viewers object.",
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 73,
+              "line": 236,
               "column": 4
             },
             "end": {
-              "line": 87,
+              "line": 243,
+              "column": 5
+            }
+          },
+          "metadata": {},
+          "params": [],
+          "return": {
+            "type": "number",
+            "desc": "Number of working users."
+          }
+        },
+        {
+          "name": "_computeWorkingViewersNum",
+          "description": "Computes the amount of working users from the _viewers object.",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 250,
+              "column": 4
+            },
+            "end": {
+              "line": 257,
+              "column": 5
+            }
+          },
+          "metadata": {},
+          "params": [],
+          "return": {
+            "type": "number",
+            "desc": "Number of working users."
+          }
+        },
+        {
+          "name": "_computeFocusedViewersNum",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 265,
+              "column": 4
+            },
+            "end": {
+              "line": 271,
               "column": 5
             }
           },
@@ -798,50 +942,16 @@
           "params": []
         },
         {
-          "name": "_computeWorkingUsersNum",
+          "name": "_computeIdleViewersNum",
           "description": "",
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 89,
+              "line": 279,
               "column": 4
             },
             "end": {
-              "line": 96,
-              "column": 5
-            }
-          },
-          "metadata": {},
-          "params": []
-        },
-        {
-          "name": "_computeFocusedUsersNum",
-          "description": "",
-          "privacy": "protected",
-          "sourceRange": {
-            "start": {
-              "line": 98,
-              "column": 4
-            },
-            "end": {
-              "line": 104,
-              "column": 5
-            }
-          },
-          "metadata": {},
-          "params": []
-        },
-        {
-          "name": "_computeIdleUsersNum",
-          "description": "",
-          "privacy": "protected",
-          "sourceRange": {
-            "start": {
-              "line": 106,
-              "column": 4
-            },
-            "end": {
-              "line": 112,
+              "line": 285,
               "column": 5
             }
           },
@@ -850,15 +960,15 @@
         },
         {
           "name": "_calcFlex",
-          "description": "",
+          "description": "Returns a CSS declaration as a string to change the width of the progress bar\nby changing its flex property.",
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 114,
+              "line": 294,
               "column": 4
             },
             "end": {
-              "line": 116,
+              "line": 296,
               "column": 5
             }
           },
@@ -867,40 +977,44 @@
             {
               "name": "num"
             }
-          ]
+          ],
+          "return": {
+            "type": "string",
+            "desc": "String of the form 'flex: num;'"
+          }
         },
         {
-          "name": "_makeSureUserExists",
-          "description": "",
+          "name": "_makeSureViewerExists",
+          "description": "If the given user is not already in the _viewers object, add him and notify\nthe observers that the _viewers object changed.",
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 118,
+              "line": 304,
               "column": 4
             },
             "end": {
-              "line": 120,
+              "line": 310,
               "column": 5
             }
           },
           "metadata": {},
           "params": [
             {
-              "name": "userToFind"
+              "name": "viewerToFind"
             }
           ]
         },
         {
           "name": "_userWorked",
-          "description": "",
+          "description": "Mark the given user as working.",
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 122,
+              "line": 317,
               "column": 4
             },
             "end": {
-              "line": 126,
+              "line": 325,
               "column": 5
             }
           },
@@ -913,15 +1027,15 @@
         },
         {
           "name": "_userFocused",
-          "description": "",
+          "description": "Mark the given user as focused.",
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 128,
+              "line": 332,
               "column": 4
             },
             "end": {
-              "line": 132,
+              "line": 340,
               "column": 5
             }
           },
@@ -934,15 +1048,15 @@
         },
         {
           "name": "_userMadeTabVisible",
-          "description": "",
+          "description": "If the given user was idle, change his idle property and mark him as not idle.",
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 134,
+              "line": 347,
               "column": 4
             },
             "end": {
-              "line": 137,
+              "line": 352,
               "column": 5
             }
           },
@@ -955,15 +1069,15 @@
         },
         {
           "name": "_userIdled",
-          "description": "",
+          "description": "Mark the given user as idle.",
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 139,
+              "line": 359,
               "column": 4
             },
             "end": {
-              "line": 143,
+              "line": 367,
               "column": 5
             }
           },
@@ -976,15 +1090,15 @@
         },
         {
           "name": "_userMadeTabHidden",
-          "description": "",
+          "description": "If the given user was idle, change his idle property and mark him as not idle.",
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 145,
+              "line": 374,
               "column": 4
             },
             "end": {
-              "line": 148,
+              "line": 379,
               "column": 5
             }
           },
@@ -997,15 +1111,15 @@
         },
         {
           "name": "_userBlurred",
-          "description": "",
+          "description": "If the given blurred, make sure that he's already in the _viewers object.",
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 150,
+              "line": 386,
               "column": 4
             },
             "end": {
-              "line": 152,
+              "line": 388,
               "column": 5
             }
           },
@@ -1018,15 +1132,15 @@
         },
         {
           "name": "_resetUser",
-          "description": "",
+          "description": "Reset all the activity properties of the given user.",
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 154,
+              "line": 395,
               "column": 4
             },
             "end": {
-              "line": 158,
+              "line": 404,
               "column": 5
             }
           },
@@ -1038,16 +1152,103 @@
           ]
         },
         {
-          "name": "_changedSubmissionsNum",
-          "description": "",
+          "name": "_userSubmitted",
+          "description": "Mark that the given user submitted and change the corresponding counter.",
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 160,
+              "line": 411,
               "column": 4
             },
             "end": {
-              "line": 162,
+              "line": 419,
+              "column": 5
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "data"
+            }
+          ]
+        },
+        {
+          "name": "_onConnectedClients",
+          "description": "Change the number of connected users.",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 426,
+              "column": 4
+            },
+            "end": {
+              "line": 428,
+              "column": 5
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "evt"
+            }
+          ]
+        },
+        {
+          "name": "_onSessionEventBeamer",
+          "description": "Event handler for session event beamer events.",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 435,
+              "column": 4
+            },
+            "end": {
+              "line": 461,
+              "column": 5
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "evt"
+            }
+          ]
+        },
+        {
+          "name": "_setVelocity",
+          "description": "Changes the css variable for the paper progress indeterminate cycle duration.",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 469,
+              "column": 4
+            },
+            "end": {
+              "line": 476,
+              "column": 5
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "property"
+            },
+            {
+              "name": "velocity"
+            }
+          ]
+        },
+        {
+          "name": "_visualizeChange",
+          "description": "Animates the progress bar every 5 seconds depending on the activity.",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 482,
+              "column": 4
+            },
+            "end": {
+              "line": 499,
               "column": 5
             }
           },
@@ -1055,33 +1256,109 @@
           "params": []
         },
         {
-          "name": "ready",
+          "name": "_calcChange",
+          "description": "Calculate the amount of change of a given activity.",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 507,
+              "column": 4
+            },
+            "end": {
+              "line": 510,
+              "column": 5
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "num"
+            }
+          ],
+          "return": {
+            "type": "number",
+            "desc": "The amount of change in percent and in proportion to the number of users."
+          }
+        },
+        {
+          "name": "_determineVelocity",
+          "description": "Get the velocity for the paper progress indeterminate cycle.",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 519,
+              "column": 4
+            },
+            "end": {
+              "line": 528,
+              "column": 5
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "num"
+            }
+          ],
+          "return": {
+            "type": "number",
+            "desc": "Returns a number in seconds for the duration of one paper progress\nindeterminate cycle."
+          }
+        },
+        {
+          "name": "created",
           "description": "",
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 164,
+              "line": 530,
               "column": 4
             },
             "end": {
-              "line": 166,
+              "line": 539,
               "column": 5
             }
           },
           "metadata": {},
           "params": []
+        },
+        {
+          "name": "_subscribeToEvents",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 541,
+              "column": 4
+            },
+            "end": {
+              "line": 544,
+              "column": 5
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "eventBus"
+            }
+          ]
         }
       ],
       "staticMethods": [],
-      "demos": [],
+      "demos": [
+        {
+          "url": "demo/asq-exercise-progress.html",
+          "description": ""
+        }
+      ],
       "metadata": {},
       "sourceRange": {
         "start": {
-          "line": 35,
+          "line": 81,
           "column": 10
         },
         "end": {
-          "line": 167,
+          "line": 546,
           "column": 3
         }
       },
@@ -1179,19 +1456,20 @@
           "inheritedFrom": "roleBehavior"
         },
         {
-          "name": "submissions-num",
-          "description": "",
+          "name": "connected-viewers-num",
+          "description": "Counts the number of currently connected viewers.",
           "sourceRange": {
             "start": {
-              "line": 48,
+              "line": 108,
               "column": 6
             },
             "end": {
-              "line": 50,
+              "line": 111,
               "column": 7
             }
           },
-          "metadata": {}
+          "metadata": {},
+          "type": "number"
         }
       ],
       "events": [
@@ -1232,7 +1510,7 @@
       "tagname": "asq-exercise-progress"
     },
     {
-      "description": "`asq-exercise` groups ASQ `question types`. Every question should be be a child\nof an `asq-exercise` element. An `asq-exercise` element should conatin one ore\nmore  `ASQ questions`. `asq-exercise` takes care of submitting and displaying\nprogress for a group of questions.\n\nExample:\n\n    <asq-exercise\n      <asq-stem><h2>Exercise 1-1</h2></asq-stem>\n      <asq-multi-choice-q>\n        <asq-stem><h3>Select a functional language.</h3></asq-stem>\n        <asq-option checked>Haskell</asq-option>\n        <asq-option>C</asq-option>\n        <asq-option>Python</asq-option>\n        <asq-option>Perl</asq-option>\n      </asq-multi-choice-q>\n    </asq-exercise>\n\n\n    <asq-exercise max-num-submissions=\"3\">\n      <asq-stem><h2>Exercise 1</h2></asq-stem>\n      <asq-multi-choice-q multi>\n        <asq-stem><h3>Official languages of Switzerland</h3></asq-stem>\n        <asq-option>English</asq-option>\n        <asq-option>French</asq-option>\n        <asq-option>German</asq-option>\n        <asq-option>Italian</asq-option>\n        <asq-option>Rumantsch</asq-option>\n      </asq-multi-choice-q>\n    </asq-exercise>\n\nDifferent users will see different UI according to their **role**. There are\nseveral types of roles, `viewer`, `presenter` and `TA`.\n\n###Styling `submit` and `edit` buttons (in viewer's view):\n\nTo change the color and background color of `submit` button:\n\n    asq-exercise {\n      --asq-exercise-submit-button-color: white;\n      --asq-exercise-submit-button-background-color: #388E3C;\n    }\n\n\nTo change the color and background color of `edit` button:\n\n    asq-exercise {\n      --asq-exercise-edit-button-color: white;\n      --asq-exercise-edit-button-background-color: #FF7043;\n    }\n\nTo change the color and background color of `submit` button when disabled (a.k.a submissions are not allowed):\n\n    asq-exercise {\n      --asq-exercise-submit-button-disabled-color: #E0E0E0;\n      --asq-exercise-submit-button-background-disabled-color: #424242;\n    }\n\nCustom property                                        | Description                                     | Default\n-------------------------------------------------------|-------------------------------------------------|----------\n--asq-exercise-submit-button-color                     | The color of submit button                      | white\n--asq-exercise-submit-button-background-color          | The background color of submit button           | #388E3C\n--asq-exercise-edit-button-color                       | The color of edit button                        | white\n--asq-exercise-edit-button-background-color            | The background color of edit button             | #FF7043\n--asq-exercise-submit-button-disabled-color            | The color of submit button when disabled        | #E0E0E0\n--asq-exercise-submit-button-background-disabled-color | The background color of submit button disabled  | #424242\n\n\n### Styling progress bar (in presenter's view):\n\nTo change the submitted progress bar color:\n\n    asq-exercise {\n       --asq-exercise-progress-submitted-color: #e91e63;\n    }\n\nTo change the working progress bar color:\n\n    asq-exercise {\n       --asq-exercise-progress-working-color: #e91e63;\n    }\n\nTo change the focused progress bar color:\n\n    asq-exercise {\n       --asq-exercise-progress-focused-color: #e91e63;\n    }\n\nTo change the idle progress bar color:\n\n    asq-exercise {\n       --asq-exercise-progress-idle-color: #e91e63;\n    }\n\nTo change the progress bar background color:\n\n    asq-exercise {\n      --asq-exercise-progress-container-color: #64ffda;\n    }\n\n\nThe followings are available for styling (presenter's view) ( adapted from PolymerElements/paper-progress):\n\nCustom property                                    | Description                                 | Default\n---------------------------------------------------|---------------------------------------------|----------\n--asq-exercise-progress-container-color            | Mixin applied to container                  | --google-grey-300\n--asq-exercise-progress-transition-duration        | Duration of the transition                  | 0.008s\n--asq-exercise-progress-transition-timing-function | The timing function for the transition      | ease\n--asq-exercise-progress-transition-delay           | delay for the transition                    | 0s\n--asq-exercise-progress-active-color               | The color of the active bar                 | --google-green-500\n--asq-exercise-progress-disabled-active-color      | The color of the active bar if disabled     | --google-grey-500\n--asq-exercise-progress-height                     | The height of the progress bar              | 4px",
+      "description": "`asq-exercise` groups ASQ `question types`. Every question should be be a child\nof an `asq-exercise` element. An `asq-exercise` element should conatin one ore\nmore  `ASQ questions`. `asq-exercise` takes care of submitting and displaying\nprogress for a group of questions.\n\nExample:\n\n    <asq-exercise\n      <asq-stem><h2>Exercise 1-1</h2></asq-stem>\n      <asq-multi-choice-q>\n        <asq-stem><h3>Select a functional language.</h3></asq-stem>\n        <asq-option checked>Haskell</asq-option>\n        <asq-option>C</asq-option>\n        <asq-option>Python</asq-option>\n        <asq-option>Perl</asq-option>\n      </asq-multi-choice-q>\n    </asq-exercise>\n\n\n    <asq-exercise max-num-submissions=\"3\">\n      <asq-stem><h2>Exercise 1</h2></asq-stem>\n      <asq-multi-choice-q multi>\n        <asq-stem><h3>Official languages of Switzerland</h3></asq-stem>\n        <asq-option>English</asq-option>\n        <asq-option>French</asq-option>\n        <asq-option>German</asq-option>\n        <asq-option>Italian</asq-option>\n        <asq-option>Rumantsch</asq-option>\n      </asq-multi-choice-q>\n    </asq-exercise>\n\nDifferent users will see different UI according to their **role**. There are\nseveral types of roles, `viewer`, `presenter` and `TA`.\n\n###Styling `submit` and `edit` buttons (in viewer's view):\n\nTo change the color and background color of `submit` button:\n\n    asq-exercise {\n      --asq-exercise-submit-button-color: white;\n      --asq-exercise-submit-button-background-color: #388E3C;\n    }\n\n\nTo change the color and background color of `edit` button:\n\n    asq-exercise {\n      --asq-exercise-edit-button-color: white;\n      --asq-exercise-edit-button-background-color: #FF7043;\n    }\n\nTo change the color and background color of `submit` button when disabled (a.k.a submissions are not allowed):\n\n    asq-exercise {\n      --asq-exercise-submit-button-disabled-color: #E0E0E0;\n      --asq-exercise-submit-button-background-disabled-color: #424242;\n    }\n\nCustom property                                        | Description                                     | Default\n-------------------------------------------------------|-------------------------------------------------|----------\n--asq-exercise-submit-button-color                     | The color of submit button                      | white\n--asq-exercise-submit-button-background-color          | The background color of submit button           | #388E3C\n--asq-exercise-edit-button-color                       | The color of edit button                        | white\n--asq-exercise-edit-button-background-color            | The background color of edit button             | #FF7043\n--asq-exercise-submit-button-disabled-color            | The color of submit button when disabled        | #E0E0E0\n--asq-exercise-submit-button-background-disabled-color | The background color of submit button disabled  | #424242\n\nTo see how to style the progressbar, go to the asq-exercise-progress docs.",
       "summary": "",
       "path": "asq-exercise.html",
       "properties": [
@@ -1363,11 +1641,11 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 259,
+              "line": 195,
               "column": 8
             },
             "end": {
-              "line": 265,
+              "line": 201,
               "column": 9
             }
           },
@@ -1386,11 +1664,11 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 270,
+              "line": 206,
               "column": 8
             },
             "end": {
-              "line": 274,
+              "line": 210,
               "column": 9
             }
           },
@@ -1406,11 +1684,11 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 280,
+              "line": 216,
               "column": 8
             },
             "end": {
-              "line": 286,
+              "line": 222,
               "column": 9
             }
           },
@@ -1429,11 +1707,11 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 291,
+              "line": 227,
               "column": 8
             },
             "end": {
-              "line": 296,
+              "line": 232,
               "column": 9
             }
           },
@@ -1451,11 +1729,11 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 306,
+              "line": 242,
               "column": 8
             },
             "end": {
-              "line": 310,
+              "line": 246,
               "column": 9
             }
           },
@@ -1473,11 +1751,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 319,
+              "line": 255,
               "column": 8
             },
             "end": {
-              "line": 323,
+              "line": 259,
               "column": 9
             }
           },
@@ -1495,11 +1773,11 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 325,
+              "line": 261,
               "column": 8
             },
             "end": {
-              "line": 327,
+              "line": 263,
               "column": 9
             }
           },
@@ -1516,11 +1794,11 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 329,
+              "line": 265,
               "column": 8
             },
             "end": {
-              "line": 331,
+              "line": 267,
               "column": 9
             }
           },
@@ -1537,11 +1815,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 333,
+              "line": 269,
               "column": 8
             },
             "end": {
-              "line": 335,
+              "line": 271,
               "column": 9
             }
           },
@@ -1552,17 +1830,17 @@
           }
         },
         {
-          "name": "_connectedViewersNum",
+          "name": "connectedViewersNum",
           "type": "number",
           "description": "",
-          "privacy": "protected",
+          "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 337,
+              "line": 273,
               "column": 8
             },
             "end": {
-              "line": 341,
+              "line": 277,
               "column": 9
             }
           },
@@ -1574,17 +1852,17 @@
           "defaultValue": "0"
         },
         {
-          "name": "_submissionsNum",
+          "name": "submissionsNum",
           "type": "number",
           "description": "",
-          "privacy": "protected",
+          "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 343,
+              "line": 279,
               "column": 8
             },
             "end": {
-              "line": 347,
+              "line": 283,
               "column": 9
             }
           },
@@ -1594,6 +1872,27 @@
             }
           },
           "defaultValue": "0"
+        },
+        {
+          "name": "eventBus",
+          "type": "Object",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 285,
+              "column": 8
+            },
+            "end": {
+              "line": 288,
+              "column": 9
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "notify": true
+            }
+          }
         }
       ],
       "methods": [
@@ -1701,11 +2000,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 351,
+              "line": 292,
               "column": 6
             },
             "end": {
-              "line": 353,
+              "line": 294,
               "column": 7
             }
           },
@@ -1725,11 +2024,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 355,
+              "line": 296,
               "column": 6
             },
             "end": {
-              "line": 357,
+              "line": 298,
               "column": 7
             }
           },
@@ -1746,11 +2045,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 359,
+              "line": 300,
               "column": 6
             },
             "end": {
-              "line": 367,
+              "line": 308,
               "column": 7
             }
           },
@@ -1770,11 +2069,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 369,
+              "line": 310,
               "column": 6
             },
             "end": {
-              "line": 380,
+              "line": 321,
               "column": 7
             }
           },
@@ -1791,11 +2090,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 382,
+              "line": 323,
               "column": 6
             },
             "end": {
-              "line": 390,
+              "line": 331,
               "column": 7
             }
           },
@@ -1808,11 +2107,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 398,
+              "line": 339,
               "column": 6
             },
             "end": {
-              "line": 403,
+              "line": 344,
               "column": 7
             }
           },
@@ -1829,11 +2128,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 405,
+              "line": 346,
               "column": 6
             },
             "end": {
-              "line": 414,
+              "line": 355,
               "column": 7
             }
           },
@@ -1850,11 +2149,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 416,
+              "line": 357,
               "column": 6
             },
             "end": {
-              "line": 430,
+              "line": 371,
               "column": 7
             }
           },
@@ -1871,11 +2170,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 432,
+              "line": 373,
               "column": 6
             },
             "end": {
-              "line": 436,
+              "line": 377,
               "column": 7
             }
           },
@@ -1892,11 +2191,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 438,
+              "line": 379,
               "column": 6
             },
             "end": {
-              "line": 448,
+              "line": 389,
               "column": 7
             }
           },
@@ -1913,11 +2212,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 450,
+              "line": 391,
               "column": 6
             },
             "end": {
-              "line": 456,
+              "line": 397,
               "column": 7
             }
           },
@@ -1934,11 +2233,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 458,
+              "line": 399,
               "column": 6
             },
             "end": {
-              "line": 467,
+              "line": 404,
               "column": 7
             }
           },
@@ -1955,32 +2254,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 469,
+              "line": 406,
               "column": 6
             },
             "end": {
-              "line": 476,
-              "column": 7
-            }
-          },
-          "metadata": {},
-          "params": [
-            {
-              "name": "evt"
-            }
-          ]
-        },
-        {
-          "name": "_onSubmitted",
-          "description": "",
-          "privacy": "protected",
-          "sourceRange": {
-            "start": {
-              "line": 478,
-              "column": 6
-            },
-            "end": {
-              "line": 482,
+              "line": 411,
               "column": 7
             }
           },
@@ -1997,11 +2275,11 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 501,
+              "line": 430,
               "column": 6
             },
             "end": {
-              "line": 530,
+              "line": 459,
               "column": 7
             }
           },
@@ -2014,11 +2292,11 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 532,
+              "line": 461,
               "column": 6
             },
             "end": {
-              "line": 535,
+              "line": 464,
               "column": 7
             }
           },
@@ -2035,11 +2313,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 542,
+              "line": 471,
               "column": 6
             },
             "end": {
-              "line": 546,
+              "line": 475,
               "column": 7
             }
           },
@@ -2052,11 +2330,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 553,
+              "line": 482,
               "column": 6
             },
             "end": {
-              "line": 560,
+              "line": 489,
               "column": 7
             }
           },
@@ -2069,11 +2347,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 563,
+              "line": 492,
               "column": 6
             },
             "end": {
-              "line": 571,
+              "line": 499,
               "column": 7
             }
           },
@@ -2086,11 +2364,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 584,
+              "line": 512,
               "column": 6
             },
             "end": {
-              "line": 588,
+              "line": 516,
               "column": 7
             }
           },
@@ -2103,11 +2381,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 590,
+              "line": 518,
               "column": 6
             },
             "end": {
-              "line": 595,
+              "line": 523,
               "column": 7
             }
           },
@@ -2124,11 +2402,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 597,
+              "line": 525,
               "column": 6
             },
             "end": {
-              "line": 601,
+              "line": 529,
               "column": 7
             }
           },
@@ -2146,11 +2424,11 @@
       "metadata": {},
       "sourceRange": {
         "start": {
-          "line": 247,
+          "line": 183,
           "column": 12
         },
         "end": {
-          "line": 607,
+          "line": 535,
           "column": 5
         }
       },
@@ -2252,11 +2530,11 @@
           "description": "Disable or enable the element. Changes will be also\npropagated to inner propagated elements.",
           "sourceRange": {
             "start": {
-              "line": 259,
+              "line": 195,
               "column": 8
             },
             "end": {
-              "line": 265,
+              "line": 201,
               "column": 9
             }
           },
@@ -2268,11 +2546,11 @@
           "description": "Display confidence stars in the exercise",
           "sourceRange": {
             "start": {
-              "line": 270,
+              "line": 206,
               "column": 8
             },
             "end": {
-              "line": 274,
+              "line": 210,
               "column": 9
             }
           },
@@ -2284,11 +2562,11 @@
           "description": "The maximum submission attempts allowed.",
           "sourceRange": {
             "start": {
-              "line": 280,
+              "line": 216,
               "column": 8
             },
             "end": {
-              "line": 286,
+              "line": 222,
               "column": 9
             }
           },
@@ -2300,11 +2578,11 @@
           "description": "assessment type",
           "sourceRange": {
             "start": {
-              "line": 291,
+              "line": 227,
               "column": 8
             },
             "end": {
-              "line": 296,
+              "line": 232,
               "column": 9
             }
           },
@@ -2316,11 +2594,11 @@
           "description": "Counter for submission times.",
           "sourceRange": {
             "start": {
-              "line": 306,
+              "line": 242,
               "column": 8
             },
             "end": {
-              "line": 310,
+              "line": 246,
               "column": 9
             }
           },
@@ -2332,11 +2610,11 @@
           "description": "",
           "sourceRange": {
             "start": {
-              "line": 325,
+              "line": 261,
               "column": 8
             },
             "end": {
-              "line": 327,
+              "line": 263,
               "column": 9
             }
           },
@@ -2347,15 +2625,63 @@
           "description": "",
           "sourceRange": {
             "start": {
-              "line": 329,
+              "line": 265,
               "column": 8
             },
             "end": {
-              "line": 331,
+              "line": 267,
               "column": 9
             }
           },
           "metadata": {}
+        },
+        {
+          "name": "connected-viewers-num",
+          "description": "",
+          "sourceRange": {
+            "start": {
+              "line": 273,
+              "column": 8
+            },
+            "end": {
+              "line": 277,
+              "column": 9
+            }
+          },
+          "metadata": {},
+          "type": "number"
+        },
+        {
+          "name": "submissions-num",
+          "description": "",
+          "sourceRange": {
+            "start": {
+              "line": 279,
+              "column": 8
+            },
+            "end": {
+              "line": 283,
+              "column": 9
+            }
+          },
+          "metadata": {},
+          "type": "number"
+        },
+        {
+          "name": "event-bus",
+          "description": "",
+          "sourceRange": {
+            "start": {
+              "line": 285,
+              "column": 8
+            },
+            "end": {
+              "line": 288,
+              "column": 9
+            }
+          },
+          "metadata": {},
+          "type": "Object"
         }
       ],
       "events": [
@@ -2415,6 +2741,24 @@
           "type": "CustomEvent",
           "name": "assessment-changed",
           "description": "Fired when the `assessment` property changes.",
+          "metadata": {}
+        },
+        {
+          "type": "CustomEvent",
+          "name": "connected-viewers-num-changed",
+          "description": "Fired when the `connectedViewersNum` property changes.",
+          "metadata": {}
+        },
+        {
+          "type": "CustomEvent",
+          "name": "submissions-num-changed",
+          "description": "Fired when the `submissionsNum` property changes.",
+          "metadata": {}
+        },
+        {
+          "type": "CustomEvent",
+          "name": "event-bus-changed",
+          "description": "Fired when the `eventBus` property changes.",
           "metadata": {}
         }
       ],
