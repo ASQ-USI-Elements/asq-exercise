@@ -533,10 +533,11 @@ Examples:
 
     _changeBackgroundProgressHeight: function() {
       var backgroundProgressContainer = this.$$('.background-progress');
-
-      backgroundProgressContainer.style.height = this.$$('.foreground-progress').clientHeight + 2 + 'px';
+      var foreGroundHeight = window.getComputedStyle(this.$$('.foreground-progress'), null).height;
+      var newHeight = parseInt(foreGroundHeight) + 2 + 'px';
+      backgroundProgressContainer.style.height = newHeight;
       [].forEach.call(backgroundProgressContainer.children, function(progressBar) {
-        progressBar.style.height = this.$$('.foreground-progress').clientHeight + 2 + 'px';
+        progressBar.style.height = newHeight;
       }.bind(this));
     },
 
