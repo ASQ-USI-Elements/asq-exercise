@@ -35,7 +35,7 @@ Examples:
 
 
 @element asq-exercise-progress
-@demo demo/asq-exercise-progress.html
+@demo demo/asq-exercise-progress-demo.html
 @group ASQ Elements
 @blurb Element Container the progress bar.
 @homepage http://github.com/ASQ-USI-Elements/asq-exercise/asq-exercise-progress.html
@@ -47,7 +47,7 @@ Examples:
   <template>
     <style include="iron-flex asq-exercise-progress-style">
       :host {
-        display: block;
+        display: flex;
         position: relative;
         @apply(--layout-horizontal);
         @apply(--layout-center);
@@ -62,7 +62,7 @@ Examples:
       <paper-progress id="background-idle-progress" indeterminate style$=[[_calcFlex(_idleViewersNum)]]></paper-progress>
     </div>
 
-    <div class="progress-bar-container">
+    <div class="progress-bar-container foreground-progress">
       <paper-progress id="submitted-progress" value="100" style$=[[_calcFlex(_submissionsNum)]]></paper-progress>
       <paper-progress id="working-progress" value="100" style$=[[_calcFlex(_workingViewersNum)]]></paper-progress>
       <paper-progress id="focused-progress" value="100" style$=[[_calcFlex(_focusedViewersNum)]]></paper-progress>
@@ -70,9 +70,7 @@ Examples:
     </div>
 
     <div id="progress-num">
-      <span>[[_submissionsNum]]</span>
-      <span>/</span>
-      <span>[[connectedViewersNum]]</span>
+      <span>[[_submissionsNum]]/[[_connectedViewersNum]]</span>
     </div>
 
   </template>
@@ -102,11 +100,11 @@ Examples:
       /**
       * Counts the number of currently connected viewers.
       *
-      * @attribute connectedViewersNum
+      * @attribute _connectedViewersNum
       * @type Number
       * @default 0
       */
-      connectedViewersNum: {
+      _connectedViewersNum: {
         type: Number,
         value: 0,
       },
@@ -216,17 +214,6 @@ Examples:
        value: 0,
      },
 
-    //  /**
-    //  * The id of the exercise to which this progress bar belongs.
-    //  *
-    //  * @attribute exUid
-    //  * @type String
-    //  */
-    //  ex: {
-    //    type: String,
-    //    value: '',
-    //  },
-
     },
 
     /**
@@ -235,9 +222,8 @@ Examples:
     * @return {number} Number of working users.
     */
     _computeSubmittedViewersNum: function() {
-      var viewers = this._viewers;
-      var num = Object.keys(viewers).reduce(function(acc, userId) {
-        if(viewers[userId].submitted == this.exUid) return ++acc;
+      var num = Object.keys(this._viewers).reduce(function(acc, userId) {
+        if(this._viewers[userId].submitted == this.exUid) return ++acc;
         return acc;
       }.bind(this), 0);
       return num;
@@ -249,11 +235,10 @@ Examples:
     * @return {number} Number of working users.
     */
     _computeWorkingViewersNum: function() {
-      var viewers = this._viewers;
-      var num = Object.keys(viewers).reduce(function(acc, userId) {
-        if(viewers[userId].working) return ++acc;
+      var num = Object.keys(this._viewers).reduce(function(acc, userId) {
+        if(this._viewers[userId].working) return ++acc;
         return acc;
-      }, 0);
+      }.bind(this), 0);
       return num;
     },
 
@@ -264,11 +249,10 @@ Examples:
     */
 
     _computeFocusedViewersNum: function() {
-      var viewers = this._viewers;
-      return Object.keys(viewers).reduce(function(acc, userId) {
-        if(viewers[userId].focused && !viewers[userId].idle) return ++acc;
+      return Object.keys(this._viewers).reduce(function(acc, userId) {
+        if(this._viewers[userId].focused && !this._viewers[userId].idle) return ++acc;
         return acc;
-      }, 0);
+      }.bind(this), 0);
     },
 
     /**
@@ -278,11 +262,10 @@ Examples:
     */
 
     _computeIdleViewersNum: function() {
-      var viewers = this._viewers;
-      return Object.keys(viewers).reduce(function(acc, userId) {
-        if(viewers[userId].idle || viewers[userId].disconnected) return ++acc
+      return Object.keys(this._viewers).reduce(function(acc, userId) {
+        if(this._viewers[userId].idle || this._viewers[userId].disconnected) return ++acc
         return acc;
-      }, 0);
+      }.bind(this), 0);
     },
 
     /**
@@ -425,7 +408,7 @@ Examples:
     * @param {object} An event object.
     */
     _onConnectedClients: function (evt) {
-      this.connectedViewersNum = evt.connectedViewers.length;
+      this._connectedViewersNum = evt.connectedViewers.length;
     },
 
     /**
@@ -539,9 +522,22 @@ Examples:
       this._visualizeChange();
     },
 
+    attached: function() {
+      this._changeBackgroundProgressHeight();
+    },
+
     _subscribeToEvents: function(eventBus) {
       eventBus.on('asq:connected-clients', this._onConnectedClients.bind(this));
       eventBus.on('asq:sessionEventBeamer', this._onSessionEventBeamer.bind(this));
+    },
+
+    _changeBackgroundProgressHeight: function() {
+      var backgroundProgressContainer = this.$$('.background-progress');
+
+      backgroundProgressContainer.style.height = this.$$('.foreground-progress').clientHeight + 2 + 'px';
+      [].forEach.call(backgroundProgressContainer.children, function(progressBar) {
+        progressBar.style.height = this.$$('.foreground-progress').clientHeight + 2 + 'px';
+      }.bind(this));
     },
 
   });

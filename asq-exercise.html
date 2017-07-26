@@ -271,18 +271,6 @@ To see how to style the progressbar, go to the asq-exercise-progress docs.
           computed: '_computeSubmittableMessages(remainingAttempts)'
         },
 
-        connectedViewersNum: {
-          type: Number,
-          notify: true,
-          value: 0,
-        },
-
-        submissionsNum: {
-          type: Number,
-          notify: true,
-          value: 0,
-        },
-
         eventBus: {
           type: Object,
           notify: true
@@ -339,7 +327,6 @@ To see how to style the progressbar, go to the asq-exercise-progress docs.
        */
       _subscribeToEvents: function (eventBus) {
         eventBus.on('asq:question_type', this._onQuestionType.bind(this));
-        eventBus.on('asq:connected-clients', this._onConnectedClients.bind(this));
         eventBus.on('asq:submitted', this._onSubmitted.bind(this));
         eventBus.on('asq:update_live_presentation_settings', this._onUpdateSettings.bind(this));
       },
@@ -357,9 +344,7 @@ To see how to style the progressbar, go to the asq-exercise-progress docs.
 
       _onQuestionType: function (evt) {
         if (evt && evt.questionType && evt.questionType == 'asq-exercise') {
-          if (evt.type == 'progress') {
-            this._onProgress(evt.exercise);
-          } else if (evt.type == 'restorePresenter') {
+          if (evt.type == 'restorePresenter') {
             if (this.role !== this.roles.PRESENTER)
               return;
             this._onRestorePresenter(evt);
@@ -387,28 +372,6 @@ To see how to style the progressbar, go to the asq-exercise-progress docs.
           }
           // since the id exists it means we have answered
         }.bind(this));
-      },
-
-      _onProgress: function (exercise) {
-        if (exercise.uid !== this.uid)
-          return;
-        if (this.role !== this.roles.PRESENTER)
-          return;
-        this._updateProgress(exercise.submissions);
-      },
-
-      _updateProgress: function (submissions) {
-        if ( submissions.length > this.connectedViewersNum ) {
-          this.connectedViewersNum = submissions.length
-        }
-        this.submissionsNum = submissions.length;
-      },
-
-      _onConnectedClients: function (evt) {
-        if (this.role !== this.roles.PRESENTER)
-          return;
-
-        this.connectedViewersNum = evt.connectedViewers.length;
       },
 
       /**
