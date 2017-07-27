@@ -344,22 +344,12 @@ To see how to style the progressbar, go to the asq-exercise-progress docs.
 
       _onQuestionType: function (evt) {
         if (evt && evt.questionType && evt.questionType == 'asq-exercise') {
-          if (evt.type == 'restorePresenter') {
-            if (this.role !== this.roles.PRESENTER)
-              return;
-            this._onRestorePresenter(evt);
-          } else if (evt.type == 'restoreViewer') {
+          if (evt.type == 'restoreViewer') {
             if (this.role !== this.roles.VIEWER)
               return;
             this._onRestoreViewer(evt);
           }
         }
-      },
-
-      _onRestorePresenter: function (evt) {
-        evt.exercises.forEach(function (ex) {
-          this._onProgress(ex);
-        }.bind(this));
       },
 
       _onRestoreViewer: function (evt) {
@@ -491,10 +481,6 @@ To see how to style the progressbar, go to the asq-exercise-progress docs.
 
         this._initialized = true;
       },
-
-      // hasRole: function (role, candidate) {
-      //   return role == candidate;
-      // }
 
     });
   </script>

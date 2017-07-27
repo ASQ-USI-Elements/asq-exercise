@@ -526,11 +526,21 @@ Examples:
       this._changeBackgroundProgressHeight();
     },
 
+    /**
+    * Subscribe to events to listen to them.
+    *
+    * @param {object} The eventbus who takes care of the propagation.
+    */
     _subscribeToEvents: function(eventBus) {
       eventBus.on('asq:connected-clients', this._onConnectedClients.bind(this));
       eventBus.on('asq:sessionEventBeamer', this._onSessionEventBeamer.bind(this));
+      eventBus.on('asq:question_type', this._onQuestionType.bind(this));
     },
 
+    /**
+    * Dynamically adjusts the height of the backgorund effect. It's always two
+    * pixel bigger than the height of the progress bar.
+    */
     _changeBackgroundProgressHeight: function() {
       var backgroundProgressContainer = this.$$('.background-progress');
       var foreGroundHeight = window.getComputedStyle(this.$$('.foreground-progress'), null).height;
@@ -538,6 +548,32 @@ Examples:
       backgroundProgressContainer.style.height = newHeight;
       [].forEach.call(backgroundProgressContainer.children, function(progressBar) {
         progressBar.style.height = newHeight;
+      }.bind(this));
+    },
+
+    /**
+    * Handle question type events.
+    */
+    _onQuestionType: function(evt) {
+      if (evt && evt.questionType && evt.questionType == 'asq-exercise') {
+        if (evt.type == 'restorePresenter') {
+          this._onRestorePresenter(evt);
+        }
+      }
+    },
+
+    /**
+    * Restore the number of submissions on the progress bar when the presenter
+    * reloads.
+    */
+    _onRestorePresenter: function(evt) {
+      evt.exercises.forEach(function(exercise) {
+        if (exercise.uid == this.exUid) {
+          exercise.submissions.forEach(function(submission) {
+            this._viewers[submission] = {};
+            this._viewers[submission].submitted = exercise.uid;
+          }.bind(this));
+        }
       }.bind(this));
     },
 
