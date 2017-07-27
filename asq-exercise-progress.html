@@ -119,7 +119,7 @@ Examples:
       _submissionsNum: {
         type: Number,
         value: 0,
-        computed: '_computeSubmittedViewersNum(_viewers.*)',
+        computed: '_computeSubmittedViewersNum(_viewers.*, _update)',
       },
 
       /**
@@ -145,7 +145,7 @@ Examples:
       _workingViewersNum:{
         type: Number,
         value: 0,
-        computed: '_computeWorkingViewersNum(_viewers.*)',
+        computed: '_computeWorkingViewersNum(_viewers.*, _update)',
       },
 
       /**
@@ -168,51 +168,63 @@ Examples:
       * @type Number
       * @default 0
       */
-     _focusedViewersNum:{
+      _focusedViewersNum:{
         type: Number,
         value: 0,
-        computed: '_computeFocusedViewersNum(_viewers.*)',
-     },
+        computed: '_computeFocusedViewersNum(_viewers.*, _update)',
+      },
 
-     /**
-     * Counts the number of focused users during a given time interval
-     * by the _visualizeChange function.
-     *
-     * @attribute _focusedCounter
-     * @type Number
-     * @default 0
-     */
-     _focusedCounter: {
-       type: Number,
-       value: 0,
-     },
-
-     /**
-     * Counts the number of idle users, calculated with the function given
-     * in its computed property.
-     *
-     * @attribute _focusedViewersNum
-     * @type Number
-     * @default 0
-     */
-     _idleViewersNum:{
+       /**
+       * Counts the number of focused users during a given time interval
+       * by the _visualizeChange function.
+       *
+       * @attribute _focusedCounter
+       * @type Number
+       * @default 0
+       */
+      _focusedCounter: {
         type: Number,
         value: 0,
-        computed: '_computeIdleViewersNum(_viewers.*)',
-     },
+      },
+
+       /**
+       * Counts the number of idle users, calculated with the function given
+       * in its computed property.
+       *
+       * @attribute _focusedViewersNum
+       * @type Number
+       * @default 0
+       */
+      _idleViewersNum:{
+        type: Number,
+        value: 0,
+        computed: '_computeIdleViewersNum(_viewers.*, _update)',
+      },
+
+       /**
+       * Counts the number of idle users during a given time interval
+       * by the _visualizeChange function.
+       *
+       * @attribute _focusedCounter
+       * @type Number
+       * @default 0
+       */
+      _idleCounter: {
+        type: Number,
+        value: 0,
+      },
 
      /**
-     * Counts the number of idle users during a given time interval
-     * by the _visualizeChange function.
-     *
-     * @attribute _focusedCounter
-     * @type Number
-     * @default 0
-     */
-     _idleCounter: {
-       type: Number,
-       value: 0,
-     },
+      * Flag to trigger the computed function at the right moment.
+      *
+      * @attribute _update
+      * @type Boolean
+      * @default false
+      */
+      _update: {
+        type: Boolean,
+        value: true,
+      },
 
     },
 
@@ -221,12 +233,15 @@ Examples:
     *
     * @return {number} Number of working users.
     */
-    _computeSubmittedViewersNum: function() {
-      var num = Object.keys(this._viewers).reduce(function(acc, userId) {
-        if(this._viewers[userId].submitted == this.exUid) return ++acc;
-        return acc;
-      }.bind(this), 0);
-      return num;
+    _computeSubmittedViewersNum: function(viewers, update) {
+      if (update) {
+        var num = Object.keys(this._viewers).reduce(function(acc, userId) {
+          if(this._viewers[userId].submitted == this.exUid) return ++acc;
+          return acc;
+        }.bind(this), 0);
+        return num;
+      }
+      else return this._submissionsNum;
     },
 
     /**
@@ -234,12 +249,15 @@ Examples:
     *
     * @return {number} Number of working users.
     */
-    _computeWorkingViewersNum: function() {
-      var num = Object.keys(this._viewers).reduce(function(acc, userId) {
-        if(this._viewers[userId].working) return ++acc;
-        return acc;
-      }.bind(this), 0);
-      return num;
+    _computeWorkingViewersNum: function(viewers, update) {
+      if (update) {
+        var num = Object.keys(this._viewers).reduce(function(acc, userId) {
+          if(this._viewers[userId].working) return ++acc;
+          return acc;
+        }.bind(this), 0);
+        return num;
+      }
+      else return this._workingViewersNum;
     },
 
     /**
@@ -248,11 +266,14 @@ Examples:
     * @return {number} Number of focused users.
     */
 
-    _computeFocusedViewersNum: function() {
-      return Object.keys(this._viewers).reduce(function(acc, userId) {
-        if(this._viewers[userId].focused && !this._viewers[userId].idle) return ++acc;
-        return acc;
-      }.bind(this), 0);
+    _computeFocusedViewersNum: function(viewers, update) {
+      if (update) {
+        return Object.keys(this._viewers).reduce(function(acc, userId) {
+          if(this._viewers[userId].focused && !this._viewers[userId].idle) return ++acc;
+          return acc;
+        }.bind(this), 0);
+      }
+      else return this._focusedViewersNum;
     },
 
     /**
@@ -261,11 +282,14 @@ Examples:
     * @return {number} Number of idle users.
     */
 
-    _computeIdleViewersNum: function() {
-      return Object.keys(this._viewers).reduce(function(acc, userId) {
-        if(this._viewers[userId].idle || this._viewers[userId].disconnected) return ++acc
-        return acc;
-      }.bind(this), 0);
+    _computeIdleViewersNum: function(viewers, update) {
+      if (update) {
+        return Object.keys(this._viewers).reduce(function(acc, userId) {
+          if(this._viewers[userId].idle || this._viewers[userId].disconnected) return ++acc
+          return acc;
+        }.bind(this), 0);
+      }
+      else return this._idleViewersNum;
     },
 
     /**
@@ -465,6 +489,8 @@ Examples:
     */
     _visualizeChange: function() {
       setInterval(function() {
+        if (!this.directUpdate) this._update = true;
+
         var submissionChange = this._calcChange(this._submissionCounter);
         var workingChange = this._calcChange(this._workingCounter);
         var focusedChange = this._calcChange(this._focusedCounter);
@@ -479,6 +505,8 @@ Examples:
         this._workingCounter = 0;
         this._focusedCounter = 0;
         this._idleCounter = 0;
+
+        if (!this.directUpdate) this._update = false;
       }.bind(this), 5000);
     },
 
@@ -545,9 +573,9 @@ Examples:
       var backgroundProgressContainer = this.$$('.background-progress');
       var foreGroundHeight = window.getComputedStyle(this.$$('.foreground-progress'), null).height;
       var newHeight = parseInt(foreGroundHeight) + 2 + 'px';
-      backgroundProgressContainer.style.height = newHeight;
       [].forEach.call(backgroundProgressContainer.children, function(progressBar) {
-        progressBar.style.height = newHeight;
+        progressBar.customStyle['--paper-progress-height'] = newHeight;
+        this.updateStyles();
       }.bind(this));
     },
 

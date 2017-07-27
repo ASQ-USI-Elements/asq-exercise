@@ -158,7 +158,7 @@ To see how to style the progressbar, go to the asq-exercise-progress docs.
         <footer id="footer">
           <div class="layout horizontal center">
             <!-- submission -->
-            <asq-exercise-progress ex-uid="[[uid]]"></asq-exercise-progress>
+            <asq-exercise-progress ex-uid="[[uid]]" direct-update="[[directUpdate]]"></asq-exercise-progress>
         </footer>
       </article>
     </template>
@@ -173,7 +173,7 @@ To see how to style the progressbar, go to the asq-exercise-progress docs.
         </div>
         <footer id="footer">
           <div>
-            <asq-exercise-progress ex-uid="[[uid]]"></asq-exercise-progress>
+            <asq-exercise-progress ex-uid="[[uid]]" direct-update="[[directUpdate]]"></asq-exercise-progress>
           </div>
         </footer>
       </article>
@@ -274,6 +274,19 @@ To see how to style the progressbar, go to the asq-exercise-progress docs.
         eventBus: {
           type: Object,
           notify: true
+        },
+
+        /**
+        * Flag  to update the progress bar directly.
+        *
+        * @attribute directUpdate
+        * @type Boolean
+        * @default true
+        */
+        directUpdate: {
+          type: Boolean,
+          notify: true,
+          value: true,
         },
 
       },
