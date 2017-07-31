@@ -3,6 +3,24 @@
 <link rel="import" href="asq-exercise-progress-style.html">
 
 <!--
+### ASQ Exercise Progress:
+The ASQ exercise progress bar consists of a progress bar and a progress counter
+(submissions/connected users) to the right of it.
+
+The progress bar shows the viewers' activity which can be one of the following:
+submitted, working, focused and idle. Those acitivties are shown in 4 different
+colors as partial progress bars in the order they were mentioned.
+
+The progress bar has a slightly bigger progress bar of the same style in the
+background that displays the gradient of activity for a certain activity state
+(e.g submitted). The faster the animation from left to right, the more
+activity for a given state has been monitored for the last 5 seconds.
+
+The presenter can choose if he wants immediate updates for the progress bar or
+let it update together with the effect that shows the gradient of the activity
+by changing the `directUpdate` setting.
+
+
 ### Styling progress bar (in presenter's view):
 
 The followings are available for styling (presenter's view):
@@ -52,6 +70,7 @@ Examples:
         @apply(--layout-horizontal);
         @apply(--layout-center);
         margin: 10px 0 5px 0;
+        font-size: 14px;
       }
     </style>
 

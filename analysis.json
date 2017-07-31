@@ -2,7 +2,7 @@
   "schema_version": "1.0.0",
   "elements": [
     {
-      "description": "### Styling progress bar (in presenter's view):\n\nThe followings are available for styling (presenter's view):\n\nCustom property                                    | Description                                 | Default\n---------------------------------------------------|---------------------------------------------|----------\n--asq-exercise-progress-height                     | The height of the progress bar              | 4px\n--asq-exercise-progress-submitted-color            | The color of the submission bar.            | --google-green-500\n--asq-exercise-progress-working-color              | The color of the working users bar.         | --paper-orange-500\n--asq-exercise-progress-focused-color              | The color of the focused users bar.         | --paper-blue-200\n--asq-exercise-progress-idle-color                 | The color of the idle users bar.            | --google-grey-500\n--asq-exercise-progressbar-background-color        | The color of the empty progress bar.        | --google-grey-300\n--asq-exercise-progress-num-mixin                  | The mixin to style the progress numbers of the progress bar. | { }\n\n\nExamples:\n\n- To change the submitted progress bar color:\n      asq-exercise {\n        --asq-exercise-progress-submitted-color: #e91e63;\n      }\n\n- To change the style of the progress numbers:\n      asq-exercise {\n        --asq-exercise-progress-progress-num-mixin: {\n          font-size: 20px;\n          padding: 2px;\n        };\n      }",
+      "description": "### ASQ Exercise Progress:\nThe ASQ exercise progress bar consists of a progress bar and a progress counter\n(submissions/connected users) to the right of it.\n\nThe progress bar shows the viewers' activity which can be one of the following:\nsubmitted, working, focused and idle. Those acitivties are shown in 4 different\ncolors as partial progress bars in the order they were mentioned.\n\nThe progress bar has a slightly bigger progress bar of the same style in the\nbackground that displays the gradient of activity for a certain activity state\n(e.g submitted). The faster the animation from left to right, the more\nactivity for a given state has been monitored for the last 5 seconds.\n\nThe presenter can choose if he wants immediate updates for the progress bar or\nlet it update together with the effect that shows the gradient of the activity\nby changing the `directUpdate` setting.\n\n\n### Styling progress bar (in presenter's view):\n\nThe followings are available for styling (presenter's view):\n\nCustom property                                    | Description                                 | Default\n---------------------------------------------------|---------------------------------------------|----------\n--asq-exercise-progress-height                     | The height of the progress bar              | 4px\n--asq-exercise-progress-submitted-color            | The color of the submission bar.            | --google-green-500\n--asq-exercise-progress-working-color              | The color of the working users bar.         | --paper-orange-500\n--asq-exercise-progress-focused-color              | The color of the focused users bar.         | --paper-blue-200\n--asq-exercise-progress-idle-color                 | The color of the idle users bar.            | --google-grey-500\n--asq-exercise-progressbar-background-color        | The color of the empty progress bar.        | --google-grey-300\n--asq-exercise-progress-num-mixin                  | The mixin to style the progress numbers of the progress bar. | { }\n\n\nExamples:\n\n- To change the submitted progress bar color:\n      asq-exercise {\n        --asq-exercise-progress-submitted-color: #e91e63;\n      }\n\n- To change the style of the progress numbers:\n      asq-exercise {\n        --asq-exercise-progress-progress-num-mixin: {\n          font-size: 20px;\n          padding: 2px;\n        };\n      }",
       "summary": "",
       "path": "asq-exercise-progress.html",
       "properties": [
@@ -133,11 +133,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 94,
+              "line": 113,
               "column": 6
             },
             "end": {
-              "line": 97,
+              "line": 116,
               "column": 7
             }
           },
@@ -153,11 +153,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 106,
+              "line": 125,
               "column": 6
             },
             "end": {
-              "line": 109,
+              "line": 128,
               "column": 7
             }
           },
@@ -173,11 +173,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 118,
+              "line": 137,
               "column": 6
             },
             "end": {
-              "line": 122,
+              "line": 141,
               "column": 7
             }
           },
@@ -195,11 +195,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 132,
+              "line": 151,
               "column": 6
             },
             "end": {
-              "line": 135,
+              "line": 154,
               "column": 7
             }
           },
@@ -215,11 +215,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 144,
+              "line": 163,
               "column": 6
             },
             "end": {
-              "line": 148,
+              "line": 167,
               "column": 7
             }
           },
@@ -237,11 +237,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 158,
+              "line": 177,
               "column": 6
             },
             "end": {
-              "line": 161,
+              "line": 180,
               "column": 7
             }
           },
@@ -257,12 +257,12 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 170,
-              "column": 5
+              "line": 189,
+              "column": 6
             },
             "end": {
-              "line": 174,
-              "column": 6
+              "line": 193,
+              "column": 7
             }
           },
           "metadata": {
@@ -279,12 +279,12 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 184,
-              "column": 5
+              "line": 203,
+              "column": 6
             },
             "end": {
-              "line": 187,
-              "column": 6
+              "line": 206,
+              "column": 7
             }
           },
           "metadata": {
@@ -299,12 +299,12 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 197,
-              "column": 5
+              "line": 216,
+              "column": 6
             },
             "end": {
-              "line": 201,
-              "column": 6
+              "line": 220,
+              "column": 7
             }
           },
           "metadata": {
@@ -321,18 +321,38 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 211,
-              "column": 5
+              "line": 230,
+              "column": 6
             },
             "end": {
-              "line": 214,
-              "column": 6
+              "line": 233,
+              "column": 7
             }
           },
           "metadata": {
             "polymer": {}
           },
           "defaultValue": "0"
+        },
+        {
+          "name": "_update",
+          "type": "boolean",
+          "description": "Flag to trigger the computed function at the right moment.",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 242,
+              "column": 6
+            },
+            "end": {
+              "line": 245,
+              "column": 7
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          },
+          "defaultValue": "true"
         }
       ],
       "methods": [
@@ -440,16 +460,23 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 234,
+              "line": 254,
               "column": 4
             },
             "end": {
-              "line": 241,
+              "line": 263,
               "column": 5
             }
           },
           "metadata": {},
-          "params": [],
+          "params": [
+            {
+              "name": "viewers"
+            },
+            {
+              "name": "update"
+            }
+          ],
           "return": {
             "type": "number",
             "desc": "Number of working users."
@@ -461,16 +488,23 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 248,
+              "line": 270,
               "column": 4
             },
             "end": {
-              "line": 255,
+              "line": 279,
               "column": 5
             }
           },
           "metadata": {},
-          "params": [],
+          "params": [
+            {
+              "name": "viewers"
+            },
+            {
+              "name": "update"
+            }
+          ],
           "return": {
             "type": "number",
             "desc": "Number of working users."
@@ -482,16 +516,23 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 263,
+              "line": 287,
               "column": 4
             },
             "end": {
-              "line": 269,
+              "line": 295,
               "column": 5
             }
           },
           "metadata": {},
-          "params": []
+          "params": [
+            {
+              "name": "viewers"
+            },
+            {
+              "name": "update"
+            }
+          ]
         },
         {
           "name": "_computeIdleViewersNum",
@@ -499,16 +540,23 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 277,
+              "line": 303,
               "column": 4
             },
             "end": {
-              "line": 283,
+              "line": 311,
               "column": 5
             }
           },
           "metadata": {},
-          "params": []
+          "params": [
+            {
+              "name": "viewers"
+            },
+            {
+              "name": "update"
+            }
+          ]
         },
         {
           "name": "_calcFlex",
@@ -516,11 +564,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 292,
+              "line": 320,
               "column": 4
             },
             "end": {
-              "line": 294,
+              "line": 322,
               "column": 5
             }
           },
@@ -541,11 +589,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 302,
+              "line": 330,
               "column": 4
             },
             "end": {
-              "line": 308,
+              "line": 336,
               "column": 5
             }
           },
@@ -562,11 +610,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 315,
+              "line": 343,
               "column": 4
             },
             "end": {
-              "line": 323,
+              "line": 351,
               "column": 5
             }
           },
@@ -583,11 +631,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 330,
+              "line": 358,
               "column": 4
             },
             "end": {
-              "line": 338,
+              "line": 366,
               "column": 5
             }
           },
@@ -604,11 +652,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 345,
+              "line": 373,
               "column": 4
             },
             "end": {
-              "line": 350,
+              "line": 378,
               "column": 5
             }
           },
@@ -625,11 +673,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 357,
+              "line": 385,
               "column": 4
             },
             "end": {
-              "line": 365,
+              "line": 393,
               "column": 5
             }
           },
@@ -646,11 +694,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 372,
+              "line": 400,
               "column": 4
             },
             "end": {
-              "line": 377,
+              "line": 405,
               "column": 5
             }
           },
@@ -667,11 +715,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 384,
+              "line": 412,
               "column": 4
             },
             "end": {
-              "line": 386,
+              "line": 414,
               "column": 5
             }
           },
@@ -688,11 +736,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 393,
+              "line": 421,
               "column": 4
             },
             "end": {
-              "line": 402,
+              "line": 430,
               "column": 5
             }
           },
@@ -709,11 +757,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 409,
+              "line": 437,
               "column": 4
             },
             "end": {
-              "line": 417,
+              "line": 445,
               "column": 5
             }
           },
@@ -730,11 +778,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 424,
+              "line": 452,
               "column": 4
             },
             "end": {
-              "line": 426,
+              "line": 454,
               "column": 5
             }
           },
@@ -751,11 +799,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 433,
+              "line": 461,
               "column": 4
             },
             "end": {
-              "line": 459,
+              "line": 487,
               "column": 5
             }
           },
@@ -772,11 +820,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 467,
+              "line": 495,
               "column": 4
             },
             "end": {
-              "line": 474,
+              "line": 502,
               "column": 5
             }
           },
@@ -796,11 +844,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 480,
+              "line": 508,
               "column": 4
             },
             "end": {
-              "line": 497,
+              "line": 529,
               "column": 5
             }
           },
@@ -813,11 +861,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 505,
+              "line": 537,
               "column": 4
             },
             "end": {
-              "line": 508,
+              "line": 540,
               "column": 5
             }
           },
@@ -838,11 +886,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 517,
+              "line": 549,
               "column": 4
             },
             "end": {
-              "line": 526,
+              "line": 558,
               "column": 5
             }
           },
@@ -863,11 +911,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 528,
+              "line": 560,
               "column": 4
             },
             "end": {
-              "line": 537,
+              "line": 569,
               "column": 5
             }
           },
@@ -880,11 +928,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 539,
+              "line": 571,
               "column": 4
             },
             "end": {
-              "line": 541,
+              "line": 573,
               "column": 5
             }
           },
@@ -893,15 +941,15 @@
         },
         {
           "name": "_subscribeToEvents",
-          "description": "",
+          "description": "Subscribe to events to listen to them.",
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 543,
+              "line": 580,
               "column": 4
             },
             "end": {
-              "line": 546,
+              "line": 584,
               "column": 5
             }
           },
@@ -914,20 +962,62 @@
         },
         {
           "name": "_changeBackgroundProgressHeight",
-          "description": "",
+          "description": "Dynamically adjusts the height of the backgorund effect. It's always two\npixel bigger than the height of the progress bar.",
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 548,
+              "line": 590,
               "column": 4
             },
             "end": {
-              "line": 555,
+              "line": 598,
               "column": 5
             }
           },
           "metadata": {},
           "params": []
+        },
+        {
+          "name": "_onQuestionType",
+          "description": "Handle question type events.",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 603,
+              "column": 4
+            },
+            "end": {
+              "line": 609,
+              "column": 5
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "evt"
+            }
+          ]
+        },
+        {
+          "name": "_onRestorePresenter",
+          "description": "Restore the number of submissions on the progress bar when the presenter\nreloads.",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 615,
+              "column": 4
+            },
+            "end": {
+              "line": 624,
+              "column": 5
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "evt"
+            }
+          ]
         }
       ],
       "staticMethods": [],
@@ -940,11 +1030,11 @@
       "metadata": {},
       "sourceRange": {
         "start": {
-          "line": 79,
+          "line": 98,
           "column": 10
         },
         "end": {
-          "line": 557,
+          "line": 626,
           "column": 3
         }
       },
@@ -1528,7 +1618,7 @@
       "tagname": "asq-confidence"
     },
     {
-      "description": "`asq-exercise` groups ASQ `question types`. Every question should be be a child\nof an `asq-exercise` element. An `asq-exercise` element should conatin one ore\nmore  `ASQ questions`. `asq-exercise` takes care of submitting and displaying\nprogress for a group of questions.\n\nExample:\n\n    <asq-exercise\n      <asq-stem><h2>Exercise 1-1</h2></asq-stem>\n      <asq-multi-choice-q>\n        <asq-stem><h3>Select a functional language.</h3></asq-stem>\n        <asq-option checked>Haskell</asq-option>\n        <asq-option>C</asq-option>\n        <asq-option>Python</asq-option>\n        <asq-option>Perl</asq-option>\n      </asq-multi-choice-q>\n    </asq-exercise>\n\n\n    <asq-exercise max-num-submissions=\"3\">\n      <asq-stem><h2>Exercise 1</h2></asq-stem>\n      <asq-multi-choice-q multi>\n        <asq-stem><h3>Official languages of Switzerland</h3></asq-stem>\n        <asq-option>English</asq-option>\n        <asq-option>French</asq-option>\n        <asq-option>German</asq-option>\n        <asq-option>Italian</asq-option>\n        <asq-option>Rumantsch</asq-option>\n      </asq-multi-choice-q>\n    </asq-exercise>\n\nDifferent users will see different UI according to their **role**. There are\nseveral types of roles, `viewer`, `presenter` and `TA`.\n\n###Styling `submit` and `edit` buttons (in viewer's view):\n\nTo change the color and background color of `submit` button:\n\n    asq-exercise {\n      --asq-exercise-submit-button-color: white;\n      --asq-exercise-submit-button-background-color: #388E3C;\n    }\n\n\nTo change the color and background color of `edit` button:\n\n    asq-exercise {\n      --asq-exercise-edit-button-color: white;\n      --asq-exercise-edit-button-background-color: #FF7043;\n    }\n\nTo change the color and background color of `submit` button when disabled (a.k.a submissions are not allowed):\n\n    asq-exercise {\n      --asq-exercise-submit-button-disabled-color: #E0E0E0;\n      --asq-exercise-submit-button-background-disabled-color: #424242;\n    }\n\nCustom property                                        | Description                                     | Default\n-------------------------------------------------------|-------------------------------------------------|----------\n--asq-exercise-submit-button-color                     | The color of submit button                      | white\n--asq-exercise-submit-button-background-color          | The background color of submit button           | #388E3C\n--asq-exercise-edit-button-color                       | The color of edit button                        | white\n--asq-exercise-edit-button-background-color            | The background color of edit button             | #FF7043\n--asq-exercise-submit-button-disabled-color            | The color of submit button when disabled        | #E0E0E0\n--asq-exercise-submit-button-background-disabled-color | The background color of submit button disabled  | #424242\n\nTo see how to style the progressbar, go to the asq-exercise-progress docs.",
+      "description": "`asq-exercise` groups ASQ `question types`. Every question should be be a child\nof an `asq-exercise` element. An `asq-exercise` element should contain one ore\nmore  `ASQ questions`. `asq-exercise` takes care of submitting and displaying\nprogress for a group of questions.\n\nExample:\n\n    <asq-exercise\n      <asq-stem><h2>Exercise 1-1</h2></asq-stem>\n      <asq-multi-choice-q>\n        <asq-stem><h3>Select a functional language.</h3></asq-stem>\n        <asq-option checked>Haskell</asq-option>\n        <asq-option>C</asq-option>\n        <asq-option>Python</asq-option>\n        <asq-option>Perl</asq-option>\n      </asq-multi-choice-q>\n    </asq-exercise>\n\n\n    <asq-exercise max-num-submissions=\"3\">\n      <asq-stem><h2>Exercise 1</h2></asq-stem>\n      <asq-multi-choice-q multi>\n        <asq-stem><h3>Official languages of Switzerland</h3></asq-stem>\n        <asq-option>English</asq-option>\n        <asq-option>French</asq-option>\n        <asq-option>German</asq-option>\n        <asq-option>Italian</asq-option>\n        <asq-option>Rumantsch</asq-option>\n      </asq-multi-choice-q>\n    </asq-exercise>\n\nDifferent users will see different UI according to their **role**. There are\nseveral types of roles, `viewer`, `presenter` and `TA`.\n\n###Styling `submit` and `edit` buttons (in viewer's view):\n\nTo change the color and background color of `submit` button:\n\n    asq-exercise {\n      --asq-exercise-submit-button-color: white;\n      --asq-exercise-submit-button-background-color: #388E3C;\n    }\n\n\nTo change the color and background color of `edit` button:\n\n    asq-exercise {\n      --asq-exercise-edit-button-color: white;\n      --asq-exercise-edit-button-background-color: #FF7043;\n    }\n\nTo change the color and background color of `submit` button when disabled (a.k.a submissions are not allowed):\n\n    asq-exercise {\n      --asq-exercise-submit-button-disabled-color: #E0E0E0;\n      --asq-exercise-submit-button-background-disabled-color: #424242;\n    }\n\nCustom property                                        | Description                                     | Default\n-------------------------------------------------------|-------------------------------------------------|----------\n--asq-exercise-submit-button-color                     | The color of submit button                      | white\n--asq-exercise-submit-button-background-color          | The background color of submit button           | #388E3C\n--asq-exercise-edit-button-color                       | The color of edit button                        | white\n--asq-exercise-edit-button-background-color            | The background color of edit button             | #FF7043\n--asq-exercise-submit-button-disabled-color            | The color of submit button when disabled        | #E0E0E0\n--asq-exercise-submit-button-background-disabled-color | The background color of submit button disabled  | #424242\n\nTo see how to style the progressbar, go to the asq-exercise-progress docs.",
       "summary": "",
       "path": "asq-exercise.html",
       "properties": [
@@ -1867,6 +1957,28 @@
               "notify": true
             }
           }
+        },
+        {
+          "name": "directUpdate",
+          "type": "boolean",
+          "description": "Flag  to update the progress bar directly.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 285,
+              "column": 8
+            },
+            "end": {
+              "line": 289,
+              "column": 9
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "notify": true
+            }
+          },
+          "defaultValue": "true"
         }
       ],
       "methods": [
@@ -1974,11 +2086,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 280,
+              "line": 293,
               "column": 6
             },
             "end": {
-              "line": 282,
+              "line": 295,
               "column": 7
             }
           },
@@ -1998,11 +2110,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 284,
+              "line": 297,
               "column": 6
             },
             "end": {
-              "line": 286,
+              "line": 299,
               "column": 7
             }
           },
@@ -2019,11 +2131,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 288,
+              "line": 301,
               "column": 6
             },
             "end": {
-              "line": 296,
+              "line": 309,
               "column": 7
             }
           },
@@ -2043,11 +2155,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 298,
+              "line": 311,
               "column": 6
             },
             "end": {
-              "line": 309,
+              "line": 322,
               "column": 7
             }
           },
@@ -2064,11 +2176,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 311,
+              "line": 324,
               "column": 6
             },
             "end": {
-              "line": 319,
+              "line": 332,
               "column": 7
             }
           },
@@ -2081,11 +2193,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 327,
+              "line": 340,
               "column": 6
             },
             "end": {
-              "line": 331,
+              "line": 344,
               "column": 7
             }
           },
@@ -2102,11 +2214,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 333,
+              "line": 346,
               "column": 6
             },
             "end": {
-              "line": 342,
+              "line": 355,
               "column": 7
             }
           },
@@ -2123,32 +2235,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 344,
+              "line": 357,
               "column": 6
             },
             "end": {
-              "line": 356,
-              "column": 7
-            }
-          },
-          "metadata": {},
-          "params": [
-            {
-              "name": "evt"
-            }
-          ]
-        },
-        {
-          "name": "_onRestorePresenter",
-          "description": "",
-          "privacy": "protected",
-          "sourceRange": {
-            "start": {
-              "line": 358,
-              "column": 6
-            },
-            "end": {
-              "line": 362,
+              "line": 365,
               "column": 7
             }
           },
@@ -2165,11 +2256,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 364,
+              "line": 367,
               "column": 6
             },
             "end": {
-              "line": 374,
+              "line": 377,
               "column": 7
             }
           },
@@ -2186,11 +2277,11 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 393,
+              "line": 396,
               "column": 6
             },
             "end": {
-              "line": 422,
+              "line": 425,
               "column": 7
             }
           },
@@ -2203,11 +2294,11 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 424,
+              "line": 427,
               "column": 6
             },
             "end": {
-              "line": 427,
+              "line": 430,
               "column": 7
             }
           },
@@ -2224,11 +2315,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 434,
+              "line": 437,
               "column": 6
             },
             "end": {
-              "line": 438,
+              "line": 441,
               "column": 7
             }
           },
@@ -2241,11 +2332,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 445,
+              "line": 448,
               "column": 6
             },
             "end": {
-              "line": 452,
+              "line": 455,
               "column": 7
             }
           },
@@ -2258,11 +2349,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 455,
+              "line": 458,
               "column": 6
             },
             "end": {
-              "line": 462,
+              "line": 465,
               "column": 7
             }
           },
@@ -2275,11 +2366,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 475,
+              "line": 478,
               "column": 6
             },
             "end": {
-              "line": 479,
+              "line": 482,
               "column": 7
             }
           },
@@ -2292,11 +2383,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 481,
+              "line": 484,
               "column": 6
             },
             "end": {
-              "line": 486,
+              "line": 489,
               "column": 7
             }
           },
@@ -2313,11 +2404,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 488,
+              "line": 491,
               "column": 6
             },
             "end": {
-              "line": 492,
+              "line": 495,
               "column": 7
             }
           },
@@ -2339,7 +2430,7 @@
           "column": 12
         },
         "end": {
-          "line": 498,
+          "line": 497,
           "column": 5
         }
       },
@@ -2561,6 +2652,22 @@
           },
           "metadata": {},
           "type": "Object"
+        },
+        {
+          "name": "direct-update",
+          "description": "Flag  to update the progress bar directly.",
+          "sourceRange": {
+            "start": {
+              "line": 285,
+              "column": 8
+            },
+            "end": {
+              "line": 289,
+              "column": 9
+            }
+          },
+          "metadata": {},
+          "type": "boolean"
         }
       ],
       "events": [
@@ -2626,6 +2733,12 @@
           "type": "CustomEvent",
           "name": "event-bus-changed",
           "description": "Fired when the `eventBus` property changes.",
+          "metadata": {}
+        },
+        {
+          "type": "CustomEvent",
+          "name": "direct-update-changed",
+          "description": "Fired when the `directUpdate` property changes.",
           "metadata": {}
         }
       ],
