@@ -32,7 +32,8 @@
     "paper-tooltip": "polymerElements/paper-tooltip#^1.1.1",
     "polymer": "polymer/polymer#^1.2.1",
     "paper-styles": "PolymerElements/paper-styles#^1.0.12",
-    "iron-flex-layout": "PolymerElements/iron-flex-layout#^1.3.1"
+    "iron-flex-layout": "PolymerElements/iron-flex-layout#^1.3.1",
+    "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^2.0.0"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^3.0.1",
