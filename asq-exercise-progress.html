@@ -5,20 +5,22 @@
 <!--
 ### ASQ Exercise Progress:
 The ASQ exercise progress bar consists of a progress bar and a progress counter
-(submissions/connected users) to the right of it.
+(submissions/connected users).
 
-The progress bar shows the viewers' activity which can be one of the following:
-submitted, working, focused and idle. Those acitivties are shown in 4 different
-colors as partial progress bars in the order they were mentioned.
+The progress bar shows the cumulative viewers' activity states for the corresponding
+exercise. Each user can be in one of the following activitystates: submitted, working,
+focused or idle.
+Those states are represented in 4 different colors as partial progress bars in the
+order they were mentioned.
 
-The progress bar has a slightly bigger progress bar of the same style in the
-background that displays the gradient of activity for a certain activity state
-(e.g submitted). The faster the animation from left to right, the more
-activity for a given state has been monitored for the last 5 seconds.
+To display the gradient of change for a certain activity state (e.g submitted), 
+we use a slightly bigger progress bar of the same style in the background of the main
+progress bar. The faster the animation from left to right, the more activity occurred for
+a given state in the last 5 seconds.
 
-The presenter can choose if he wants immediate updates for the progress bar or
-let it update together with the effect that shows the gradient of the activity
-by changing the `directUpdate` setting.
+The presenter can choose if they want instant updates for the progress bar or
+if the progress bar should update simultaneously with the momentum effect
+by using the `directUpdate` property.
 
 
 ### Styling progress bar (in presenter's view):
