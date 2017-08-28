@@ -13,7 +13,7 @@ focused or idle.
 Those states are represented in 4 different colors as partial progress bars in the
 order they were mentioned.
 
-To display the gradient of change for a certain activity state (e.g submitted), 
+To display the gradient of change for a certain activity state (e.g submitted),
 we use a slightly bigger progress bar of the same style in the background of the main
 progress bar. The faster the animation from left to right, the more activity occurred for
 a given state in the last 5 seconds.
@@ -119,6 +119,18 @@ Examples:
       },
 
       /**
+      * Object that contains the submissions.
+      *
+      * @attribute _submissions
+      * @type Object
+      * @default {}
+      */
+      _submissions: {
+        type: Object,
+        value: function() { return {}; },
+      },
+
+      /**
       * Counts the number of currently connected viewers.
       *
       * @attribute _connectedViewersNum
@@ -140,7 +152,7 @@ Examples:
       _submissionsNum: {
         type: Number,
         value: 0,
-        computed: '_computeSubmittedViewersNum(_viewers.*, _update)',
+        computed: '_computeSubmittedViewersNum(_submissions.*, _update)',
       },
 
       /**
@@ -254,10 +266,11 @@ Examples:
     *
     * @return {number} Number of working users.
     */
-    _computeSubmittedViewersNum: function(viewers, update) {
+    _computeSubmittedViewersNum: function(submissions, update) {
+      this._makeSureSubmissionsExist();
       if (update) {
-        var num = Object.keys(this._viewers).reduce(function(acc, userId) {
-          if(this._viewers[userId].submitted == this.exUid) return ++acc;
+        var num = Object.keys(this._submissions[this.exUid]).reduce(function(acc, userId) {
+          if(this._submissions[this.exUid][userId]) return ++acc;
           return acc;
         }.bind(this), 0);
         return num;
@@ -271,9 +284,10 @@ Examples:
     * @return {number} Number of working users.
     */
     _computeWorkingViewersNum: function(viewers, update) {
+      this._makeSureSubmissionsExist();
       if (update) {
         var num = Object.keys(this._viewers).reduce(function(acc, userId) {
-          if(this._viewers[userId].working) return ++acc;
+          if(this._viewers[userId].working && !this._submissions[this.exUid][userId]) return ++acc;
           return acc;
         }.bind(this), 0);
         return num;
@@ -288,9 +302,10 @@ Examples:
     */
 
     _computeFocusedViewersNum: function(viewers, update) {
+      this._makeSureSubmissionsExist();
       if (update) {
         return Object.keys(this._viewers).reduce(function(acc, userId) {
-          if(this._viewers[userId].focused && !this._viewers[userId].idle) return ++acc;
+          if(this._viewers[userId].focused && !this._viewers[userId].idle && !this._submissions[this.exUid][userId]) return ++acc;
           return acc;
         }.bind(this), 0);
       }
@@ -304,9 +319,10 @@ Examples:
     */
 
     _computeIdleViewersNum: function(viewers, update) {
+      this._makeSureSubmissionsExist();
       if (update) {
         return Object.keys(this._viewers).reduce(function(acc, userId) {
-          if(this._viewers[userId].idle || this._viewers[userId].disconnected) return ++acc
+          if(this._viewers[userId].idle && !this._submissions[this.exUid][userId]) return ++acc
           return acc;
         }.bind(this), 0);
       }
@@ -322,6 +338,14 @@ Examples:
     */
     _calcFlex: function(num) {
       return 'flex:' + num + ';';
+    },
+
+    /**
+    * Initializes the _submissions object if it's not already done.
+    *
+    */
+    _makeSureSubmissionsExist: function() {
+      this._submissions[this.exUid] = this._submissions[this.exUid] || {};
     },
 
     /**
@@ -345,7 +369,6 @@ Examples:
     */
     _userWorked: function(user) {
       if (this._makeSureViewerExists(user)) {
-        if (this._viewers[user.id].submitted) return;
         if (!this._viewers[user.id].working) this._workingCounter++;
         this._resetUser(user);
         this._viewers[user.id].working = true;
@@ -360,7 +383,6 @@ Examples:
     */
     _userFocused: function(user) {
       if (this._makeSureViewerExists(user)) {
-        if (this._viewers[user.id].submitted) return;
         if (!this._viewers[user.id].focused) this._focusedCounter++;
         this._resetUser(user);
         this._viewers[user.id].focused = true;
@@ -369,14 +391,13 @@ Examples:
     },
 
     /**
-    * If the given user was idle, change his idle property and mark him as not idle.
+    * Mark the given user as not idle, working or focused.
     *
     * @param {object} A user object.
     */
     _userMadeTabVisible: function(user) {
       if (this._makeSureViewerExists(user)) {
-        this._viewers[user.id].idle = false;
-        this.notifyPath('_viewers.' + user.id + '.' + 'idle');
+        this._resetUser(user.id);
       }
     },
 
@@ -387,7 +408,6 @@ Examples:
     */
     _userIdled: function(user) {
       if (this._makeSureViewerExists(user)) {
-        if (this._viewers[user.id].submitted) return;
         if (!this._viewers[user.id].idle) this._idleCounter++;
         this._resetUser(user);
         this._viewers[user.id].idle = true;
@@ -396,14 +416,25 @@ Examples:
     },
 
     /**
-    * If the given user was idle, change his idle property and mark him as not idle.
+    * Mark the given user as disconnected.
+    *
+    * @param {object} A user object.
+    */
+    _userDisconnected: function(user) {
+      if (this._makeSureViewerExists(user)) {
+        this._resetUser(user);
+        this._viewers[user.id].disconnected = true;
+      }
+    },
+
+    /**
+    * Mark the given user as not idle, working or focused.
     *
     * @param {object} A user object.
     */
     _userMadeTabHidden: function(user) {
       if (this._makeSureViewerExists(user)) {
-        this._viewers[user.id].idle = false;
-        this.notifyPath('_viewers.' + user.id + '.' + 'idle');
+        this._resetUser(user);
       }
     },
 
@@ -422,8 +453,7 @@ Examples:
     * @param {object} A user object.
     */
     _resetUser: function(user) {
-      this._viewers[user.id].submitted = false;
-      this.notifyPath('_viewers.' + user.id + '.' + 'submitted');
+      this._viewers[user.id].disconnected = false;
       this._viewers[user.id].working = false;
       this.notifyPath('_viewers.' + user.id + '.' + 'working');
       this._viewers[user.id].focused = false;
@@ -440,9 +470,9 @@ Examples:
     _userSubmitted: function(data) {
       if (data.answer.exercise.id == this.exUid && this._makeSureViewerExists(data.answeree)) {
         this._resetUser(data.answeree);
-        this._viewers[data.answeree.id].submitted = data.answer.exercise.id;
-        var path = '_viewers.' + data.answeree.id + '.' + 'submitted';
-        this.notifyPath(path, data.answer.exercise.id);
+        this._submissions[this.exUid][data.answeree.id] = true;
+        var path = '_submissions.' + this.exUid + '.' + data.answeree.id;
+        this.notifyPath(path, true);
         this._submissionCounter++;
       }
     },
@@ -486,6 +516,8 @@ Examples:
         case 'exerciseblur':
         case 'windowblur':
           return this._userBlurred(user);
+        case 'folo-disconnected':
+          return this._userDisconnected(user);
       }
     },
 
@@ -620,7 +652,7 @@ Examples:
         if (exercise.uid == this.exUid) {
           exercise.submissions.forEach(function(submission) {
             this._viewers[submission] = {};
-            this._viewers[submission].submitted = exercise.uid;
+            this._submissions[this.exUid][submission] = true;
           }.bind(this));
         }
       }.bind(this));
