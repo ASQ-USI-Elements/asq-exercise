@@ -397,7 +397,7 @@ Examples:
     */
     _userMadeTabVisible: function(user) {
       if (this._makeSureViewerExists(user)) {
-        this._resetUser(user.id);
+        this._resetUser(user);
       }
     },
 
@@ -652,6 +652,7 @@ Examples:
         if (exercise.uid == this.exUid) {
           exercise.submissions.forEach(function(submission) {
             this._viewers[submission] = {};
+            this._makeSureSubmissionsExist();
             this._submissions[this.exUid][submission] = true;
           }.bind(this));
         }
