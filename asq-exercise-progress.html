@@ -1,5 +1,6 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../asq-base/asq-base.html">
+<link rel="import" href="../paper-progress/paper-progress.html">
 <link rel="import" href="asq-exercise-progress-style.html">
 
 <!--
@@ -300,7 +301,6 @@ Examples:
     *
     * @return {number} Number of focused users.
     */
-
     _computeFocusedViewersNum: function(viewers, update) {
       this._makeSureSubmissionsExist();
       if (update) {
@@ -317,7 +317,6 @@ Examples:
     *
     * @return {number} Number of idle users.
     */
-
     _computeIdleViewersNum: function(viewers, update) {
       this._makeSureSubmissionsExist();
       if (update) {
