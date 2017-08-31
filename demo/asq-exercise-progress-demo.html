@@ -1,0 +1,109 @@
+<!doctype html>
+<html>
+  <head>
+    <meta name="asq-exercise-progress" content="width=device-width, initial-scale=1, user-scalable=no">
+
+    <title>asq-exercise-progress | Demo</title>
+
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <link rel="import" href="../../polymer/polymer.html">
+
+    <link rel="import" href="../../iron-flex-layout/iron-flex-layout-classes.html">
+    <link rel="import" href="../../iron-flex-layout/iron-flex-layout.html">
+    <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+    <link rel="import" href="../../paper-progress/paper-progress.html">
+    <link rel="import" href="../../paper-styles/color.html">
+
+    <link rel="import" href="../asq-exercise-progress.html">
+    <link rel="import"  href="asq-exercise-progress-demo-style.css">
+
+  </head>
+
+  <body unresolved>
+    <div id="mainContainer">
+
+      <h4> Default progress bar without any activity:</h4>
+      <demo-snippet>
+        <template>
+          <asq-exercise-progress id="defaultDemo"></asq-exercise-progress>
+        </template>
+      </demo-snippet>
+
+      <h4> Default progress bar with activity:</h4>
+      <demo-snippet>
+        <span class="legend">
+          green = submissions <br>
+          orange = working users <br>
+          blue = focused users <br>
+          grey = idle users <br>
+          2/7 = 2 out of 7 connected users submitted
+        </span>
+        <template>
+          <asq-exercise-progress id="activityDemo"></asq-exercise-progress>
+        </template>
+      </demo-snippet>
+
+      <h4> Change the height of the progress bar:</h4>
+      <demo-snippet>
+        <template>
+          <style>
+            asq-exercise {
+              --asq-exercise-progress-height: 10px;
+            }
+          </style>
+
+          <asq-exercise-progress id="heightDemo"></asq-exercise-progress>
+        </template>
+      </demo-snippet>
+
+      <h4> Change the colors of the activity markers:</h4>
+      <demo-snippet>
+        <template>
+          <style>
+            asq-exercise {
+              --asq-exercise-progress-submitted-color: blue;
+              --asq-exercise-progress-working-color: violet;
+              --asq-exercise-progress-focused-color: green;
+              --asq-exercise-progress-idle-color: brown;
+            }
+          </style>
+
+          <asq-exercise-progress id="changeColorDemo"></asq-exercise-progress>
+        </template>
+      </demo-snippet>
+
+      <h4> Change the color of the empty progress bar:</h4>
+      <demo-snippet>
+        <template>
+          <style>
+            asq-exercise {
+              --asq-exercise-progressbar-background-color: pink;
+            }
+          </style>
+
+          <asq-exercise-progress id="changeBackgroundColorDemo"></asq-exercise-progress>
+        </template>
+      </demo-snippet>
+
+      <h4> Change the style of the progress numbers:</h4>
+      <demo-snippet>
+        <template>
+          <style>
+            asq-exercise {
+              --asq-exercise-progress-num-mixin: {
+                font-size: 20px;
+                font-family: 'Roboto';
+                color: red;
+              }
+            }
+          </style>
+
+          <asq-exercise-progress id="changeProgressNum"></asq-exercise-progress>
+        </template>
+      </demo-snippet>
+
+    </div>
+
+  </body>
+
+</html>

@@ -12,43 +12,56 @@
   <link rel="import" href="../../asq-exercise.html">
   <link rel="import" href="../../../asq-text-input-q/asq-text-input-q.html">
   <link rel="import" href="../../../asq-multi-choice-q/asq-multi-choice-q.html">
+  <link rel="import" href="../../../asq-option/asq-option.html" >
   <link rel="import" href="../../../asq-base/asq-base.html">
 </head>
 <body>
 
   <!-- You use the document as a place to set up your fixtures. -->
-  <asq-exercise id="m">
-    <asq-text-input-q>
-      <asq-stem><h3>What's the result of '2 * 4'</h3></asq-stem>
-    </asq-text-input-q>
-    <asq-multi-choice-q>
-        <asq-stem><h3>Which are the official languages of Switzerland?</h3></asq-stem>
-        <asq-option>English</asq-option>
-        <asq-option correct-answer="true">French</asq-option>
-        <asq-option correct-answer="true">German</asq-option>
-        <asq-option correct-answer="true">Rumantsch</asq-option>
-      </asq-multi-choice-q>
+  <test-fixture id="aemq-fixture">
+    <template>
 
-  </asq-exercise>
+      <asq-exercise>
+
+        <asq-text-input-q>
+          <asq-stem><h3>What's the result of '2 * 4'</h3></asq-stem>
+        </asq-text-input-q>
+
+        <asq-multi-choice-q>
+          <asq-stem><h3>Which are the official languages of Switzerland?</h3></asq-stem>
+          <asq-option uid="007" name="English">English</asq-option>
+          <asq-option uid="007" name="French" correct-answer="true">French</asq-option>
+          <asq-option uid="007" name="German" correct-answer="true">German</asq-option>
+          <asq-option uid="007" name="Romansh" correct-answer="true">Romansh</asq-option>
+        </asq-multi-choice-q>
+
+      </asq-exercise>
+
+  </template>
+  </test-fixture>
 
   <script>
-    var m = document.querySelector('#m');
-    suite('<am-exercise>', function() {
+
+    suite('<asq-multi-choice-q>', function() {
       test('test _getQuestions()', function() {
-        assert.isTrue(Array.isArray(m._getQuestions()));
-        assert.equal(m._getQuestions().length, 2);
-        assert.equal(m._getQuestions()[0].nodeName, "ASQ-TEXT-INPUT-Q");
-        assert.equal(m._getQuestions()[1].nodeName, "ASQ-MULTI-CHOICE-Q");
+        var aemq = fixture('aemq-fixture');
+
+        assert.isTrue(Array.isArray(aemq._getQuestions()));
+        assert.equal(aemq._getQuestions().length, 2);
+        assert.equal(aemq._getQuestions()[0].nodeName, "ASQ-TEXT-INPUT-Q");
+        assert.equal(aemq._getQuestions()[1].nodeName, "ASQ-MULTI-CHOICE-Q");
       });
 
       test('test default mixin values', function() {
-        assert.isTrue(m.isASQElement);
-        assert.isFalse(m.isASQQuestionTypeElement);
-        assert.equal(m.uid, '');
-        assert.equal(m.role, 'viewer');
+        var aemq = fixture('aemq-fixture');
+
+        assert.isTrue(aemq.isASQElement);
+        assert.isFalse(aemq.isASQQuestionTypeElement);
+        assert.equal(aemq.uid, '');
+        assert.equal(aemq.role, 'viewer');
       });
 
-      
+
     });
   </script>
 

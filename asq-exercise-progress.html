@@ -1,0 +1,665 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../asq-base/asq-base.html">
+<link rel="import" href="../paper-progress/paper-progress.html">
+<link rel="import" href="asq-exercise-progress-style.html">
+
+<!--
+### ASQ Exercise Progress:
+The ASQ exercise progress bar consists of a progress bar and a progress counter
+(submissions/connected users).
+
+The progress bar shows the cumulative viewers' activity states for the corresponding
+exercise. Each user can be in one of the following activitystates: submitted, working,
+focused or idle.
+Those states are represented in 4 different colors as partial progress bars in the
+order they were mentioned.
+
+To display the gradient of change for a certain activity state (e.g submitted),
+we use a slightly bigger progress bar of the same style in the background of the main
+progress bar. The faster the animation from left to right, the more activity occurred for
+a given state in the last 5 seconds.
+
+The presenter can choose if they want instant updates for the progress bar or
+if the progress bar should update simultaneously with the momentum effect
+by using the `directUpdate` property.
+
+
+### Styling progress bar (in presenter's view):
+
+The followings are available for styling (presenter's view):
+
+Custom property                                    | Description                                 | Default
+---------------------------------------------------|---------------------------------------------|----------
+--asq-exercise-progress-height                     | The height of the progress bar              | 4px
+--asq-exercise-progress-submitted-color            | The color of the submission bar.            | --google-green-500
+--asq-exercise-progress-working-color              | The color of the working users bar.         | --paper-orange-500
+--asq-exercise-progress-focused-color              | The color of the focused users bar.         | --paper-blue-200
+--asq-exercise-progress-idle-color                 | The color of the idle users bar.            | --google-grey-500
+--asq-exercise-progressbar-background-color        | The color of the empty progress bar.        | --google-grey-300
+--asq-exercise-progress-num-mixin                  | The mixin to style the progress numbers of the progress bar. | { }
+
+
+Examples:
+
+- To change the submitted progress bar color:
+      asq-exercise {
+        --asq-exercise-progress-submitted-color: #e91e63;
+      }
+
+- To change the style of the progress numbers:
+      asq-exercise {
+        --asq-exercise-progress-progress-num-mixin: {
+          font-size: 20px;
+          padding: 2px;
+        };
+      }
+
+
+@element asq-exercise-progress
+@demo demo/asq-exercise-progress-demo.html
+@group ASQ Elements
+@blurb Element Container the progress bar.
+@homepage http://github.com/ASQ-USI-Elements/asq-exercise/asq-exercise-progress.html
+
+-->
+
+
+<dom-module id="asq-exercise-progress">
+  <template>
+    <style include="iron-flex asq-exercise-progress-style">
+      :host {
+        display: flex;
+        position: relative;
+        @apply(--layout-horizontal);
+        @apply(--layout-center);
+        margin: 10px 0 5px 0;
+        font-size: 14px;
+      }
+    </style>
+
+    <div class="progress-bar-container background-progress">
+      <paper-progress id="background-submitted-progress" indeterminate style$=[[_calcFlex(_submissionsNum)]]></paper-progress>
+      <paper-progress id="background-working-progress" indeterminate style$=[[_calcFlex(_workingViewersNum)]]></paper-progress>
+      <paper-progress id="background-focused-progress" indeterminate style$=[[_calcFlex(_focusedViewersNum)]]></paper-progress>
+      <paper-progress id="background-idle-progress" indeterminate style$=[[_calcFlex(_idleViewersNum)]]></paper-progress>
+    </div>
+
+    <div class="progress-bar-container foreground-progress">
+      <paper-progress id="submitted-progress" value="100" style$=[[_calcFlex(_submissionsNum)]]></paper-progress>
+      <paper-progress id="working-progress" value="100" style$=[[_calcFlex(_workingViewersNum)]]></paper-progress>
+      <paper-progress id="focused-progress" value="100" style$=[[_calcFlex(_focusedViewersNum)]]></paper-progress>
+      <paper-progress id="idle-progress" value="100" style$=[[_calcFlex(_idleViewersNum)]]></paper-progress>
+    </div>
+
+    <div id="progress-num">
+      <span>[[_submissionsNum]]/[[_connectedViewersNum]]</span>
+    </div>
+
+  </template>
+
+  <script>
+
+  Polymer({
+
+    is: 'asq-exercise-progress',
+
+    behaviors: [ASQ.asqElementBehavior],
+
+    properties: {
+
+      /**
+      * Object that contains viewers with their activity information.
+      *
+      * @attribute _viewers
+      * @type Object
+      * @default {}
+      */
+      _viewers: {
+        type: Object,
+        value: function() { return {}; },
+      },
+
+      /**
+      * Object that contains the submissions.
+      *
+      * @attribute _submissions
+      * @type Object
+      * @default {}
+      */
+      _submissions: {
+        type: Object,
+        value: function() { return {}; },
+      },
+
+      /**
+      * Counts the number of currently connected viewers.
+      *
+      * @attribute _connectedViewersNum
+      * @type Number
+      * @default 0
+      */
+      _connectedViewersNum: {
+        type: Number,
+        value: 0,
+      },
+
+      /**
+      * Counts the number of submissions, inherited from asq-exercise.
+      *
+      * @attribute _submissionsNum
+      * @type Number
+      * @default 0
+      */
+      _submissionsNum: {
+        type: Number,
+        value: 0,
+        computed: '_computeSubmittedViewersNum(_submissions.*, _update)',
+      },
+
+      /**
+      * Counts the number of submissions during a given time interval
+      * by the _visualizeChange function.
+      *
+      * @attribute _submissionCounter
+      * @type Number
+      * @default 0
+      */
+      _submissionCounter: {
+        type: Number,
+        value: 0,
+      },
+
+      /**
+      * Counts the number of working users, calculated with the function given
+      * in its computed property.
+      * @attribute _workingViewersNum
+      * @type Number
+      * @default 0
+      */
+      _workingViewersNum:{
+        type: Number,
+        value: 0,
+        computed: '_computeWorkingViewersNum(_viewers.*, _update)',
+      },
+
+      /**
+      * Counts the number of working users during a given time interval
+      * by the _visualizeChange function.
+      *
+      * @attribute _workingCounter
+      * @type Number
+      * @default 0
+      */
+      _workingCounter: {
+        type: Number,
+        value: 0,
+      },
+
+      /**
+      * Counts the number of focused users, calculated with the function given
+      * in its computed property.
+      * @attribute _focusedViewersNum
+      * @type Number
+      * @default 0
+      */
+      _focusedViewersNum:{
+        type: Number,
+        value: 0,
+        computed: '_computeFocusedViewersNum(_viewers.*, _update)',
+      },
+
+       /**
+       * Counts the number of focused users during a given time interval
+       * by the _visualizeChange function.
+       *
+       * @attribute _focusedCounter
+       * @type Number
+       * @default 0
+       */
+      _focusedCounter: {
+        type: Number,
+        value: 0,
+      },
+
+       /**
+       * Counts the number of idle users, calculated with the function given
+       * in its computed property.
+       *
+       * @attribute _focusedViewersNum
+       * @type Number
+       * @default 0
+       */
+      _idleViewersNum:{
+        type: Number,
+        value: 0,
+        computed: '_computeIdleViewersNum(_viewers.*, _update)',
+      },
+
+       /**
+       * Counts the number of idle users during a given time interval
+       * by the _visualizeChange function.
+       *
+       * @attribute _focusedCounter
+       * @type Number
+       * @default 0
+       */
+      _idleCounter: {
+        type: Number,
+        value: 0,
+      },
+
+     /**
+      * Flag to trigger the computed function at the right moment.
+      *
+      * @attribute _update
+      * @type Boolean
+      * @default false
+      */
+      _update: {
+        type: Boolean,
+        value: true,
+      },
+
+    },
+
+    /**
+    * Computes the amount of users that have submitted from the _viewers object.
+    *
+    * @return {number} Number of working users.
+    */
+    _computeSubmittedViewersNum: function(submissions, update) {
+      this._makeSureSubmissionsExist();
+      if (update) {
+        var num = Object.keys(this._submissions[this.exUid]).reduce(function(acc, userId) {
+          if(this._submissions[this.exUid][userId]) return ++acc;
+          return acc;
+        }.bind(this), 0);
+        return num;
+      }
+      else return this._submissionsNum;
+    },
+
+    /**
+    * Computes the amount of working users from the _viewers object.
+    *
+    * @return {number} Number of working users.
+    */
+    _computeWorkingViewersNum: function(viewers, update) {
+      this._makeSureSubmissionsExist();
+      if (update) {
+        var num = Object.keys(this._viewers).reduce(function(acc, userId) {
+          if(this._viewers[userId].working && !this._submissions[this.exUid][userId]) return ++acc;
+          return acc;
+        }.bind(this), 0);
+        return num;
+      }
+      else return this._workingViewersNum;
+    },
+
+    /**
+    * Computes the amount of focused users from the _viewers object.
+    *
+    * @return {number} Number of focused users.
+    */
+    _computeFocusedViewersNum: function(viewers, update) {
+      this._makeSureSubmissionsExist();
+      if (update) {
+        return Object.keys(this._viewers).reduce(function(acc, userId) {
+          if(this._viewers[userId].focused && !this._viewers[userId].idle && !this._submissions[this.exUid][userId]) return ++acc;
+          return acc;
+        }.bind(this), 0);
+      }
+      else return this._focusedViewersNum;
+    },
+
+    /**
+    * Computes the amount of idle users from the _viewers object.
+    *
+    * @return {number} Number of idle users.
+    */
+    _computeIdleViewersNum: function(viewers, update) {
+      this._makeSureSubmissionsExist();
+      if (update) {
+        return Object.keys(this._viewers).reduce(function(acc, userId) {
+          if(this._viewers[userId].idle && !this._submissions[this.exUid][userId]) return ++acc
+          return acc;
+        }.bind(this), 0);
+      }
+      else return this._idleViewersNum;
+    },
+
+    /**
+    * Returns a CSS declaration as a string to change the width of the progress bar
+    * by changing its flex property.
+    *
+    * @param {number} The new flex value.
+    * @return {string} String of the form 'flex: num;'
+    */
+    _calcFlex: function(num) {
+      return 'flex:' + num + ';';
+    },
+
+    /**
+    * Initializes the _submissions object if it's not already done.
+    *
+    */
+    _makeSureSubmissionsExist: function() {
+      this._submissions[this.exUid] = this._submissions[this.exUid] || {};
+    },
+
+    /**
+    * If the given user is not already in the _viewers object, add him and notify
+    * the observers that the _viewers object changed.
+    *
+    * @param {object} A user object.
+    */
+    _makeSureViewerExists: function(viewerToFind) {
+      if (viewerToFind.role === 'viewer') {
+        this._viewers[viewerToFind.id] = this._viewers[viewerToFind.id] || viewerToFind;
+        this.notifyPath('_viewers.' + viewerToFind.id);
+      }
+      return this._viewers[viewerToFind.id];
+    },
+
+    /**
+    * Mark the given user as working.
+    *
+    * @param {object} A user object.
+    */
+    _userWorked: function(user) {
+      if (this._makeSureViewerExists(user)) {
+        if (!this._viewers[user.id].working) this._workingCounter++;
+        this._resetUser(user);
+        this._viewers[user.id].working = true;
+        this.notifyPath('_viewers.' + user.id + '.' + 'working');
+      }
+    },
+
+    /**
+    * Mark the given user as focused.
+    *
+    * @param {object} A user object.
+    */
+    _userFocused: function(user) {
+      if (this._makeSureViewerExists(user)) {
+        if (!this._viewers[user.id].focused) this._focusedCounter++;
+        this._resetUser(user);
+        this._viewers[user.id].focused = true;
+        this.notifyPath('_viewers.' + user.id + '.' + 'focused');
+      }
+    },
+
+    /**
+    * Mark the given user as not idle, working or focused.
+    *
+    * @param {object} A user object.
+    */
+    _userMadeTabVisible: function(user) {
+      if (this._makeSureViewerExists(user)) {
+        this._resetUser(user);
+      }
+    },
+
+    /**
+    * Mark the given user as idle.
+    *
+    * @param {object} A user object.
+    */
+    _userIdled: function(user) {
+      if (this._makeSureViewerExists(user)) {
+        if (!this._viewers[user.id].idle) this._idleCounter++;
+        this._resetUser(user);
+        this._viewers[user.id].idle = true;
+        this.notifyPath('_viewers.' + user.id + '.' + 'idle');
+      }
+    },
+
+    /**
+    * Mark the given user as disconnected.
+    *
+    * @param {object} A user object.
+    */
+    _userDisconnected: function(user) {
+      if (this._makeSureViewerExists(user)) {
+        this._resetUser(user);
+        this._viewers[user.id].disconnected = true;
+      }
+    },
+
+    /**
+    * Mark the given user as not idle, working or focused.
+    *
+    * @param {object} A user object.
+    */
+    _userMadeTabHidden: function(user) {
+      if (this._makeSureViewerExists(user)) {
+        this._resetUser(user);
+      }
+    },
+
+    /**
+    * If the given blurred, make sure that he's already in the _viewers object.
+    *
+    * @param {object} A user object.
+    */
+    _userBlurred: function(user) {
+      this._makeSureViewerExists(user)
+    },
+
+    /**
+    * Reset all the activity properties of the given user.
+    *
+    * @param {object} A user object.
+    */
+    _resetUser: function(user) {
+      this._viewers[user.id].disconnected = false;
+      this._viewers[user.id].working = false;
+      this.notifyPath('_viewers.' + user.id + '.' + 'working');
+      this._viewers[user.id].focused = false;
+      this.notifyPath('_viewers.' + user.id + '.' + 'focused');
+      this._viewers[user.id].idle = false;
+      this.notifyPath('_viewers.' + user.id + '.' + 'idle');
+    },
+
+    /**
+    * Mark that the given user submitted and change the corresponding counter.
+    *
+    * @param {object} Data from the session event.
+    */
+    _userSubmitted: function(data) {
+      if (data.answer.exercise.id == this.exUid && this._makeSureViewerExists(data.answeree)) {
+        this._resetUser(data.answeree);
+        this._submissions[this.exUid][data.answeree.id] = true;
+        var path = '_submissions.' + this.exUid + '.' + data.answeree.id;
+        this.notifyPath(path, true);
+        this._submissionCounter++;
+      }
+    },
+
+    /**
+    * Change the number of connected users.
+    *
+    * @param {object} An event object.
+    */
+    _onConnectedClients: function (evt) {
+      this._connectedViewersNum = evt.connectedViewers.length;
+    },
+
+    /**
+    * Event handler for session event beamer events.
+    *
+    * @param {object} An event object.
+    */
+    _onSessionEventBeamer: function(evt) {
+      const user = evt.data.sessionEvent.user;
+
+      switch (evt.data.sessionEvent.type) {
+        case 'answer-submitted':
+          return this._userSubmitted(evt.data.sessionEvent);
+        case 'viewer-idle':
+          return this._userIdled(user);
+        case 'questioninput':
+        case 'copy':
+        case 'paste':
+        case 'cut':
+        case 'input':
+          return this._userWorked(user);
+        case 'tabvisible':
+          return this._userMadeTabVisible(user);
+        case 'tabhidden':
+          return this._userMadeTabHidden(user);
+        case 'focusin':
+        case 'exercisefocus':
+        case 'windowfocus':
+          return this._userFocused(user);
+        case 'exerciseblur':
+        case 'windowblur':
+          return this._userBlurred(user);
+        case 'folo-disconnected':
+          return this._userDisconnected(user);
+      }
+    },
+
+    /**
+    * Changes the css variable for the paper progress indeterminate cycle duration.
+    *
+    * @param {string} The css variable that will be changed.
+    * @param {number} Duration of the animation cycle, given in seconds.
+    */
+    _setVelocity:  function(property, velocity) {
+      this.customStyle[property] = velocity + 's';
+      this.updateStyles();
+      setTimeout(function() {
+        this.customStyle[property] = '0s';
+        this.updateStyles();
+      }.bind(this), velocity * 1000);
+    },
+
+    /**
+    * Animates the progress bar every 5 seconds depending on the activity.
+    *
+    */
+    _visualizeChange: function() {
+      setInterval(function() {
+        if (!this.directUpdate) this._update = true;
+
+        var submissionChange = this._calcChange(this._submissionCounter);
+        var workingChange = this._calcChange(this._workingCounter);
+        var focusedChange = this._calcChange(this._focusedCounter);
+        var idleChange = this._calcChange(this._idleCounter);
+
+        this._setVelocity('--submitted-bar-duration', this._determineVelocity(submissionChange));
+        this._setVelocity('--working-bar-duration',  this._determineVelocity(workingChange));
+        this._setVelocity('--focused-bar-duration',  this._determineVelocity(focusedChange));
+        this._setVelocity('--idle-bar-duration',  this._determineVelocity(idleChange));
+
+        this._submissionCounter = 0;
+        this._workingCounter = 0;
+        this._focusedCounter = 0;
+        this._idleCounter = 0;
+
+        if (!this.directUpdate) this._update = false;
+      }.bind(this), 5000);
+    },
+
+    /**
+    * Calculate the amount of change of a given activity.
+    *
+    * @param {number} A number that is smaller than or equal to the total number of users.
+    * @return {number} The amount of change in percent and in proportion to the number of users.
+    */
+    _calcChange: function(num) {
+      var total = this._submissionsNum + this._workingViewersNum + this._focusedViewersNum + this._idleViewersNum;
+      return num/total * 100;
+    },
+
+    /**
+    * Get the velocity for the paper progress indeterminate cycle.
+    *
+    * @param {number} A number in percent.
+    * @return {number} Returns a number in seconds for the duration of one paper progress
+    * indeterminate cycle.
+    */
+    _determineVelocity: function(num) {
+      if (num == 0) return 0;
+      else if(num < 5) return 10;
+      else if(num < 15) return 8;
+      else if(num < 30) return 6;
+      else if(num < 50) return 4;
+      else if(num < 75) return 2;
+      else if(num <= 100) return 1;
+      else return 0 // change was higher than 100%
+    },
+
+    created: function() {
+      document.addEventListener('asq-ready', function(evt) {
+        try {
+          this._subscribeToEvents(evt.detail.asqEventBus);
+        } catch (err) {
+          console.debug('failed to _subscribeToEvents');
+        }
+      }.bind(this));
+      this._visualizeChange();
+    },
+
+    attached: function() {
+      this._changeBackgroundProgressHeight();
+    },
+
+    /**
+    * Subscribe to events to listen to them.
+    *
+    * @param {object} The eventbus who takes care of the propagation.
+    */
+    _subscribeToEvents: function(eventBus) {
+      eventBus.on('asq:connected-clients', this._onConnectedClients.bind(this));
+      eventBus.on('asq:sessionEventBeamer', this._onSessionEventBeamer.bind(this));
+      eventBus.on('asq:question_type', this._onQuestionType.bind(this));
+    },
+
+    /**
+    * Dynamically adjusts the height of the backgorund effect. It's always two
+    * pixel bigger than the height of the progress bar.
+    */
+    _changeBackgroundProgressHeight: function() {
+      var backgroundProgressContainer = this.$$('.background-progress');
+      var foreGroundHeight = window.getComputedStyle(this.$$('.foreground-progress'), null).height;
+      var newHeight = parseInt(foreGroundHeight) + 2 + 'px';
+      [].forEach.call(backgroundProgressContainer.children, function(progressBar) {
+        progressBar.customStyle['--paper-progress-height'] = newHeight;
+        this.updateStyles();
+      }.bind(this));
+    },
+
+    /**
+    * Handle question type events.
+    */
+    _onQuestionType: function(evt) {
+      if (evt && evt.questionType && evt.questionType == 'asq-exercise') {
+        if (evt.type == 'restorePresenter') {
+          this._onRestorePresenter(evt);
+        }
+      }
+    },
+
+    /**
+    * Restore the number of submissions on the progress bar when the presenter
+    * reloads.
+    */
+    _onRestorePresenter: function(evt) {
+      evt.exercises.forEach(function(exercise) {
+        if (exercise.uid == this.exUid) {
+          exercise.submissions.forEach(function(submission) {
+            this._viewers[submission] = {};
+            this._makeSureSubmissionsExist();
+            this._submissions[this.exUid][submission] = true;
+          }.bind(this));
+        }
+      }.bind(this));
+    },
+
+  });
+
+  </script>
+
+</dom-module>

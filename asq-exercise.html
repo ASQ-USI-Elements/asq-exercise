@@ -6,14 +6,18 @@
 <link rel="import" href="../paper-progress/paper-progress.html">
 <link rel="import" href="../paper-styles/color.html">
 <link rel="import" href="asq-confidence.html">
+<link rel="import" href="asq-exercise-progress.html">
 <link rel="import" href="../asq-base/asq-base.html">
 
 <!--
-`asq-exercise` groups ASQ `question types`. Every question should be be a child of an `asq-exercise` element. An `asq-exercise` element should conatin one ore more  `ASQ questions`. `asq-exercise` takes care of submitting and displaying progress for a group of questions.
+`asq-exercise` groups ASQ `question types`. Every question should be be a child
+of an `asq-exercise` element. An `asq-exercise` element should contain one ore
+more  `ASQ questions`. `asq-exercise` takes care of submitting and displaying
+progress for a group of questions.
 
 Example:
 
-    <asq-exercise 
+    <asq-exercise
       <asq-stem><h2>Exercise 1-1</h2></asq-stem>
       <asq-multi-choice-q>
         <asq-stem><h3>Select a functional language.</h3></asq-stem>
@@ -37,7 +41,8 @@ Example:
       </asq-multi-choice-q>
     </asq-exercise>
 
-Different users will see different UI according to their **role**. There are several types of roles, `viewer`, `presenter` and `TA`.
+Different users will see different UI according to their **role**. There are
+several types of roles, `viewer`, `presenter` and `TA`.
 
 ###Styling `submit` and `edit` buttons (in viewer's view):
 
@@ -56,7 +61,7 @@ To change the color and background color of `edit` button:
       --asq-exercise-edit-button-background-color: #FF7043;
     }
 
-To change the color and background color of `submit` button when disabled (a.k.a submitsions are not allowed):
+To change the color and background color of `submit` button when disabled (a.k.a submissions are not allowed):
 
     asq-exercise {
       --asq-exercise-submit-button-disabled-color: #E0E0E0;
@@ -72,34 +77,7 @@ Custom property                                        | Description            
 --asq-exercise-submit-button-disabled-color            | The color of submit button when disabled        | #E0E0E0
 --asq-exercise-submit-button-background-disabled-color | The background color of submit button disabled  | #424242
 
-
-### Styling progress bar (in presenter's view):
-
-To change the active progress bar color:
-
-    asq-exercise {
-       --asq-exercise-progress-active-color: #e91e63;
-    }
-
-
-To change the progress bar background color:
-
-    asq-exercise {
-      --asq-exercise-progress-container-color: #64ffda;
-    }
-
-
-The followings are available for styling (presenter's view) ( adapted from PolymerElements/paper-progress):
-
-Custom property                                    | Description                                 | Default
----------------------------------------------------|---------------------------------------------|----------
---asq-exercise-progress-container-color            | Mixin applied to container                  | --google-grey-300
---asq-exercise-progress-transition-duration        | Duration of the transition                  | 0.008s
---asq-exercise-progress-transition-timing-function | The timing function for the transition      | ease
---asq-exercise-progress-transition-delay           | delay for the transition                    | 0s
---asq-exercise-progress-active-color               | The color of the active bar                 | --google-green-500
---asq-exercise-progress-disabled-active-color      | The color of the active bar if disabled     | --google-grey-500
---asq-exercise-progress-height                     | The height of the progress bar              | 4px
+To see how to style the progressbar, go to the asq-exercise-progress docs.
 
 @element asq-exercise
 @demo demo/index.html
@@ -107,56 +85,37 @@ Custom property                                    | Description                
 @blurb Element Container for all ASQ `question types`.
 @homepage http://github.com/ASQ-USI-Elements/asq-exercise
 -->
-  
+
 <dom-module id="asq-exercise">
   <template>
-    <style include="iron-flex"> 
+    <style include="iron-flex">
 
       :host{
         display: block;
       }
 
-      #footer{
-        @apply(--layout-horizontal);
-        @apply(--layout-end-justified);
-        @apply(--asq-exercise-footer);
-      }
-
-      paper-progress {
-        margin-right: 5px;
-      }
-   
       .submit-button {
         color: var(--asq-exercise-submit-button-color, white);
         background-color: var(--asq-exercise-submit-button-background-color, #388E3C);
+        float: right;
+        clear: right;
       }
 
       .submit-button[disabled] {
         color: var(--asq-exercise-submit-button-disabled-color, #E0E0E0);
         background-color: var(--asq-exercise-submit-button-background-disabled-color, #424242);
       }
-      
+
       .edit-button {
         color: var(--asq-exercise-edit-button-color, white);
         background-color: var(--asq-exercise-edit-button-background-color, #FF7043);
       }
 
-      paper-progress {
-        --paper-progress-container-color: var(--asq-exercise-progress-container-color, --google-grey-300);
-
-        --paper-progress-active-color: var(--asq-exercise-progress-active-color, --google-green-500);
-
-        --paper-progress-disabled-active-color: var(--asq-exercise-progress-disabled-active-color, --google-grey-500);
-
-        --paper-progress-height: var(--asq-exercise-progress-height, 4px);
-
-        --paper-progress-transition-duration: var(--asq-exercise-progress-transition-duration, 0.08s);
-
-        --paper-progress-transition-delay: var(--asq-exercise-progress-transition-delay, 0s);
+      #footer {
+        float: right;
       }
 
-      
-      /* no need to print the buttons 
+      /* no need to print the buttons
       fixme: when polymer support media queries for custom properties we can just apply a property to the footer and have the user provide the media query on their rules */
       @media print{
         #footer {
@@ -164,8 +123,6 @@ Custom property                                    | Description                
         }
       }
 
-
-     
     </style>
 
     <template is="dom-if" if="{{hasRole(role, roles.VIEWER)}}" restamp>
@@ -183,8 +140,8 @@ Custom property                                    | Description                
             </template>
             <paper-button id="submit-button" class="submit-button" on-tap="submit" raised="true" disabled="{{_computeDisabled(disabled, submittable)}}">Submit</paper-button>
             <paper-tooltip for="submit-button">{{_submittableMessages}}</paper-tooltip>
-            <paper-button id="edit-button" hidden="" class="edit-button" on-tap="_onEdit" raised="true">Edit</paper-button> 
-          </div>   
+            <paper-button id="edit-button" hidden="" class="edit-button" on-tap="_onEdit" raised="true">Edit</paper-button>
+          </div>
         </footer>
       </article>
     </template>
@@ -200,21 +157,11 @@ Custom property                                    | Description                
         </div>
         <footer id="footer">
           <div class="layout horizontal center">
-            <!-- TODO: cannot declartively define `max`. The `max` shouldn't 
-            be zero when trying to change `value`. Otherwise, it wouldn't change.
-            The `restorePresenter happens before viewerConnected`. But it requires
-            to change the max before changing the value. 
-            -->
-            <paper-progress value="[[submissionsNum]]"></paper-progress>
-            <div>
-              <span>[[submissionsNum]]</span>
-              <span>/<span>
-              <span>[[connectedViewersNum]]</span>
-            </div>
-          </div>
+            <!-- submission -->
+            <asq-exercise-progress ex-uid="[[uid]]" direct-update="[[directUpdate]]"></asq-exercise-progress>
         </footer>
       </article>
-    </template> 
+    </template>
 
     <template is="dom-if" if="{{hasRole(role, roles.TA)}}" restamp>
       <article class="asq-exercise">
@@ -226,11 +173,11 @@ Custom property                                    | Description                
         </div>
         <footer id="footer">
           <div>
-            <asq-progress></asq-progress>
+            <asq-exercise-progress ex-uid="[[uid]]" direct-update="[[directUpdate]]"></asq-exercise-progress>
           </div>
         </footer>
       </article>
-    </template> 
+    </template>
 
   </template>
   <script>
@@ -239,17 +186,17 @@ Custom property                                    | Description                
 
       behaviors: [ASQ.asqElementBehavior],
 
- 
+
       properties: {
 
         /**
          * Disable or enable the element. Changes will be also
          * propagated to inner propagated elements.
          */
-        disabled: { 
+        disabled: {
           type: Boolean,
           value: false,
-          notify: true, 
+          notify: true,
           observer: '_disabledChanged',
           reflectToAttribute: true
         },
@@ -267,10 +214,10 @@ Custom property                                    | Description                
         /**
          * The maximum submission attempts allowed.
          */
-        maxNumSubmissions: { 
+        maxNumSubmissions: {
           type:Number,
           value: 1,
-          notify: true, 
+          notify: true,
           observer: 'refresh',
           reflectToAttribute: true
         },
@@ -281,13 +228,13 @@ Custom property                                    | Description                
         assessment: {
           type: String,
           value: 'auto',
-          notify: true, 
+          notify: true,
           reflectToAttribute: true
         },
 
 
         /**
-         * Counter for submission times. 
+         * Counter for submission times.
          *
          * @attribute submissions
          * @type number
@@ -300,9 +247,9 @@ Custom property                                    | Description                
         },
 
          /**
-         * Counter for submission times. 
+         * Wether the exercise is initialized or not.
          *
-         * @attribute submissions
+         * @attribute _initialized
          * @type number
          * @default 0
          */
@@ -324,17 +271,22 @@ Custom property                                    | Description                
           computed: '_computeSubmittableMessages(remainingAttempts)'
         },
 
-
-        connectedViewersNum: {
-          type: Number,
-          value: 0,
+        eventBus: {
+          type: Object,
           notify: true
         },
 
-        submissionsNum: {
-          type: Number,
-          value: 0,
-          notify: true
+        /**
+        * Flag  to update the progress bar directly.
+        *
+        * @attribute directUpdate
+        * @type Boolean
+        * @default true
+        */
+        directUpdate: {
+          type: Boolean,
+          notify: true,
+          value: true,
         },
 
       },
@@ -344,36 +296,33 @@ Custom property                                    | Description                
       },
 
       _computeSubmittable: function (remainingAttempts) {
-        if ( remainingAttempts > 0 ) return true;
-        return false
+        return (remainingAttempts > 0);
       },
 
       _computeRemainingAttempts: function(maxNumSubmissions, submissions) {
-        if ( maxNumSubmissions < 0 ) 
-          return Number.MAX_VALUE;
+        if (maxNumSubmissions < 0) return Number.MAX_VALUE;
 
         var remainingAttempts = maxNumSubmissions - submissions;
 
-        if ( remainingAttempts <= 0)
-          return 0;
+        if (remainingAttempts <= 0) return 0;
 
         return remainingAttempts;
       },
 
       _computeSubmittableMessages: function(remainingAttempts) {
-        if ( remainingAttempts === Number.MAX_VALUE ) 
+        if (remainingAttempts === Number.MAX_VALUE)
           return 'Unlimited attempts';
 
-        if ( remainingAttempts <= 0)
+        if (remainingAttempts <= 0)
           return 'No further attempt allowed';
 
-        if ( remainingAttempts === 1 ) 
+        if (remainingAttempts === 1)
           return 'Last chance'
 
         return remainingAttempts + ' attempts left';
       },
 
-      created: function () {
+      created: function() {
         document.addEventListener('asq-ready', function (evt) {
           try {
             this._subscribeToEvents(evt.detail.asqEventBus);
@@ -382,15 +331,15 @@ Custom property                                    | Description                
           }
         }.bind(this));
       },
+
       /**
-       * Exercise is interested in two events: `asq:question_type`, which is emitted 
+       * Exercise is interested in two events: `asq:question_type`, which is emitted
        * when answer is submitted successfully, and `asq:question_type_edit`, which is emitted
        * when editing answer.
        *
        */
       _subscribeToEvents: function (eventBus) {
         eventBus.on('asq:question_type', this._onQuestionType.bind(this));
-        eventBus.on('asq:connected-clients', this._onConnectedClients.bind(this));
         eventBus.on('asq:submitted', this._onSubmitted.bind(this));
         eventBus.on('asq:update_live_presentation_settings', this._onUpdateSettings.bind(this));
       },
@@ -405,30 +354,17 @@ Custom property                                    | Description                
           }, this);
         }
       },
-      
+
       _onQuestionType: function (evt) {
         if (evt && evt.questionType && evt.questionType == 'asq-exercise') {
-          if (evt.type == 'progress') {
-            this._onProgress(evt.exercise);
-          } else if (evt.type == 'restorePresenter') {
-            if (this.role !== this.roles.PRESENTER)
-              return;
-            this._onRestorePresenter(evt);
-          } else if (evt.type == 'restoreViewer') {
+          if (evt.type == 'restoreViewer') {
             if (this.role !== this.roles.VIEWER)
               return;
             this._onRestoreViewer(evt);
           }
         }
       },
-      
-      _onRestorePresenter: function (evt) {
-        evt.exercises.forEach(function (ex) {
-          this._onProgress(ex);
-        }.bind(this));
-      },
 
-      
       _onRestoreViewer: function (evt) {
         evt.exercises.forEach(function (ex) {
           if (ex.uid !== this.uid)
@@ -439,40 +375,6 @@ Custom property                                    | Description                
           }
           // since the id exists it means we have answered
         }.bind(this));
-      },
-
-      _onProgress: function (exercise) {
-        if (exercise.uid !== this.uid)
-          return;
-        if (this.role !== this.roles.PRESENTER)
-          return;
-        this._updateProgress(exercise.submissions);
-      },
-
-      _updateProgress: function (submissions) {
-        //necessary: the max and value should always be changed together
-        // to avoid the 'bug' (or 'special feature') of paper-progress.
-        
-        if ( submissions.length > this.connectedViewersNum ) {
-          this.connectedViewersNum = submissions.length
-        }
-        this.$$('paper-progress').max = this.connectedViewersNum;
-        this.submissionsNum = submissions.length;
-      },
-
-      _onConnectedClients: function (evt) {
-        if (this.role !== this.roles.PRESENTER)
-          return;
-
-        this.connectedViewersNum = evt.connectedViewers.length;
-        this.$$('paper-progress').max = this.connectedViewersNum;
-        this.$$('paper-progress').value = this.submissionsNum;
-      },
-
-      _onSubmitted: function (evt) {
-        if (evt.exerciseUid == this.uid) {
-
-        }
       },
 
       /**
@@ -486,8 +388,8 @@ Custom property                                    | Description                
        *     }
        */
       /**
-       * The `submit` method will submit the answer to a wrapped 'asq-exercise' instance. 
-       * 
+       * The `submit` method will submit the answer to a wrapped 'asq-exercise' instance.
+       *
        * Only useful when the `role` is <b>viewer</b>.
        *
        * @method submit
@@ -524,7 +426,7 @@ Custom property                                    | Description                
       },
 
       refresh: function(_initialized) {
-        if ( !_initialized ) 
+        if ( !_initialized )
           return;
       },
 
@@ -558,7 +460,6 @@ Custom property                                    | Description                
         this.$$('#edit-button').hidden = true;
         this.$$('#submit-button').hidden = false;
         this.disabled = false;
-
         this.fire('exercise-edit', {
           exerciseUid: this.uid
         });
@@ -570,10 +471,10 @@ Custom property                                    | Description                
        *
        * @event asq-disabled
        *
-       *      detail: { 
+       *      detail: {
        *        disabled: this.disabled
        *      }
-       *    
+       *
        **/
       _disabledChanged: function () {
         if (this.role === 'presenter') return;
@@ -589,15 +490,11 @@ Custom property                                    | Description                
       },
 
       attached: function () {
-        Polymer.dom.flush()
+        Polymer.dom.flush();
 
         this._initialized = true;
       },
 
-      // hasRole: function (role, candidate) {
-      //   return role == candidate;
-      // }
-      
     });
   </script>
 </dom-module>

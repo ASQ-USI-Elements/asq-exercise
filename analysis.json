@@ -1,0 +1,2753 @@
+{
+  "schema_version": "1.0.0",
+  "elements": [
+    {
+      "description": "### ASQ Exercise Progress:\nThe ASQ exercise progress bar consists of a progress bar and a progress counter\n(submissions/connected users).\n\nThe progress bar shows the cumulative viewers' activity states for the corresponding\nexercise. Each user can be in one of the following activitystates: submitted, working,\nfocused or idle.\nThose states are represented in 4 different colors as partial progress bars in the\norder they were mentioned.\n\nTo display the gradient of change for a certain activity state (e.g submitted), \nwe use a slightly bigger progress bar of the same style in the background of the main\nprogress bar. The faster the animation from left to right, the more activity occurred for\na given state in the last 5 seconds.\n\nThe presenter can choose if they want instant updates for the progress bar or\nif the progress bar should update simultaneously with the momentum effect\nby using the `directUpdate` property.\n\n\n### Styling progress bar (in presenter's view):\n\nThe followings are available for styling (presenter's view):\n\nCustom property                                    | Description                                 | Default\n---------------------------------------------------|---------------------------------------------|----------\n--asq-exercise-progress-height                     | The height of the progress bar              | 4px\n--asq-exercise-progress-submitted-color            | The color of the submission bar.            | --google-green-500\n--asq-exercise-progress-working-color              | The color of the working users bar.         | --paper-orange-500\n--asq-exercise-progress-focused-color              | The color of the focused users bar.         | --paper-blue-200\n--asq-exercise-progress-idle-color                 | The color of the idle users bar.            | --google-grey-500\n--asq-exercise-progressbar-background-color        | The color of the empty progress bar.        | --google-grey-300\n--asq-exercise-progress-num-mixin                  | The mixin to style the progress numbers of the progress bar. | { }\n\n\nExamples:\n\n- To change the submitted progress bar color:\n      asq-exercise {\n        --asq-exercise-progress-submitted-color: #e91e63;\n      }\n\n- To change the style of the progress numbers:\n      asq-exercise {\n        --asq-exercise-progress-progress-num-mixin: {\n          font-size: 20px;\n          padding: 2px;\n        };\n      }",
+      "summary": "",
+      "path": "asq-exercise-progress.html",
+      "properties": [
+        {
+          "name": "isASQElement",
+          "type": "boolean",
+          "description": "True for every ASQ element.",
+          "privacy": "public",
+          "sourceRange": {
+            "file": "bower_components/asq-base/asq-base.js",
+            "start": {
+              "line": 9,
+              "column": 4
+            },
+            "end": {
+              "line": 13,
+              "column": 5
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "notify": true
+            }
+          },
+          "defaultValue": "true",
+          "inheritedFrom": "elementTypeBehavior"
+        },
+        {
+          "name": "isASQQuestionTypeElement",
+          "type": "boolean",
+          "description": "Denotes whether an ASQ element is a `question type`.",
+          "privacy": "public",
+          "sourceRange": {
+            "file": "bower_components/asq-base/asq-base.js",
+            "start": {
+              "line": 16,
+              "column": 4
+            },
+            "end": {
+              "line": 20,
+              "column": 5
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "notify": true
+            }
+          },
+          "defaultValue": "false",
+          "inheritedFrom": "elementTypeBehavior"
+        },
+        {
+          "name": "uid",
+          "type": "string",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "file": "bower_components/asq-base/asq-base.js",
+            "start": {
+              "line": 22,
+              "column": 4
+            },
+            "end": {
+              "line": 27,
+              "column": 5
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "notify": true
+            }
+          },
+          "defaultValue": "\"\"",
+          "inheritedFrom": "elementTypeBehavior"
+        },
+        {
+          "name": "roles",
+          "type": "Object",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "file": "bower_components/asq-base/asq-base.js",
+            "start": {
+              "line": 53,
+              "column": 4
+            },
+            "end": {
+              "line": 63,
+              "column": 5
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "readOnly": true
+            }
+          },
+          "inheritedFrom": "roleBehavior"
+        },
+        {
+          "name": "role",
+          "type": "string",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "file": "bower_components/asq-base/asq-base.js",
+            "start": {
+              "line": 65,
+              "column": 4
+            },
+            "end": {
+              "line": 71,
+              "column": 5
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "notify": true,
+              "observer": "\"_roleChanged\""
+            }
+          },
+          "defaultValue": "\"viewer\"",
+          "inheritedFrom": "roleBehavior"
+        },
+        {
+          "name": "_viewers",
+          "type": "Object",
+          "description": "Object that contains viewers with their activity information.",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 115,
+              "column": 6
+            },
+            "end": {
+              "line": 118,
+              "column": 7
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          },
+          "defaultValue": "{}"
+        },
+        {
+          "name": "_connectedViewersNum",
+          "type": "number",
+          "description": "Counts the number of currently connected viewers.",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 127,
+              "column": 6
+            },
+            "end": {
+              "line": 130,
+              "column": 7
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          },
+          "defaultValue": "0"
+        },
+        {
+          "name": "_submissionsNum",
+          "type": "number",
+          "description": "Counts the number of submissions, inherited from asq-exercise.",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 139,
+              "column": 6
+            },
+            "end": {
+              "line": 143,
+              "column": 7
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "readOnly": true
+            }
+          },
+          "defaultValue": "0"
+        },
+        {
+          "name": "_submissionCounter",
+          "type": "number",
+          "description": "Counts the number of submissions during a given time interval\nby the _visualizeChange function.",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 153,
+              "column": 6
+            },
+            "end": {
+              "line": 156,
+              "column": 7
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          },
+          "defaultValue": "0"
+        },
+        {
+          "name": "_workingViewersNum",
+          "type": "number",
+          "description": "Counts the number of working users, calculated with the function given\nin its computed property.",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 165,
+              "column": 6
+            },
+            "end": {
+              "line": 169,
+              "column": 7
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "readOnly": true
+            }
+          },
+          "defaultValue": "0"
+        },
+        {
+          "name": "_workingCounter",
+          "type": "number",
+          "description": "Counts the number of working users during a given time interval\nby the _visualizeChange function.",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 179,
+              "column": 6
+            },
+            "end": {
+              "line": 182,
+              "column": 7
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          },
+          "defaultValue": "0"
+        },
+        {
+          "name": "_focusedViewersNum",
+          "type": "number",
+          "description": "Counts the number of focused users, calculated with the function given\nin its computed property.",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 191,
+              "column": 6
+            },
+            "end": {
+              "line": 195,
+              "column": 7
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "readOnly": true
+            }
+          },
+          "defaultValue": "0"
+        },
+        {
+          "name": "_focusedCounter",
+          "type": "number",
+          "description": "Counts the number of focused users during a given time interval\nby the _visualizeChange function.",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 205,
+              "column": 6
+            },
+            "end": {
+              "line": 208,
+              "column": 7
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          },
+          "defaultValue": "0"
+        },
+        {
+          "name": "_idleViewersNum",
+          "type": "number",
+          "description": "Counts the number of idle users, calculated with the function given\nin its computed property.",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 218,
+              "column": 6
+            },
+            "end": {
+              "line": 222,
+              "column": 7
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "readOnly": true
+            }
+          },
+          "defaultValue": "0"
+        },
+        {
+          "name": "_idleCounter",
+          "type": "number",
+          "description": "Counts the number of idle users during a given time interval\nby the _visualizeChange function.",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 232,
+              "column": 6
+            },
+            "end": {
+              "line": 235,
+              "column": 7
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          },
+          "defaultValue": "0"
+        },
+        {
+          "name": "_update",
+          "type": "boolean",
+          "description": "Flag to trigger the computed function at the right moment.",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 244,
+              "column": 6
+            },
+            "end": {
+              "line": 247,
+              "column": 7
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          },
+          "defaultValue": "true"
+        }
+      ],
+      "methods": [
+        {
+          "name": "hasRole",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "file": "bower_components/asq-base/asq-base.js",
+            "start": {
+              "line": 74,
+              "column": 2
+            },
+            "end": {
+              "line": 76,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "role"
+            },
+            {
+              "name": "candidate"
+            }
+          ],
+          "inheritedFrom": "roleBehavior"
+        },
+        {
+          "name": "_isValidRole",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "file": "bower_components/asq-base/asq-base.js",
+            "start": {
+              "line": 78,
+              "column": 2
+            },
+            "end": {
+              "line": 87,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "role"
+            }
+          ],
+          "inheritedFrom": "roleBehavior"
+        },
+        {
+          "name": "_roleChanged",
+          "description": "1. Validate role update. If the new value\nis not a valid one, then roll back to the old value.\n\n2. If the role of `outside` element is \nchanged, then `inside` elements' role\nare also changed.",
+          "privacy": "protected",
+          "sourceRange": {
+            "file": "bower_components/asq-base/asq-base.js",
+            "start": {
+              "line": 100,
+              "column": 2
+            },
+            "end": {
+              "line": 106,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "newRole"
+            },
+            {
+              "name": "oldRole"
+            }
+          ],
+          "inheritedFrom": "roleBehavior"
+        },
+        {
+          "name": "_propagateRole",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "file": "bower_components/asq-base/asq-base.js",
+            "start": {
+              "line": 108,
+              "column": 2
+            },
+            "end": {
+              "line": 120,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "role"
+            }
+          ],
+          "inheritedFrom": "roleBehavior"
+        },
+        {
+          "name": "_computeSubmittedViewersNum",
+          "description": "Computes the amount of users that have submitted from the _viewers object.",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 256,
+              "column": 4
+            },
+            "end": {
+              "line": 265,
+              "column": 5
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "viewers"
+            },
+            {
+              "name": "update"
+            }
+          ],
+          "return": {
+            "type": "number",
+            "desc": "Number of working users."
+          }
+        },
+        {
+          "name": "_computeWorkingViewersNum",
+          "description": "Computes the amount of working users from the _viewers object.",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 272,
+              "column": 4
+            },
+            "end": {
+              "line": 281,
+              "column": 5
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "viewers"
+            },
+            {
+              "name": "update"
+            }
+          ],
+          "return": {
+            "type": "number",
+            "desc": "Number of working users."
+          }
+        },
+        {
+          "name": "_computeFocusedViewersNum",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 289,
+              "column": 4
+            },
+            "end": {
+              "line": 297,
+              "column": 5
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "viewers"
+            },
+            {
+              "name": "update"
+            }
+          ]
+        },
+        {
+          "name": "_computeIdleViewersNum",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 305,
+              "column": 4
+            },
+            "end": {
+              "line": 313,
+              "column": 5
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "viewers"
+            },
+            {
+              "name": "update"
+            }
+          ]
+        },
+        {
+          "name": "_calcFlex",
+          "description": "Returns a CSS declaration as a string to change the width of the progress bar\nby changing its flex property.",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 322,
+              "column": 4
+            },
+            "end": {
+              "line": 324,
+              "column": 5
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "num"
+            }
+          ],
+          "return": {
+            "type": "string",
+            "desc": "String of the form 'flex: num;'"
+          }
+        },
+        {
+          "name": "_makeSureViewerExists",
+          "description": "If the given user is not already in the _viewers object, add him and notify\nthe observers that the _viewers object changed.",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 332,
+              "column": 4
+            },
+            "end": {
+              "line": 338,
+              "column": 5
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "viewerToFind"
+            }
+          ]
+        },
+        {
+          "name": "_userWorked",
+          "description": "Mark the given user as working.",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 345,
+              "column": 4
+            },
+            "end": {
+              "line": 353,
+              "column": 5
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "user"
+            }
+          ]
+        },
+        {
+          "name": "_userFocused",
+          "description": "Mark the given user as focused.",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 360,
+              "column": 4
+            },
+            "end": {
+              "line": 368,
+              "column": 5
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "user"
+            }
+          ]
+        },
+        {
+          "name": "_userMadeTabVisible",
+          "description": "If the given user was idle, change his idle property and mark him as not idle.",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 375,
+              "column": 4
+            },
+            "end": {
+              "line": 380,
+              "column": 5
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "user"
+            }
+          ]
+        },
+        {
+          "name": "_userIdled",
+          "description": "Mark the given user as idle.",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 387,
+              "column": 4
+            },
+            "end": {
+              "line": 395,
+              "column": 5
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "user"
+            }
+          ]
+        },
+        {
+          "name": "_userMadeTabHidden",
+          "description": "If the given user was idle, change his idle property and mark him as not idle.",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 402,
+              "column": 4
+            },
+            "end": {
+              "line": 407,
+              "column": 5
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "user"
+            }
+          ]
+        },
+        {
+          "name": "_userBlurred",
+          "description": "If the given blurred, make sure that he's already in the _viewers object.",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 414,
+              "column": 4
+            },
+            "end": {
+              "line": 416,
+              "column": 5
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "user"
+            }
+          ]
+        },
+        {
+          "name": "_resetUser",
+          "description": "Reset all the activity properties of the given user.",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 423,
+              "column": 4
+            },
+            "end": {
+              "line": 432,
+              "column": 5
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "user"
+            }
+          ]
+        },
+        {
+          "name": "_userSubmitted",
+          "description": "Mark that the given user submitted and change the corresponding counter.",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 439,
+              "column": 4
+            },
+            "end": {
+              "line": 447,
+              "column": 5
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "data"
+            }
+          ]
+        },
+        {
+          "name": "_onConnectedClients",
+          "description": "Change the number of connected users.",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 454,
+              "column": 4
+            },
+            "end": {
+              "line": 456,
+              "column": 5
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "evt"
+            }
+          ]
+        },
+        {
+          "name": "_onSessionEventBeamer",
+          "description": "Event handler for session event beamer events.",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 463,
+              "column": 4
+            },
+            "end": {
+              "line": 489,
+              "column": 5
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "evt"
+            }
+          ]
+        },
+        {
+          "name": "_setVelocity",
+          "description": "Changes the css variable for the paper progress indeterminate cycle duration.",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 497,
+              "column": 4
+            },
+            "end": {
+              "line": 504,
+              "column": 5
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "property"
+            },
+            {
+              "name": "velocity"
+            }
+          ]
+        },
+        {
+          "name": "_visualizeChange",
+          "description": "Animates the progress bar every 5 seconds depending on the activity.",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 510,
+              "column": 4
+            },
+            "end": {
+              "line": 531,
+              "column": 5
+            }
+          },
+          "metadata": {},
+          "params": []
+        },
+        {
+          "name": "_calcChange",
+          "description": "Calculate the amount of change of a given activity.",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 539,
+              "column": 4
+            },
+            "end": {
+              "line": 542,
+              "column": 5
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "num"
+            }
+          ],
+          "return": {
+            "type": "number",
+            "desc": "The amount of change in percent and in proportion to the number of users."
+          }
+        },
+        {
+          "name": "_determineVelocity",
+          "description": "Get the velocity for the paper progress indeterminate cycle.",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 551,
+              "column": 4
+            },
+            "end": {
+              "line": 560,
+              "column": 5
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "num"
+            }
+          ],
+          "return": {
+            "type": "number",
+            "desc": "Returns a number in seconds for the duration of one paper progress\nindeterminate cycle."
+          }
+        },
+        {
+          "name": "created",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 562,
+              "column": 4
+            },
+            "end": {
+              "line": 571,
+              "column": 5
+            }
+          },
+          "metadata": {},
+          "params": []
+        },
+        {
+          "name": "attached",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 573,
+              "column": 4
+            },
+            "end": {
+              "line": 575,
+              "column": 5
+            }
+          },
+          "metadata": {},
+          "params": []
+        },
+        {
+          "name": "_subscribeToEvents",
+          "description": "Subscribe to events to listen to them.",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 582,
+              "column": 4
+            },
+            "end": {
+              "line": 586,
+              "column": 5
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "eventBus"
+            }
+          ]
+        },
+        {
+          "name": "_changeBackgroundProgressHeight",
+          "description": "Dynamically adjusts the height of the backgorund effect. It's always two\npixel bigger than the height of the progress bar.",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 592,
+              "column": 4
+            },
+            "end": {
+              "line": 600,
+              "column": 5
+            }
+          },
+          "metadata": {},
+          "params": []
+        },
+        {
+          "name": "_onQuestionType",
+          "description": "Handle question type events.",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 605,
+              "column": 4
+            },
+            "end": {
+              "line": 611,
+              "column": 5
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "evt"
+            }
+          ]
+        },
+        {
+          "name": "_onRestorePresenter",
+          "description": "Restore the number of submissions on the progress bar when the presenter\nreloads.",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 617,
+              "column": 4
+            },
+            "end": {
+              "line": 626,
+              "column": 5
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "evt"
+            }
+          ]
+        }
+      ],
+      "staticMethods": [],
+      "demos": [
+        {
+          "url": "demo/asq-exercise-progress-demo.html",
+          "description": ""
+        }
+      ],
+      "metadata": {},
+      "sourceRange": {
+        "start": {
+          "line": 100,
+          "column": 10
+        },
+        "end": {
+          "line": 628,
+          "column": 3
+        }
+      },
+      "privacy": "public",
+      "superclass": "HTMLElement",
+      "attributes": [
+        {
+          "name": "is-a-s-q-element",
+          "description": "True for every ASQ element.",
+          "sourceRange": {
+            "file": "bower_components/asq-base/asq-base.js",
+            "start": {
+              "line": 9,
+              "column": 4
+            },
+            "end": {
+              "line": 13,
+              "column": 5
+            }
+          },
+          "metadata": {},
+          "type": "boolean",
+          "inheritedFrom": "elementTypeBehavior"
+        },
+        {
+          "name": "is-a-s-q-question-type-element",
+          "description": "Denotes whether an ASQ element is a `question type`.",
+          "sourceRange": {
+            "file": "bower_components/asq-base/asq-base.js",
+            "start": {
+              "line": 16,
+              "column": 4
+            },
+            "end": {
+              "line": 20,
+              "column": 5
+            }
+          },
+          "metadata": {},
+          "type": "boolean",
+          "inheritedFrom": "elementTypeBehavior"
+        },
+        {
+          "name": "uid",
+          "description": "",
+          "sourceRange": {
+            "file": "bower_components/asq-base/asq-base.js",
+            "start": {
+              "line": 22,
+              "column": 4
+            },
+            "end": {
+              "line": 27,
+              "column": 5
+            }
+          },
+          "metadata": {},
+          "type": "string",
+          "inheritedFrom": "elementTypeBehavior"
+        },
+        {
+          "name": "roles",
+          "description": "",
+          "sourceRange": {
+            "file": "bower_components/asq-base/asq-base.js",
+            "start": {
+              "line": 53,
+              "column": 4
+            },
+            "end": {
+              "line": 63,
+              "column": 5
+            }
+          },
+          "metadata": {},
+          "type": "Object",
+          "inheritedFrom": "roleBehavior"
+        },
+        {
+          "name": "role",
+          "description": "",
+          "sourceRange": {
+            "file": "bower_components/asq-base/asq-base.js",
+            "start": {
+              "line": 65,
+              "column": 4
+            },
+            "end": {
+              "line": 71,
+              "column": 5
+            }
+          },
+          "metadata": {},
+          "type": "string",
+          "inheritedFrom": "roleBehavior"
+        }
+      ],
+      "events": [
+        {
+          "type": "CustomEvent",
+          "name": "is-a-s-q-element-changed",
+          "description": "Fired when the `isASQElement` property changes.",
+          "metadata": {},
+          "inheritedFrom": "elementTypeBehavior"
+        },
+        {
+          "type": "CustomEvent",
+          "name": "is-a-s-q-question-type-element-changed",
+          "description": "Fired when the `isASQQuestionTypeElement` property changes.",
+          "metadata": {},
+          "inheritedFrom": "elementTypeBehavior"
+        },
+        {
+          "type": "CustomEvent",
+          "name": "uid-changed",
+          "description": "Fired when the `uid` property changes.",
+          "metadata": {},
+          "inheritedFrom": "elementTypeBehavior"
+        },
+        {
+          "type": "CustomEvent",
+          "name": "role-changed",
+          "description": "Fired when the `role` property changes.",
+          "metadata": {},
+          "inheritedFrom": "roleBehavior"
+        }
+      ],
+      "styling": {
+        "cssVariables": [],
+        "selectors": []
+      },
+      "slots": [],
+      "tagname": "asq-exercise-progress"
+    },
+    {
+      "description": "`asq-confidence` is used inside the `asq-exercise`, representing the confidence level of the students.",
+      "summary": "",
+      "path": "asq-confidence.html",
+      "properties": [
+        {
+          "name": "isASQElement",
+          "type": "boolean",
+          "description": "True for every ASQ element.",
+          "privacy": "public",
+          "sourceRange": {
+            "file": "bower_components/asq-base/asq-base.js",
+            "start": {
+              "line": 9,
+              "column": 4
+            },
+            "end": {
+              "line": 13,
+              "column": 5
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "notify": true
+            }
+          },
+          "defaultValue": "true",
+          "inheritedFrom": "elementTypeBehavior"
+        },
+        {
+          "name": "isASQQuestionTypeElement",
+          "type": "boolean",
+          "description": "Denotes whether an ASQ element is a `question type`.",
+          "privacy": "public",
+          "sourceRange": {
+            "file": "bower_components/asq-base/asq-base.js",
+            "start": {
+              "line": 16,
+              "column": 4
+            },
+            "end": {
+              "line": 20,
+              "column": 5
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "notify": true
+            }
+          },
+          "defaultValue": "false",
+          "inheritedFrom": "elementTypeBehavior"
+        },
+        {
+          "name": "uid",
+          "type": "string",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "file": "bower_components/asq-base/asq-base.js",
+            "start": {
+              "line": 22,
+              "column": 4
+            },
+            "end": {
+              "line": 27,
+              "column": 5
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "notify": true
+            }
+          },
+          "defaultValue": "\"\"",
+          "inheritedFrom": "elementTypeBehavior"
+        },
+        {
+          "name": "roles",
+          "type": "Object",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "file": "bower_components/asq-base/asq-base.js",
+            "start": {
+              "line": 53,
+              "column": 4
+            },
+            "end": {
+              "line": 63,
+              "column": 5
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "readOnly": true
+            }
+          },
+          "inheritedFrom": "roleBehavior"
+        },
+        {
+          "name": "role",
+          "type": "string",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "file": "bower_components/asq-base/asq-base.js",
+            "start": {
+              "line": 65,
+              "column": 4
+            },
+            "end": {
+              "line": 71,
+              "column": 5
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "notify": true,
+              "observer": "\"_roleChanged\""
+            }
+          },
+          "defaultValue": "\"viewer\"",
+          "inheritedFrom": "roleBehavior"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 37,
+              "column": 8
+            },
+            "end": {
+              "line": 41,
+              "column": 9
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          },
+          "defaultValue": "false"
+        },
+        {
+          "name": "ratingItems",
+          "type": "Function",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 44,
+              "column": 6
+            },
+            "end": {
+              "line": 46,
+              "column": 7
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "readOnly": false
+            }
+          }
+        },
+        {
+          "name": "confidence",
+          "type": "Function",
+          "description": "Return the confidence level.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 55,
+              "column": 6
+            },
+            "end": {
+              "line": 64,
+              "column": 7
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "readOnly": true
+            }
+          }
+        }
+      ],
+      "methods": [
+        {
+          "name": "hasRole",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "file": "bower_components/asq-base/asq-base.js",
+            "start": {
+              "line": 74,
+              "column": 2
+            },
+            "end": {
+              "line": 76,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "role"
+            },
+            {
+              "name": "candidate"
+            }
+          ],
+          "inheritedFrom": "roleBehavior"
+        },
+        {
+          "name": "_isValidRole",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "file": "bower_components/asq-base/asq-base.js",
+            "start": {
+              "line": 78,
+              "column": 2
+            },
+            "end": {
+              "line": 87,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "role"
+            }
+          ],
+          "inheritedFrom": "roleBehavior"
+        },
+        {
+          "name": "_roleChanged",
+          "description": "1. Validate role update. If the new value\nis not a valid one, then roll back to the old value.\n\n2. If the role of `outside` element is \nchanged, then `inside` elements' role\nare also changed.",
+          "privacy": "protected",
+          "sourceRange": {
+            "file": "bower_components/asq-base/asq-base.js",
+            "start": {
+              "line": 100,
+              "column": 2
+            },
+            "end": {
+              "line": 106,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "newRole"
+            },
+            {
+              "name": "oldRole"
+            }
+          ],
+          "inheritedFrom": "roleBehavior"
+        },
+        {
+          "name": "_propagateRole",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "file": "bower_components/asq-base/asq-base.js",
+            "start": {
+              "line": 108,
+              "column": 2
+            },
+            "end": {
+              "line": 120,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "role"
+            }
+          ],
+          "inheritedFrom": "roleBehavior"
+        }
+      ],
+      "staticMethods": [],
+      "demos": [],
+      "metadata": {},
+      "sourceRange": {
+        "start": {
+          "line": 30,
+          "column": 12
+        },
+        "end": {
+          "line": 87,
+          "column": 5
+        }
+      },
+      "privacy": "public",
+      "superclass": "HTMLElement",
+      "attributes": [
+        {
+          "name": "is-a-s-q-element",
+          "description": "True for every ASQ element.",
+          "sourceRange": {
+            "file": "bower_components/asq-base/asq-base.js",
+            "start": {
+              "line": 9,
+              "column": 4
+            },
+            "end": {
+              "line": 13,
+              "column": 5
+            }
+          },
+          "metadata": {},
+          "type": "boolean",
+          "inheritedFrom": "elementTypeBehavior"
+        },
+        {
+          "name": "is-a-s-q-question-type-element",
+          "description": "Denotes whether an ASQ element is a `question type`.",
+          "sourceRange": {
+            "file": "bower_components/asq-base/asq-base.js",
+            "start": {
+              "line": 16,
+              "column": 4
+            },
+            "end": {
+              "line": 20,
+              "column": 5
+            }
+          },
+          "metadata": {},
+          "type": "boolean",
+          "inheritedFrom": "elementTypeBehavior"
+        },
+        {
+          "name": "uid",
+          "description": "",
+          "sourceRange": {
+            "file": "bower_components/asq-base/asq-base.js",
+            "start": {
+              "line": 22,
+              "column": 4
+            },
+            "end": {
+              "line": 27,
+              "column": 5
+            }
+          },
+          "metadata": {},
+          "type": "string",
+          "inheritedFrom": "elementTypeBehavior"
+        },
+        {
+          "name": "roles",
+          "description": "",
+          "sourceRange": {
+            "file": "bower_components/asq-base/asq-base.js",
+            "start": {
+              "line": 53,
+              "column": 4
+            },
+            "end": {
+              "line": 63,
+              "column": 5
+            }
+          },
+          "metadata": {},
+          "type": "Object",
+          "inheritedFrom": "roleBehavior"
+        },
+        {
+          "name": "role",
+          "description": "",
+          "sourceRange": {
+            "file": "bower_components/asq-base/asq-base.js",
+            "start": {
+              "line": 65,
+              "column": 4
+            },
+            "end": {
+              "line": 71,
+              "column": 5
+            }
+          },
+          "metadata": {},
+          "type": "string",
+          "inheritedFrom": "roleBehavior"
+        },
+        {
+          "name": "disabled",
+          "description": "",
+          "sourceRange": {
+            "start": {
+              "line": 37,
+              "column": 8
+            },
+            "end": {
+              "line": 41,
+              "column": 9
+            }
+          },
+          "metadata": {},
+          "type": "boolean"
+        }
+      ],
+      "events": [
+        {
+          "type": "CustomEvent",
+          "name": "is-a-s-q-element-changed",
+          "description": "Fired when the `isASQElement` property changes.",
+          "metadata": {},
+          "inheritedFrom": "elementTypeBehavior"
+        },
+        {
+          "type": "CustomEvent",
+          "name": "is-a-s-q-question-type-element-changed",
+          "description": "Fired when the `isASQQuestionTypeElement` property changes.",
+          "metadata": {},
+          "inheritedFrom": "elementTypeBehavior"
+        },
+        {
+          "type": "CustomEvent",
+          "name": "uid-changed",
+          "description": "Fired when the `uid` property changes.",
+          "metadata": {},
+          "inheritedFrom": "elementTypeBehavior"
+        },
+        {
+          "type": "CustomEvent",
+          "name": "role-changed",
+          "description": "Fired when the `role` property changes.",
+          "metadata": {},
+          "inheritedFrom": "roleBehavior"
+        }
+      ],
+      "styling": {
+        "cssVariables": [],
+        "selectors": []
+      },
+      "slots": [],
+      "tagname": "asq-confidence"
+    },
+    {
+      "description": "`asq-exercise` groups ASQ `question types`. Every question should be be a child\nof an `asq-exercise` element. An `asq-exercise` element should contain one ore\nmore  `ASQ questions`. `asq-exercise` takes care of submitting and displaying\nprogress for a group of questions.\n\nExample:\n\n    <asq-exercise\n      <asq-stem><h2>Exercise 1-1</h2></asq-stem>\n      <asq-multi-choice-q>\n        <asq-stem><h3>Select a functional language.</h3></asq-stem>\n        <asq-option checked>Haskell</asq-option>\n        <asq-option>C</asq-option>\n        <asq-option>Python</asq-option>\n        <asq-option>Perl</asq-option>\n      </asq-multi-choice-q>\n    </asq-exercise>\n\n\n    <asq-exercise max-num-submissions=\"3\">\n      <asq-stem><h2>Exercise 1</h2></asq-stem>\n      <asq-multi-choice-q multi>\n        <asq-stem><h3>Official languages of Switzerland</h3></asq-stem>\n        <asq-option>English</asq-option>\n        <asq-option>French</asq-option>\n        <asq-option>German</asq-option>\n        <asq-option>Italian</asq-option>\n        <asq-option>Rumantsch</asq-option>\n      </asq-multi-choice-q>\n    </asq-exercise>\n\nDifferent users will see different UI according to their **role**. There are\nseveral types of roles, `viewer`, `presenter` and `TA`.\n\n###Styling `submit` and `edit` buttons (in viewer's view):\n\nTo change the color and background color of `submit` button:\n\n    asq-exercise {\n      --asq-exercise-submit-button-color: white;\n      --asq-exercise-submit-button-background-color: #388E3C;\n    }\n\n\nTo change the color and background color of `edit` button:\n\n    asq-exercise {\n      --asq-exercise-edit-button-color: white;\n      --asq-exercise-edit-button-background-color: #FF7043;\n    }\n\nTo change the color and background color of `submit` button when disabled (a.k.a submissions are not allowed):\n\n    asq-exercise {\n      --asq-exercise-submit-button-disabled-color: #E0E0E0;\n      --asq-exercise-submit-button-background-disabled-color: #424242;\n    }\n\nCustom property                                        | Description                                     | Default\n-------------------------------------------------------|-------------------------------------------------|----------\n--asq-exercise-submit-button-color                     | The color of submit button                      | white\n--asq-exercise-submit-button-background-color          | The background color of submit button           | #388E3C\n--asq-exercise-edit-button-color                       | The color of edit button                        | white\n--asq-exercise-edit-button-background-color            | The background color of edit button             | #FF7043\n--asq-exercise-submit-button-disabled-color            | The color of submit button when disabled        | #E0E0E0\n--asq-exercise-submit-button-background-disabled-color | The background color of submit button disabled  | #424242\n\nTo see how to style the progressbar, go to the asq-exercise-progress docs.",
+      "summary": "",
+      "path": "asq-exercise.html",
+      "properties": [
+        {
+          "name": "isASQElement",
+          "type": "boolean",
+          "description": "True for every ASQ element.",
+          "privacy": "public",
+          "sourceRange": {
+            "file": "bower_components/asq-base/asq-base.js",
+            "start": {
+              "line": 9,
+              "column": 4
+            },
+            "end": {
+              "line": 13,
+              "column": 5
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "notify": true
+            }
+          },
+          "defaultValue": "true",
+          "inheritedFrom": "elementTypeBehavior"
+        },
+        {
+          "name": "isASQQuestionTypeElement",
+          "type": "boolean",
+          "description": "Denotes whether an ASQ element is a `question type`.",
+          "privacy": "public",
+          "sourceRange": {
+            "file": "bower_components/asq-base/asq-base.js",
+            "start": {
+              "line": 16,
+              "column": 4
+            },
+            "end": {
+              "line": 20,
+              "column": 5
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "notify": true
+            }
+          },
+          "defaultValue": "false",
+          "inheritedFrom": "elementTypeBehavior"
+        },
+        {
+          "name": "uid",
+          "type": "string",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "file": "bower_components/asq-base/asq-base.js",
+            "start": {
+              "line": 22,
+              "column": 4
+            },
+            "end": {
+              "line": 27,
+              "column": 5
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "notify": true
+            }
+          },
+          "defaultValue": "\"\"",
+          "inheritedFrom": "elementTypeBehavior"
+        },
+        {
+          "name": "roles",
+          "type": "Object",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "file": "bower_components/asq-base/asq-base.js",
+            "start": {
+              "line": 53,
+              "column": 4
+            },
+            "end": {
+              "line": 63,
+              "column": 5
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "readOnly": true
+            }
+          },
+          "inheritedFrom": "roleBehavior"
+        },
+        {
+          "name": "role",
+          "type": "string",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "file": "bower_components/asq-base/asq-base.js",
+            "start": {
+              "line": 65,
+              "column": 4
+            },
+            "end": {
+              "line": 71,
+              "column": 5
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "notify": true,
+              "observer": "\"_roleChanged\""
+            }
+          },
+          "defaultValue": "\"viewer\"",
+          "inheritedFrom": "roleBehavior"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "description": "Disable or enable the element. Changes will be also\npropagated to inner propagated elements.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 195,
+              "column": 8
+            },
+            "end": {
+              "line": 201,
+              "column": 9
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "notify": true,
+              "observer": "\"_disabledChanged\""
+            }
+          },
+          "defaultValue": "false"
+        },
+        {
+          "name": "confidence",
+          "type": "boolean",
+          "description": "Display confidence stars in the exercise",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 206,
+              "column": 8
+            },
+            "end": {
+              "line": 210,
+              "column": 9
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          },
+          "defaultValue": "false"
+        },
+        {
+          "name": "maxNumSubmissions",
+          "type": "number",
+          "description": "The maximum submission attempts allowed.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 216,
+              "column": 8
+            },
+            "end": {
+              "line": 222,
+              "column": 9
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "notify": true,
+              "observer": "\"refresh\""
+            }
+          },
+          "defaultValue": "1"
+        },
+        {
+          "name": "assessment",
+          "type": "string",
+          "description": "assessment type",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 227,
+              "column": 8
+            },
+            "end": {
+              "line": 232,
+              "column": 9
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "notify": true
+            }
+          },
+          "defaultValue": "\"auto\""
+        },
+        {
+          "name": "submissions",
+          "type": "number",
+          "description": "Counter for submission times.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 242,
+              "column": 8
+            },
+            "end": {
+              "line": 246,
+              "column": 9
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "observer": "\"refresh\""
+            }
+          },
+          "defaultValue": "0"
+        },
+        {
+          "name": "_initialized",
+          "type": "boolean",
+          "description": "Counter for submission times.",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 255,
+              "column": 8
+            },
+            "end": {
+              "line": 259,
+              "column": 9
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "notify": true
+            }
+          },
+          "defaultValue": "false"
+        },
+        {
+          "name": "remainingAttempts",
+          "type": "?",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 261,
+              "column": 8
+            },
+            "end": {
+              "line": 263,
+              "column": 9
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "readOnly": true
+            }
+          }
+        },
+        {
+          "name": "submittable",
+          "type": "?",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 265,
+              "column": 8
+            },
+            "end": {
+              "line": 267,
+              "column": 9
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "readOnly": true
+            }
+          }
+        },
+        {
+          "name": "_submittableMessages",
+          "type": "?",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 269,
+              "column": 8
+            },
+            "end": {
+              "line": 271,
+              "column": 9
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "readOnly": true
+            }
+          }
+        },
+        {
+          "name": "eventBus",
+          "type": "Object",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 273,
+              "column": 8
+            },
+            "end": {
+              "line": 276,
+              "column": 9
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "notify": true
+            }
+          }
+        },
+        {
+          "name": "directUpdate",
+          "type": "boolean",
+          "description": "Flag  to update the progress bar directly.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 285,
+              "column": 8
+            },
+            "end": {
+              "line": 289,
+              "column": 9
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "notify": true
+            }
+          },
+          "defaultValue": "true"
+        }
+      ],
+      "methods": [
+        {
+          "name": "hasRole",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "file": "bower_components/asq-base/asq-base.js",
+            "start": {
+              "line": 74,
+              "column": 2
+            },
+            "end": {
+              "line": 76,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "role"
+            },
+            {
+              "name": "candidate"
+            }
+          ],
+          "inheritedFrom": "roleBehavior"
+        },
+        {
+          "name": "_isValidRole",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "file": "bower_components/asq-base/asq-base.js",
+            "start": {
+              "line": 78,
+              "column": 2
+            },
+            "end": {
+              "line": 87,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "role"
+            }
+          ],
+          "inheritedFrom": "roleBehavior"
+        },
+        {
+          "name": "_roleChanged",
+          "description": "1. Validate role update. If the new value\nis not a valid one, then roll back to the old value.\n\n2. If the role of `outside` element is \nchanged, then `inside` elements' role\nare also changed.",
+          "privacy": "protected",
+          "sourceRange": {
+            "file": "bower_components/asq-base/asq-base.js",
+            "start": {
+              "line": 100,
+              "column": 2
+            },
+            "end": {
+              "line": 106,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "newRole"
+            },
+            {
+              "name": "oldRole"
+            }
+          ],
+          "inheritedFrom": "roleBehavior"
+        },
+        {
+          "name": "_propagateRole",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "file": "bower_components/asq-base/asq-base.js",
+            "start": {
+              "line": 108,
+              "column": 2
+            },
+            "end": {
+              "line": 120,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "role"
+            }
+          ],
+          "inheritedFrom": "roleBehavior"
+        },
+        {
+          "name": "_computeDisabled",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 293,
+              "column": 6
+            },
+            "end": {
+              "line": 295,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "disabled"
+            },
+            {
+              "name": "submittable"
+            }
+          ]
+        },
+        {
+          "name": "_computeSubmittable",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 297,
+              "column": 6
+            },
+            "end": {
+              "line": 299,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "remainingAttempts"
+            }
+          ]
+        },
+        {
+          "name": "_computeRemainingAttempts",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 301,
+              "column": 6
+            },
+            "end": {
+              "line": 309,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "maxNumSubmissions"
+            },
+            {
+              "name": "submissions"
+            }
+          ]
+        },
+        {
+          "name": "_computeSubmittableMessages",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 311,
+              "column": 6
+            },
+            "end": {
+              "line": 322,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "remainingAttempts"
+            }
+          ]
+        },
+        {
+          "name": "created",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 324,
+              "column": 6
+            },
+            "end": {
+              "line": 332,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "params": []
+        },
+        {
+          "name": "_subscribeToEvents",
+          "description": "Exercise is interested in two events: `asq:question_type`, which is emitted\nwhen answer is submitted successfully, and `asq:question_type_edit`, which is emitted\nwhen editing answer.",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 340,
+              "column": 6
+            },
+            "end": {
+              "line": 344,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "eventBus"
+            }
+          ]
+        },
+        {
+          "name": "_onUpdateSettings",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 346,
+              "column": 6
+            },
+            "end": {
+              "line": 355,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "evt"
+            }
+          ]
+        },
+        {
+          "name": "_onQuestionType",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 357,
+              "column": 6
+            },
+            "end": {
+              "line": 365,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "evt"
+            }
+          ]
+        },
+        {
+          "name": "_onRestoreViewer",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 367,
+              "column": 6
+            },
+            "end": {
+              "line": 377,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "evt"
+            }
+          ]
+        },
+        {
+          "name": "submit",
+          "description": "The `submit` method will submit the answer to a wrapped 'asq-exercise' instance.\n\nOnly useful when the `role` is <b>viewer</b>.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 396,
+              "column": 6
+            },
+            "end": {
+              "line": 425,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "params": []
+        },
+        {
+          "name": "refresh",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 427,
+              "column": 6
+            },
+            "end": {
+              "line": 430,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "_initialized"
+            }
+          ]
+        },
+        {
+          "name": "_getQuestions",
+          "description": "Get all questions inside this exercise.",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 437,
+              "column": 6
+            },
+            "end": {
+              "line": 441,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "params": []
+        },
+        {
+          "name": "_getSubmission",
+          "description": "Get all submission of all questions.",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 448,
+              "column": 6
+            },
+            "end": {
+              "line": 455,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "params": []
+        },
+        {
+          "name": "_onEdit",
+          "description": "event handler for tapping the *edit* button.",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 458,
+              "column": 6
+            },
+            "end": {
+              "line": 465,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "params": []
+        },
+        {
+          "name": "_disabledChanged",
+          "description": "The `asq-disabled` event is fired when the value of *disabled* is\nchanged. This may be caused by clicking the *submit* button.",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 478,
+              "column": 6
+            },
+            "end": {
+              "line": 482,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "params": []
+        },
+        {
+          "name": "_toggleInnerElements",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 484,
+              "column": 6
+            },
+            "end": {
+              "line": 489,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "flag"
+            }
+          ]
+        },
+        {
+          "name": "attached",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 491,
+              "column": 6
+            },
+            "end": {
+              "line": 495,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "params": []
+        }
+      ],
+      "staticMethods": [],
+      "demos": [
+        {
+          "url": "demo/index.html",
+          "description": ""
+        }
+      ],
+      "metadata": {},
+      "sourceRange": {
+        "start": {
+          "line": 183,
+          "column": 12
+        },
+        "end": {
+          "line": 497,
+          "column": 5
+        }
+      },
+      "privacy": "public",
+      "superclass": "HTMLElement",
+      "attributes": [
+        {
+          "name": "is-a-s-q-element",
+          "description": "True for every ASQ element.",
+          "sourceRange": {
+            "file": "bower_components/asq-base/asq-base.js",
+            "start": {
+              "line": 9,
+              "column": 4
+            },
+            "end": {
+              "line": 13,
+              "column": 5
+            }
+          },
+          "metadata": {},
+          "type": "boolean",
+          "inheritedFrom": "elementTypeBehavior"
+        },
+        {
+          "name": "is-a-s-q-question-type-element",
+          "description": "Denotes whether an ASQ element is a `question type`.",
+          "sourceRange": {
+            "file": "bower_components/asq-base/asq-base.js",
+            "start": {
+              "line": 16,
+              "column": 4
+            },
+            "end": {
+              "line": 20,
+              "column": 5
+            }
+          },
+          "metadata": {},
+          "type": "boolean",
+          "inheritedFrom": "elementTypeBehavior"
+        },
+        {
+          "name": "uid",
+          "description": "",
+          "sourceRange": {
+            "file": "bower_components/asq-base/asq-base.js",
+            "start": {
+              "line": 22,
+              "column": 4
+            },
+            "end": {
+              "line": 27,
+              "column": 5
+            }
+          },
+          "metadata": {},
+          "type": "string",
+          "inheritedFrom": "elementTypeBehavior"
+        },
+        {
+          "name": "roles",
+          "description": "",
+          "sourceRange": {
+            "file": "bower_components/asq-base/asq-base.js",
+            "start": {
+              "line": 53,
+              "column": 4
+            },
+            "end": {
+              "line": 63,
+              "column": 5
+            }
+          },
+          "metadata": {},
+          "type": "Object",
+          "inheritedFrom": "roleBehavior"
+        },
+        {
+          "name": "role",
+          "description": "",
+          "sourceRange": {
+            "file": "bower_components/asq-base/asq-base.js",
+            "start": {
+              "line": 65,
+              "column": 4
+            },
+            "end": {
+              "line": 71,
+              "column": 5
+            }
+          },
+          "metadata": {},
+          "type": "string",
+          "inheritedFrom": "roleBehavior"
+        },
+        {
+          "name": "disabled",
+          "description": "Disable or enable the element. Changes will be also\npropagated to inner propagated elements.",
+          "sourceRange": {
+            "start": {
+              "line": 195,
+              "column": 8
+            },
+            "end": {
+              "line": 201,
+              "column": 9
+            }
+          },
+          "metadata": {},
+          "type": "boolean"
+        },
+        {
+          "name": "confidence",
+          "description": "Display confidence stars in the exercise",
+          "sourceRange": {
+            "start": {
+              "line": 206,
+              "column": 8
+            },
+            "end": {
+              "line": 210,
+              "column": 9
+            }
+          },
+          "metadata": {},
+          "type": "boolean"
+        },
+        {
+          "name": "max-num-submissions",
+          "description": "The maximum submission attempts allowed.",
+          "sourceRange": {
+            "start": {
+              "line": 216,
+              "column": 8
+            },
+            "end": {
+              "line": 222,
+              "column": 9
+            }
+          },
+          "metadata": {},
+          "type": "number"
+        },
+        {
+          "name": "assessment",
+          "description": "assessment type",
+          "sourceRange": {
+            "start": {
+              "line": 227,
+              "column": 8
+            },
+            "end": {
+              "line": 232,
+              "column": 9
+            }
+          },
+          "metadata": {},
+          "type": "string"
+        },
+        {
+          "name": "submissions",
+          "description": "Counter for submission times.",
+          "sourceRange": {
+            "start": {
+              "line": 242,
+              "column": 8
+            },
+            "end": {
+              "line": 246,
+              "column": 9
+            }
+          },
+          "metadata": {},
+          "type": "number"
+        },
+        {
+          "name": "remaining-attempts",
+          "description": "",
+          "sourceRange": {
+            "start": {
+              "line": 261,
+              "column": 8
+            },
+            "end": {
+              "line": 263,
+              "column": 9
+            }
+          },
+          "metadata": {}
+        },
+        {
+          "name": "submittable",
+          "description": "",
+          "sourceRange": {
+            "start": {
+              "line": 265,
+              "column": 8
+            },
+            "end": {
+              "line": 267,
+              "column": 9
+            }
+          },
+          "metadata": {}
+        },
+        {
+          "name": "event-bus",
+          "description": "",
+          "sourceRange": {
+            "start": {
+              "line": 273,
+              "column": 8
+            },
+            "end": {
+              "line": 276,
+              "column": 9
+            }
+          },
+          "metadata": {},
+          "type": "Object"
+        },
+        {
+          "name": "direct-update",
+          "description": "Flag  to update the progress bar directly.",
+          "sourceRange": {
+            "start": {
+              "line": 285,
+              "column": 8
+            },
+            "end": {
+              "line": 289,
+              "column": 9
+            }
+          },
+          "metadata": {},
+          "type": "boolean"
+        }
+      ],
+      "events": [
+        {
+          "type": "CustomEvent",
+          "name": "is-a-s-q-element-changed",
+          "description": "Fired when the `isASQElement` property changes.",
+          "metadata": {},
+          "inheritedFrom": "elementTypeBehavior"
+        },
+        {
+          "type": "CustomEvent",
+          "name": "is-a-s-q-question-type-element-changed",
+          "description": "Fired when the `isASQQuestionTypeElement` property changes.",
+          "metadata": {},
+          "inheritedFrom": "elementTypeBehavior"
+        },
+        {
+          "type": "CustomEvent",
+          "name": "uid-changed",
+          "description": "Fired when the `uid` property changes.",
+          "metadata": {},
+          "inheritedFrom": "elementTypeBehavior"
+        },
+        {
+          "type": "CustomEvent",
+          "name": "role-changed",
+          "description": "Fired when the `role` property changes.",
+          "metadata": {},
+          "inheritedFrom": "roleBehavior"
+        },
+        {
+          "type": "CustomEvent",
+          "name": "asq-disabled",
+          "description": "asq-disabled\n\n     detail: {\n       disabled: this.disabled\n     }",
+          "metadata": {}
+        },
+        {
+          "type": "CustomEvent",
+          "name": "asq-submit",
+          "description": "asq-submit\n\n    detail: {\n      submission: // all collected submissions\n      confidence: // the confidence level\n    }",
+          "metadata": {}
+        },
+        {
+          "type": "CustomEvent",
+          "name": "disabled-changed",
+          "description": "Fired when the `disabled` property changes.",
+          "metadata": {}
+        },
+        {
+          "type": "CustomEvent",
+          "name": "max-num-submissions-changed",
+          "description": "Fired when the `maxNumSubmissions` property changes.",
+          "metadata": {}
+        },
+        {
+          "type": "CustomEvent",
+          "name": "assessment-changed",
+          "description": "Fired when the `assessment` property changes.",
+          "metadata": {}
+        },
+        {
+          "type": "CustomEvent",
+          "name": "event-bus-changed",
+          "description": "Fired when the `eventBus` property changes.",
+          "metadata": {}
+        },
+        {
+          "type": "CustomEvent",
+          "name": "direct-update-changed",
+          "description": "Fired when the `directUpdate` property changes.",
+          "metadata": {}
+        }
+      ],
+      "styling": {
+        "cssVariables": [],
+        "selectors": []
+      },
+      "slots": [],
+      "tagname": "asq-exercise"
+    }
+  ]
+}

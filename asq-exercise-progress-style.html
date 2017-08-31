@@ -1,0 +1,76 @@
+<dom-module id="asq-exercise-progress-style">
+  <template>
+    <style>
+
+      .progress-bar-container {
+        @apply(--layout-horizontal);
+        @apply(--layout-center);
+        width: 200px;
+        height: var(--asq-exercise-progress-height, 4px);
+        background-color: var(--asq-exercise-progressbar-background-color, --google-grey-300);
+      }
+
+      .background-progress {
+        position: absolute;
+        width: 200px;
+        background-color: rgba(0, 0, 0, 0);
+      }
+
+      paper-progress {
+        --paper-progress-height: var(--asq-exercise-progress-height, 4px);
+      }
+
+      .background-progress paper-progress {
+        --paper-progress-container-color: rgba(0, 0, 0, 0);
+      }
+
+      .background-progress .progress-bar-container {
+        background-color: rgba(51, 51, 51, 0);
+      }
+
+      #submitted-progress {
+        --paper-progress-active-color: var(--asq-exercise-progress-submitted-color, --google-green-500);
+      }
+
+      #background-submitted-progress {
+        --paper-progress-active-color: var(--asq-exercise-progress-submitted-color, --google-green-500);
+        --paper-progress-indeterminate-cycle-duration: var(--submitted-bar-duration, 0s);
+      }
+
+      #working-progress {
+        --paper-progress-active-color: var(--asq-exercise-progress-working-color, --paper-orange-500);
+      }
+
+      #background-working-progress {
+        --paper-progress-active-color: var(--asq-exercise-progress-working-color, --paper-orange-500);
+        --paper-progress-indeterminate-cycle-duration: var(--working-bar-duration, 0s);
+      }
+
+      #focused-progress {
+        --paper-progress-active-color: var(--asq-exercise-progress-focused-color, --paper-blue-200);
+      }
+
+      #background-focused-progress {
+        --paper-progress-active-color: var(--asq-exercise-progress-focused-color, --paper-blue-200);
+        --paper-progress-indeterminate-cycle-duration: var(--focused-bar-duration, 0s);;
+      }
+
+      #idle-progress {
+        --paper-progress-active-color: var(--asq-exercise-progress-idle-color, --google-grey-500);
+      }
+
+      #background-idle-progress {
+        --paper-progress-active-color: var(--asq-exercise-progress-idle-color, --google-grey-500);
+        --paper-progress-indeterminate-cycle-duration: var(--idle-bar-duration, 0s);;
+      }
+
+      #progress-num {
+        padding-left: 10px;
+        @apply(--asq-exercise-progress-num-mixin);
+        @apply(--layout-horizontal);
+        @apply(--layout-center);
+      }
+
+    </style>
+  </template>
+</dom-module>
