@@ -448,11 +448,11 @@ To see how to style the progressbar, go to the asq-exercise-progress docs.
        */
       _getSubmission: function () {
         var questions = this._getQuestions();
-        var sumissions = [];
+        var submissions = [];
         questions.forEach(function (elem, index) {
-          sumissions.push(elem.submit());
+          submissions.push(elem.submit());
         });
-        return sumissions;
+        return submissions;
       },
 
       // event handler for tapping the *edit* button.

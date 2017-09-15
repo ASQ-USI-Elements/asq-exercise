@@ -650,9 +650,9 @@ Examples:
       evt.exercises.forEach(function(exercise) {
         if (exercise.uid == this.exUid) {
           exercise.submissions.forEach(function(submission) {
-            this._viewers[submission] = {};
-            this._makeSureSubmissionsExist();
-            this._submissions[this.exUid][submission] = true;
+            // this._viewers[submission] = {};
+            // this._makeSureSubmissionsExist();
+            // this._submissions[this.exUid][submission] = true;
           }.bind(this));
         }
       }.bind(this));
