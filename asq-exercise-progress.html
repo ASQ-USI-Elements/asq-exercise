@@ -492,9 +492,11 @@ Examples:
     */
     _onSessionEventBeamer: function(evt) {
       const user = evt.data.sessionEvent.user;
+      if (user) user.id = user.whiteListEntry || user.whitelistEntry;
 
       switch (evt.data.sessionEvent.type) {
         case 'answer-submitted':
+          evt.data.sessionEvent.answeree.id = evt.data.sessionEvent.answeree.whiteListEntry || evt.data.sessionEvent.answeree.whitelistEntry;
           return this._userSubmitted(evt.data.sessionEvent);
         case 'viewer-idle':
           return this._userIdled(user);
@@ -653,6 +655,8 @@ Examples:
             this._viewers[submission] = {};
             this._makeSureSubmissionsExist();
             this._submissions[this.exUid][submission] = true;
+            var path = '_submissions.' + this.exUid + '.' + submission;
+            this.notifyPath(path, true);
           }.bind(this));
         }
       }.bind(this));
