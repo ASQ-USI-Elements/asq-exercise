@@ -20,7 +20,7 @@ function fakeResolved(value) {
 describe("asqExercisePlugin.js", function(){
   
   before(function(){
-    var settings = [
+    var settings = this.settings = [
       { key: 'maxNumSubmissions',
         value: 1,
         kind: 'number',
@@ -44,10 +44,13 @@ describe("asqExercisePlugin.js", function(){
     //patch database API
     var createStub = this.createStub = sinon.stub().returns(fakeResolved());
 
+    var updateSettingsStub = this.updateSettingsStub = sinon.stub().returns(fakeResolved());
+
     var findByIdStub = this.findByIdStub = sinon.stub().returns({
       exec: function(){
         return fakeResolved({
-          listSettings: listSettingsStub
+          listSettings: listSettingsStub,
+          updateSettings: updateSettingsStub,
         })
       }
     });
@@ -63,7 +66,14 @@ describe("asqExercisePlugin.js", function(){
             findById: findByIdStub
           }
         }
-      }
+      },
+      api: {
+        settings: {
+          defaultSettings: {
+            'exercise': this.settings,
+          },
+        },
+      },
     }
 
     //load html fixtures
@@ -74,7 +84,7 @@ describe("asqExercisePlugin.js", function(){
     this.asqExercisePlugin = require(modulePath);
   });
 
-  describe("parseHtml", function(){
+  describe("parseHtml", function() {
 
     before(function(){
      sinon.stub(this.asqExercisePlugin.prototype, "processEl").returns({
@@ -205,7 +215,6 @@ describe("asqExercisePlugin.js", function(){
         done(err);
       });
     });
-
   });
 
   describe("processEl", function(){
@@ -324,22 +333,252 @@ describe("asqExercisePlugin.js", function(){
   });
 
   describe("updateExerciseSettingsDB", function(){
-    it.skip("should test this method")
-  })
+    before(function () {
+      this.asqEx = new this.asqExercisePlugin(this.asq);
+    });
+
+    beforeEach(function () {
+      this.findByIdStub.reset();
+      this.listSettingsStub.reset();
+      this.updateSettingsStub.reset();
+    });
+
+    it("should call findById", function(done) {
+      const setting = {
+        'maxNumSubmissions': 3,
+      };
+      this.asqEx.updateExerciseSettingsDB('testExerciseId', setting)
+        .then(function () {
+          expect(this.findByIdStub.calledOnce).to.equal(true);
+          expect(this.findByIdStub.calledWith('testExerciseId')).to.equal(true);
+          done()
+        }.bind(this));
+    });
+
+    it("should call listSettings", function(done) {
+      const setting = {
+        'maxNumSubmissions': 3,
+      };
+      this.asqEx.updateExerciseSettingsDB('testExerciseId', setting)
+        .then(function () {
+          expect(this.findByIdStub.calledOnce).to.equal(true);
+          expect(this.findByIdStub.calledWith('testExerciseId')).to.equal(true);
+          expect(this.listSettingsStub.calledOnce).to.equal(true);
+          expect(this.listSettingsStub.calledWith()).to.equal(true);
+          done()
+        }.bind(this));
+    });
+
+    it("should call updateSettings", function(done) {
+      const setting = {
+        'maxNumSubmissions': 3,
+      };
+      this.asqEx.updateExerciseSettingsDB('testExerciseId', setting)
+        .then(function () {
+          expect(this.findByIdStub.calledOnce).to.equal(true);
+          expect(this.findByIdStub.calledWith()).to.equal(true);
+          expect(this.listSettingsStub.calledOnce).to.equal(true);
+          expect(this.listSettingsStub.calledWith()).to.equal(true);
+          expect(this.updateSettingsStub.calledOnce).to.equal(true);
+          expect(this.updateSettingsStub.calledWith(this.settings)).to.equal(true);
+          done();
+        }.bind(this));
+    });
+
+  });
+
   describe("updateExerciseSettings", function(){
-    it.skip("should test this method")
-  })
+    before(function () {
+      this.asqEx = new this.asqExercisePlugin(this.asq);
+      this.findByIdStub.reset();
+      this.listSettingsStub.reset();
+    });
+
+    beforeEach(function () {
+      this.findByIdStub.reset();
+      this.listSettingsStub.reset();
+    });
+
+    it("should call findById twice", function (done) {
+      const option = {
+        exercise_id: 'testExerciseId',
+        html: 'someHtml',
+        settings: {
+          'maxNumSubmissions': 3,
+        },
+      };
+      this.asqEx.updateExerciseSettings(option)
+        .then(function () {
+          expect(this.findByIdStub.calledTwice).to.equal(true);
+          expect(this.findByIdStub.calledWith('testExerciseId')).to.equal(true);
+          done();
+        }.bind(this))
+        .catch(function (err) {
+          expect(err).to.be.undefined;
+          done();
+        });
+
+    });
+
+    it("should call listSettings twice", function (done) {
+      const option = {
+        exercise_id: 'testExerciseId',
+        html: 'someHtml',
+        settings: {
+          'maxNumSubmissions': 3,
+        },
+      };
+      this.asqEx.updateExerciseSettings(option)
+        .then(function () {
+          expect(this.findByIdStub.calledTwice).to.equal(true);
+          expect(this.findByIdStub.calledWith('testExerciseId')).to.equal(true);
+          expect(this.listSettingsStub.calledTwice).to.equal(true);
+          expect(this.listSettingsStub.calledWith()).to.equal(true);
+          done();
+        }.bind(this))
+        .catch(function (err) {
+          expect(err).to.be.undefined;
+          done();
+        });
+    });
+
+    it("should have returned the correct values", function (done) {
+      const option = {
+        exercise_id: 'testExerciseId',
+        html: 'someHtml',
+        settings: {
+          'maxNumSubmissions': 3,
+        },
+      };
+      
+      const data = {
+        exercise_id: option.exercise_id,
+        html: option.html,
+        settings: option.settings,
+        status: 'success'
+      };
+      this.asqEx.updateExerciseSettings(option)
+        .then(function (result) {
+          expect(this.findByIdStub.calledTwice).to.equal(true);
+          expect(this.findByIdStub.calledWith('testExerciseId')).to.equal(true);
+          expect(this.listSettingsStub.calledTwice).to.equal(true);
+          expect(this.listSettingsStub.calledWith()).to.equal(true);
+          expect(result).to.deep.equal(data)
+          done();
+        }.bind(this))
+        .catch(function (err) {
+          expect(err).to.be.undefined;
+          done();
+        });
+    });
+  });
+
   describe("writeSettingsAsAttributesToGivenExercise", function(){
-    it.skip("should test this method")
+    before(function () {
+      this.asqEx = new this.asqExercisePlugin(this.asq);
+      sinon
+        .stub(this.asqExercisePlugin.prototype, "_convertSettings2CheerioCompatible")
+        .returns({'maxNumSubmissions': 3});
+    });
+
+    let result;
+    beforeEach(function () {
+      result = this.asqEx.writeSettingsAsAttributesToGivenExercise(this.simpleHtml, 'testExerciseId', {'maxNumSubmissions': 3});
+    });
+
+    afterEach(function () {
+      this.asqExercisePlugin.prototype._convertSettings2CheerioCompatible.reset();
+    });
+
+    after(function () {
+      this.asqExercisePlugin.prototype._convertSettings2CheerioCompatible.restore();
+    });
+
+    it("should call _convertSettings2CheerioCompatible", function () {
+      expect(this.asqEx._convertSettings2CheerioCompatible.calledOnce).to.be.equal(true);
+    });
+
+    it("should return the correct value", function () {
+      expect(this.asqEx._convertSettings2CheerioCompatible.calledOnce).to.be.equal(true);
+      expect(result).to.be.equal(this.simpleHtml)
+    });    
   })
   describe("_convertSettings2CheerioCompatible", function(){
-    it.skip("should test this method")
-  })
+    before(function () {
+      this.asqEx = new this.asqExercisePlugin(this.asq);
+    });
+
+    it("should return the correct object if there are no boolean values", function() {
+      const settings = {'maxNumSubmissions': 3};
+      const result = this.asqEx._convertSettings2CheerioCompatible(settings);
+      expect(result).to.deep.equal(settings);
+    });
+
+    it("should delete an entry if its value is false", function() {
+      const settings = {
+        'testFalseValue': false,
+        'maxNumSubmissions': 3
+      };
+      const result = this.asqEx._convertSettings2CheerioCompatible(settings);
+      expect(result).to.deep.equal({'maxNumSubmissions': 3});
+    });
+
+    it("should set the value of an entry to its key if the value is true", function() {
+      const settings = {
+        'testTrueValue': true,
+        'maxNumSubmissions': 3
+      };
+      const result = this.asqEx._convertSettings2CheerioCompatible(settings);
+      expect(result).to.deep.equal({
+        'testTrueValue': 'testTrueValue',
+        'maxNumSubmissions': 3
+      });
+    });
+  });
   describe("createExerciseSettings", function(){
-    it.skip("should test this method")
-  })
+    before(function () {
+      this.asqEx = new this.asqExercisePlugin(this.asq);
+    });
+
+    it("should return the correct exercise level settings", function () {
+      const exerciseSettings = {
+        'maxNumSubmissions': 0,
+      };
+      const presentationSettings = [{
+        'key': 'maxNumSubmissions',
+        'value':3
+      }];
+      const result = this.asqEx.createExerciseSettings(exerciseSettings, presentationSettings);
+      const exerciseLevelSettings = this.settings;
+      exerciseLevelSettings[0].value = 0;
+      expect(result).to.deep.equal(exerciseLevelSettings);
+    });
+  });
+
   describe("createNewExercise", function(){
-    it.skip("should test this method")
+    before(function () {
+      const data = {
+        _id: 'testExerciseId',
+        stem: 'simpleStem',
+        questions: ['testQuestions'],
+        settings: this.settings
+      };
+      this.createStub.returns(fakeResolved(data));
+      this.asqEx = new this.asqExercisePlugin(this.asq);
+    });
+
+    it("should return the correct exercise", function () {
+      this.asqEx.createNewExercise('testExerciseId', 'simpleStem', ['testQuestions'], ['self'])
+        .then(function (result) {
+          const data = {
+            _id: 'testExerciseId',
+            stem: 'simpleStem',
+            questions: ['testQuestions'],
+            settings: this.settings
+          };
+          expect(result).to.deep.equal(data);
+        }.bind(this));
+    })
   })
   describe("parseExerciseSettingsGivenId", function(){
     it.skip("should test this method")
