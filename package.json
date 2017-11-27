@@ -6,7 +6,9 @@
   "homepage": "https://github.com/ASQ-USI-Elements/asq-exercise",
   "main": "index.js",
   "scripts": {
-    "test": "mocha test/server"
+    "test": "npm run test:client && npm run test:server",
+    "test:server": "mocha test/server",
+    "test:client": "wct test/element"
   },
   "repository": {
     "type": "git",
