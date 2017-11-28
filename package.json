@@ -8,7 +8,7 @@
   "scripts": {
     "test": "npm run test:client && npm run test:server",
     "test:server": "mocha test/server",
-    "test:client": "wct --skip-plugin sauce test/element"
+    "test:client": "polymer test --skip-plugin sauce test/element"
   },
   "repository": {
     "type": "git",
