@@ -17,4 +17,4 @@ addons:
     - google-chrome-stable
 script:
 - xvfb-run npm run test:client && npm run test:server
-- if [ "${TRAVIS_PULL_REQUEST}" = "false" ]; then polymer test -s test/element 'default'; fi
+- if [ "${TRAVIS_PULL_REQUEST}" = "false" ]; then polymer test test/element; fi

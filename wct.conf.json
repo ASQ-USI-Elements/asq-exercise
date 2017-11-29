@@ -19,7 +19,8 @@
           "browserName": "firefox",
           "platform": "OS X 10.12",
           "version": "56"
-        }, {
+        }, 
+        {
           "browserName": "chrome",
           "platform": "OS X 10.12",
           "version": "62"
