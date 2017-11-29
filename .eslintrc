@@ -1,0 +1,13 @@
+{
+  "plugins": ["polymer"],
+  "extends": ["airbnb/base", "plugin:polymer/polymer-1"],
+  "rules": {
+    "new-cap": ["error", {"capIsNewExceptions": ["Polymer", "ObjectId"]}],
+    "no-underscore-dangle": ["error", { "allowAfterThis": true, "allow": ["_id"] }],
+    "no-unused-vars": ["error", { "varsIgnorePattern": "debug" }],
+    "no-invalid-this": 0,
+  },
+  "globals": {
+    "ASQ": false
+  },
+}
