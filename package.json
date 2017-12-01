@@ -8,7 +8,8 @@
   "scripts": {
     "test": "npm run test:client && npm run test:server",
     "test:server": "mocha test/server",
-    "test:client": "polymer test --skip-plugin sauce test/element"
+    "test:client": "polymer test --skip-plugin sauce test/element",
+    "lint": "eslint lint"
   },
   "repository": {
     "type": "git",
@@ -33,11 +34,8 @@
     "eslint": "^4.12.0",
     "eslint-config-airbnb": "^16.1.0",
     "eslint-config-airbnb-base": "^12.1.0",
-    "eslint-config-google": "^0.9.1",
-    "eslint-plugin-babel": "^4.1.2",
     "eslint-plugin-html": "^4.0.1",
     "eslint-plugin-import": "^2.8.0",
-    "eslint-plugin-polymer": "^0.1.0",
     "mocha": "^2.1.0",
     "sinon": "^1.12.2"
   },
