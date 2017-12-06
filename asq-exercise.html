@@ -198,7 +198,7 @@ To see how to style the progressbar, go to the asq-exercise-progress docs.
           value: false,
           notify: true,
           observer: '_disabledChanged',
-          reflectToAttribute: true
+          reflectToAttribute: true,
         },
 
         /**
@@ -207,7 +207,7 @@ To see how to style the progressbar, go to the asq-exercise-progress docs.
         confidence: {
           type: Boolean,
           value: false,
-          reflectToAttribute: true
+          reflectToAttribute: true,
         },
 
 
@@ -215,11 +215,11 @@ To see how to style the progressbar, go to the asq-exercise-progress docs.
          * The maximum submission attempts allowed.
          */
         maxNumSubmissions: {
-          type:Number,
+          type: Number,
           value: 1,
           notify: true,
           observer: 'refresh',
-          reflectToAttribute: true
+          reflectToAttribute: true,
         },
 
         /**
@@ -229,7 +229,7 @@ To see how to style the progressbar, go to the asq-exercise-progress docs.
           type: String,
           value: 'auto',
           notify: true,
-          reflectToAttribute: true
+          reflectToAttribute: true,
         },
 
 
@@ -243,7 +243,7 @@ To see how to style the progressbar, go to the asq-exercise-progress docs.
         submissions: {
           type: Number,
           value: 0,
-          observer: 'refresh'
+          observer: 'refresh',
         },
 
          /**
@@ -256,24 +256,24 @@ To see how to style the progressbar, go to the asq-exercise-progress docs.
         _initialized: {
           type: Boolean,
           value: false,
-          notify: true
+          notify: true,
         },
 
         remainingAttempts: {
-          computed: '_computeRemainingAttempts(maxNumSubmissions, submissions)'
+          computed: '_computeRemainingAttempts(maxNumSubmissions, submissions)',
         },
 
         submittable: {
-          computed: '_computeSubmittable(remainingAttempts)'
+          computed: '_computeSubmittable(remainingAttempts)',
         },
 
         _submittableMessages: {
-          computed: '_computeSubmittableMessages(remainingAttempts)'
+          computed: '_computeSubmittableMessages(remainingAttempts)',
         },
 
         eventBus: {
           type: Object,
-          notify: true
+          notify: true,
         },
 
         /**
@@ -292,17 +292,17 @@ To see how to style the progressbar, go to the asq-exercise-progress docs.
       },
 
       _computeDisabled: function(disabled, submittable) {
-        return disabled && !submittable
+        return disabled && !submittable;
       },
 
-      _computeSubmittable: function (remainingAttempts) {
+      _computeSubmittable: function(remainingAttempts) {
         return (remainingAttempts > 0);
       },
 
       _computeRemainingAttempts: function(maxNumSubmissions, submissions) {
         if (maxNumSubmissions < 0) return Number.MAX_VALUE;
 
-        var remainingAttempts = maxNumSubmissions - submissions;
+        let remainingAttempts = maxNumSubmissions - submissions;
 
         if (remainingAttempts <= 0) return 0;
 
@@ -310,20 +310,17 @@ To see how to style the progressbar, go to the asq-exercise-progress docs.
       },
 
       _computeSubmittableMessages: function(remainingAttempts) {
-        if (remainingAttempts === Number.MAX_VALUE)
-          return 'Unlimited attempts';
+        if (remainingAttempts === Number.MAX_VALUE) {return 'Unlimited attempts';}
 
-        if (remainingAttempts <= 0)
-          return 'No further attempt allowed';
+        if (remainingAttempts <= 0) {return 'No further attempt allowed';}
 
-        if (remainingAttempts === 1)
-          return 'Last chance'
+        if (remainingAttempts === 1) {return 'Last chance';}
 
         return remainingAttempts + ' attempts left';
       },
 
       created: function() {
-        document.addEventListener('asq-ready', function (evt) {
+        document.addEventListener('asq-ready', function(evt) {
           try {
             this._subscribeToEvents(evt.detail.asqEventBus);
           } catch (err) {
@@ -338,16 +335,16 @@ To see how to style the progressbar, go to the asq-exercise-progress docs.
        * when editing answer.
        *
        */
-      _subscribeToEvents: function (eventBus) {
+      _subscribeToEvents: function(eventBus) {
         eventBus.on('asq:question_type', this._onQuestionType.bind(this));
         eventBus.on('asq:submitted', this._onSubmitted.bind(this));
         eventBus.on('asq:update_live_presentation_settings', this._onUpdateSettings.bind(this));
       },
 
-      _onUpdateSettings: function (evt) {
+      _onUpdateSettings: function(evt) {
         if (evt.scope === 'exercise' && evt.exerciseId == this.uid) {
-          var settings = evt.settings;
-          Object.keys(settings).forEach(function (key, index) {
+          let settings = evt.settings;
+          Object.keys(settings).forEach(function(key, index) {
             if (this.hasAttributes(key)) {
               this[key] = settings[key];
             }
@@ -355,20 +352,18 @@ To see how to style the progressbar, go to the asq-exercise-progress docs.
         }
       },
 
-      _onQuestionType: function (evt) {
+      _onQuestionType: function(evt) {
         if (evt && evt.questionType && evt.questionType == 'asq-exercise') {
           if (evt.type == 'restoreViewer') {
-            if (this.role !== this.roles.VIEWER)
-              return;
+            if (this.role !== this.roles.VIEWER) {return;}
             this._onRestoreViewer(evt);
           }
         }
       },
 
-      _onRestoreViewer: function (evt) {
-        evt.exercises.forEach(function (ex) {
-          if (ex.uid !== this.uid)
-            return;
+      _onRestoreViewer: function(evt) {
+        evt.exercises.forEach(function(ex) {
+          if (ex.uid !== this.uid) {return;}
           this.submissions = ex.submissionNum;
           if (this.confidence && this.$$('#confidence')) {
             this.$$('#confidence').confidence = ex.confidence;
@@ -394,16 +389,13 @@ To see how to style the progressbar, go to the asq-exercise-progress docs.
        *
        * @method submit
        */
-      submit: function () {
-        if (this.role !== this.roles.VIEWER)
-          return;
-        if (this.disabled)
-          return;
-        if (!this.submittable)
-          return;
+      submit: function() {
+        if (this.role !== this.roles.VIEWER) {return;}
+        if (this.disabled) {return;}
+        if (!this.submittable) {return;}
 
 
-        var submission = this._getSubmission();
+        let submission = this._getSubmission();
         this.submissions += 1;
 
         if ( this.submittable ) {
@@ -411,23 +403,22 @@ To see how to style the progressbar, go to the asq-exercise-progress docs.
           this.$$('#edit-button').hidden = false;
         }
 
-        //submitted confidence will be null if not this.confidence is false
-        var confidence;
+        // submitted confidence will be null if not this.confidence is false
+        let confidence;
         if (this.confidence) {
           confidence = this.$$('#confidence').confidence;
         }
         this.fire('asq-submit', {
           exerciseUid: this.uid,
           submission: submission,
-          confidence: confidence
+          confidence: confidence,
         });
 
         this.disabled = true;
       },
 
       refresh: function(_initialized) {
-        if ( !_initialized )
-          return;
+        if ( !_initialized ) {return;}
       },
 
       /**
@@ -435,8 +426,8 @@ To see how to style the progressbar, go to the asq-exercise-progress docs.
        *
        * @method _getQuestions
        */
-      _getQuestions: function () {
-        return Polymer.dom(this).childNodes.filter(function (el) {
+      _getQuestions: function() {
+        return Polymer.dom(this).childNodes.filter(function(el) {
           return el.isASQElement && el.isASQQuestionTypeElement;
         });
       },
@@ -446,22 +437,22 @@ To see how to style the progressbar, go to the asq-exercise-progress docs.
        *
        * @method _getSubmission
        */
-      _getSubmission: function () {
-        var questions = this._getQuestions();
-        var submissions = [];
-        questions.forEach(function (elem, index) {
+      _getSubmission: function() {
+        let questions = this._getQuestions();
+        let submissions = [];
+        questions.forEach(function(elem, index) {
           submissions.push(elem.submit());
         });
         return submissions;
       },
 
       // event handler for tapping the *edit* button.
-      _onEdit: function () {
+      _onEdit: function() {
         this.$$('#edit-button').hidden = true;
         this.$$('#submit-button').hidden = false;
         this.disabled = false;
         this.fire('exercise-edit', {
-          exerciseUid: this.uid
+          exerciseUid: this.uid,
         });
       },
 
@@ -476,20 +467,20 @@ To see how to style the progressbar, go to the asq-exercise-progress docs.
        *      }
        *
        **/
-      _disabledChanged: function () {
+      _disabledChanged: function() {
         if (this.role === 'presenter') return;
         this.fire('asq-disabled', { disabled: this.disabled });
         this._toggleInnerElements(this.disabled);
       },
 
-      _toggleInnerElements: function (flag) {
+      _toggleInnerElements: function(flag) {
         // propagate value of *disabled*
-        this._getQuestions().forEach(function(x){
+        this._getQuestions().forEach(function(x) {
           x.disabled = flag;
         });
       },
 
-      attached: function () {
+      attached: function() {
         Polymer.dom.flush();
 
         this._initialized = true;

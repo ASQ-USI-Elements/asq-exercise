@@ -38,8 +38,8 @@
         disabled: {
           type: Boolean,
           value: false,
-          reflectToAttribute: true
-        }
+          reflectToAttribute: true,
+        },
       },
 
       get ratingItems() {
@@ -54,9 +54,9 @@
        * @return {string} String literal from '1' to '5'.
        */
       get confidence() {
-        var stars = this.ratingItems;
-        for (var i = 0; i < stars.length; i++) {
-          var star = stars[i];
+        let stars = this.ratingItems;
+        for (let i = 0; i < stars.length; i++) {
+          let star = stars[i];
           if (star.checked == true) {
             return Number(star.value);
           }
@@ -72,17 +72,16 @@
        *
        */
       set confidence(level) {
-        var stars = this.ratingItems;
-        for (var i = 0; i < stars.length; i++) {
+        let stars = this.ratingItems;
+        for (let i = 0; i < stars.length; i++) {
           stars[i].checked = false;
         }
         level = level < 0 ? 0 : level;
         level = level > stars.length ? stars.length : level;
-        for (var i = 0; i < level; i++) {
+        for (let i = 0; i < level; i++) {
           stars[i].checked = true;
         }
-
-      }
+      },
 
 
     });

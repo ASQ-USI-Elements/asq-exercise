@@ -28,6 +28,7 @@
 !/.gitattributes
 !/.npmignore
 !/.travis.yml
+!/.eslintrc
 
 # Node.js #
 #################

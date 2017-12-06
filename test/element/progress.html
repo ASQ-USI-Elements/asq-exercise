@@ -5,7 +5,7 @@
   <meta name="asq" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
   <title>asq-exercise-progress</title>
 
-  <script src="../../../webcomponentsjs/webcomponents.min.js"></script>
+  <script src="../../../webcomponentsjs/webcomponents-lite.min.js"></script>
   <script src="../../../web-component-tester/browser.js"></script>
 
   <!-- Step 1: import the element to test -->
@@ -16,17 +16,184 @@
 
   <!-- You use the document as a place to set up your fixtures. -->
   <test-fixture id="aep-fixture">
-    <template>
-      <asq-exercise-progress></asq-exercise-progress>
+    <template is="dom-template">
+      <asq-exercise-progress ex-uid="{{ exUid }}" direct-update="{{ directUpdate }}"></asq-exercise-progress>
     </template>
   </test-fixture>
 
   <script>
-    suite('<asq-exersise-progress>', function() {
-      test('test that flex values are calculated correctly', function() {
-        var aep = fixture('aep-fixture');
+    describe('<asq-exersise-progress>', function() {
+      context('Element initialization', function () {
+        let aep;
+        const exUid = 'testExUid';
+        const directUpdate = true;
+        beforeEach(function () {
+          aep = fixture('aep-fixture', {exUid, directUpdate});
+        });
 
-        aep._submissionsNum = 8;
+        afterEach(function(){
+          document.getElementById('aep-fixture').restore()
+        });
+
+        describe('If the element has been initialized', function () {
+          it('should exists', function () {
+            expect(aep).to.exist;
+          });
+
+          it('should initially have an empty viewers object', function () {
+            expect(aep._viewers).to.deep.equal({});
+          });
+
+          it('should initially have a submissions object set with the correct exUid property', function () {
+            const data = {
+              'testExUid': {}
+            };
+            expect(aep._submissions).to.deep.equal(data);
+          });
+        });
+      });
+
+      context('_computeSubmittedViewersNum', function () {
+        let aep;
+        const exUid = 'testExUid';
+        const directUpdate = true;
+        beforeEach(function () {
+          aep = fixture('aep-fixture', {exUid, directUpdate});
+        });
+
+        afterEach(function(){
+          document.getElementById('aep-fixture').restore()
+        });
+
+        describe('If the update is false', function () {
+          beforeEach(function () {
+            aep._computeSubmittedViewersNum(undefined, false);
+          });
+
+          it('should return the submission number correctly', function () {
+            expect(aep._submissionsNum).to.equal(0);
+          });
+        });
+
+        describe('If the update is true', function () {
+          beforeEach(function () {
+            aep._submissions = {
+              'testExUid': {
+                'id': {},
+                'id1': {},
+              }
+            };
+
+            aep._computeSubmittedViewersNum(undefined, true);
+          });
+
+          it('should return the submission number correctly', function () {
+            expect(aep._submissionsNum).to.equal(2);
+          });
+
+        });
+      });
+
+      context('_makeSureSubmissionsExist', function () {
+        let aep;
+        const exUid = 'testExUid';
+        const directUpdate = true;
+        beforeEach(function () {
+          aep = fixture('aep-fixture', {exUid, directUpdate});
+        });
+
+        afterEach(function(){
+          document.getElementById('aep-fixture').restore()
+        });
+
+        describe('If the value of defined by the exercise id in the submission property is undefined', function () {
+          beforeEach(function () {
+            aep._submissions = {
+              'testExUid': undefined,
+            }
+            aep._makeSureSubmissionsExist();
+          });
+
+          it('should set the value to an empty object', function () {
+            expect(aep._submissions['testExUid']).to.deep.equal({});
+          });
+        });
+
+        describe('If the value of defined by the exercise id in the submission property is defined', function () {
+          beforeEach(function () {
+            aep._submissions = {
+              'testExUid': {
+                'id': {},
+                'id1': {},
+              },
+            };
+
+            aep._makeSureSubmissionsExist();
+          });
+
+          it('should set the same property', function () {
+            const data = {
+                'id': {},
+                'id1': {},
+            };
+            expect(aep._submissions['testExUid']).to.deep.equal(data);
+          });
+
+        });
+      });
+
+      context('_makeSureViewerExists', function () {
+        let aep;
+        const exUid = 'testExUid';
+        const directUpdate = true;
+        const user = {
+          'id': 'testViewerId',
+          'role': 'viewer'
+        };
+        beforeEach(function () {
+          aep = fixture('aep-fixture', {exUid, directUpdate});
+        });
+
+        afterEach(function(){
+          document.getElementById('aep-fixture').restore()
+        });
+
+        describe('If the user is not in the viewers object', function () {
+          beforeEach(function () {
+            expect(aep._viewers).to.deep.equal({});
+            aep._makeSureViewerExists(user);
+          });
+
+          it('should add the viewer to the viewers object', function () {
+            expect(aep._viewers['testViewerId']).to.deep.equal(user);
+          });
+        });
+
+        describe('If the value of defined by the exercise id in the submission property is defined', function () {
+          beforeEach(function () {
+            expect(aep._viewers).to.deep.equal({});
+            aep._makeSureViewerExists(user);
+
+            const data = {
+              'testViewerId': user,
+            };
+            expect(aep._viewers).to.deep.equal(data);
+            const userChanged = user;
+            userChanged['changed'] = true;
+            aep._makeSureViewerExists(userChanged);
+          });
+
+          it('should set the same property', function () {
+            const userChanged = user;
+            userChanged['changed'] = true;
+            expect(aep._viewers['testViewerId']).to.deep.equal(userChanged);
+          });
+
+        });
+      });
+
+      it('test that flex values are calculated correctly', function() {
+        var aep = fixture('aep-fixture');
 
         aep._viewers = {
           '000': { id: '000', working: true },
@@ -62,7 +229,7 @@
         assert.equal(aep._idleUsersNum, aep.children[1].children[3].style.flex.split(' ')[0]);
       });
 
-      test('test default mixin values', function() {
+      it('test default mixin values', function() {
         var aep = fixture('aep-fixture');
 
         assert.isTrue(aep.isASQElement);

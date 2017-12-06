@@ -76,7 +76,6 @@ Examples:
         font-size: 14px;
       }
     </style>
-
     <div class="progress-bar-container background-progress">
       <paper-progress id="background-submitted-progress" indeterminate style$=[[_calcFlex(_submissionsNum)]]></paper-progress>
       <paper-progress id="background-working-progress" indeterminate style$=[[_calcFlex(_workingViewersNum)]]></paper-progress>
@@ -90,11 +89,9 @@ Examples:
       <paper-progress id="focused-progress" value="100" style$=[[_calcFlex(_focusedViewersNum)]]></paper-progress>
       <paper-progress id="idle-progress" value="100" style$=[[_calcFlex(_idleViewersNum)]]></paper-progress>
     </div>
-
     <div id="progress-num">
       <span>[[_submissionsNum]]/[[_connectedViewersNum]]</span>
     </div>
-
   </template>
 
   <script>
@@ -106,7 +103,10 @@ Examples:
     behaviors: [ASQ.asqElementBehavior],
 
     properties: {
-
+      exUid: {
+        type: String,
+        value: '',
+      },
       /**
       * Object that contains viewers with their activity information.
       *
@@ -116,9 +116,8 @@ Examples:
       */
       _viewers: {
         type: Object,
-        value: function() { return {}; },
+        value: function() {return {};},
       },
-
       /**
       * Object that contains the submissions.
       *
@@ -128,7 +127,7 @@ Examples:
       */
       _submissions: {
         type: Object,
-        value: function() { return {}; },
+        value: function() {return {};},
       },
 
       /**
@@ -176,7 +175,7 @@ Examples:
       * @type Number
       * @default 0
       */
-      _workingViewersNum:{
+      _workingViewersNum: {
         type: Number,
         value: 0,
         computed: '_computeWorkingViewersNum(_viewers.*, _update)',
@@ -202,7 +201,7 @@ Examples:
       * @type Number
       * @default 0
       */
-      _focusedViewersNum:{
+      _focusedViewersNum: {
         type: Number,
         value: 0,
         computed: '_computeFocusedViewersNum(_viewers.*, _update)',
@@ -229,7 +228,7 @@ Examples:
        * @type Number
        * @default 0
        */
-      _idleViewersNum:{
+      _idleViewersNum: {
         type: Number,
         value: 0,
         computed: '_computeIdleViewersNum(_viewers.*, _update)',
@@ -260,6 +259,9 @@ Examples:
         value: true,
       },
 
+      directUpdate: {
+        type: Boolean,
+      },
     },
 
     /**
@@ -270,13 +272,12 @@ Examples:
     _computeSubmittedViewersNum: function(submissions, update) {
       this._makeSureSubmissionsExist();
       if (update) {
-        var num = Object.keys(this._submissions[this.exUid]).reduce(function(acc, userId) {
-          if(this._submissions[this.exUid][userId]) return ++acc;
+        let num = Object.keys(this._submissions[this.exUid]).reduce(function(acc, userId) {
+          if (this._submissions[this.exUid][userId]) return ++acc;
           return acc;
         }.bind(this), 0);
         return num;
-      }
-      else return this._submissionsNum;
+      } else return this._submissionsNum;
     },
 
     /**
@@ -287,13 +288,12 @@ Examples:
     _computeWorkingViewersNum: function(viewers, update) {
       this._makeSureSubmissionsExist();
       if (update) {
-        var num = Object.keys(this._viewers).reduce(function(acc, userId) {
-          if(this._viewers[userId].working && !this._submissions[this.exUid][userId]) return ++acc;
+        let num = Object.keys(this._viewers).reduce(function(acc, userId) {
+          if (this._viewers[userId].working && !this._submissions[this.exUid][userId]) return ++acc;
           return acc;
         }.bind(this), 0);
         return num;
-      }
-      else return this._workingViewersNum;
+      } else return this._workingViewersNum;
     },
 
     /**
@@ -305,11 +305,10 @@ Examples:
       this._makeSureSubmissionsExist();
       if (update) {
         return Object.keys(this._viewers).reduce(function(acc, userId) {
-          if(this._viewers[userId].focused && !this._viewers[userId].idle && !this._submissions[this.exUid][userId]) return ++acc;
+          if (this._viewers[userId].focused && !this._viewers[userId].idle && !this._submissions[this.exUid][userId]) return ++acc;
           return acc;
         }.bind(this), 0);
-      }
-      else return this._focusedViewersNum;
+      } else return this._focusedViewersNum;
     },
 
     /**
@@ -321,11 +320,10 @@ Examples:
       this._makeSureSubmissionsExist();
       if (update) {
         return Object.keys(this._viewers).reduce(function(acc, userId) {
-          if(this._viewers[userId].idle && !this._submissions[this.exUid][userId]) return ++acc
+          if (this._viewers[userId].idle && !this._submissions[this.exUid][userId]) return ++acc;
           return acc;
         }.bind(this), 0);
-      }
-      else return this._idleViewersNum;
+      } else return this._idleViewersNum;
     },
 
     /**
@@ -443,7 +441,7 @@ Examples:
     * @param {object} A user object.
     */
     _userBlurred: function(user) {
-      this._makeSureViewerExists(user)
+      this._makeSureViewerExists(user);
     },
 
     /**
@@ -470,7 +468,7 @@ Examples:
       if (data.answer.exercise.id == this.exUid && this._makeSureViewerExists(data.answeree)) {
         this._resetUser(data.answeree);
         this._submissions[this.exUid][data.answeree.id] = true;
-        var path = '_submissions.' + this.exUid + '.' + data.answeree.id;
+        let path = '_submissions.' + this.exUid + '.' + data.answeree.id;
         this.notifyPath(path, true);
         this._submissionCounter++;
       }
@@ -481,7 +479,7 @@ Examples:
     *
     * @param {object} An event object.
     */
-    _onConnectedClients: function (evt) {
+    _onConnectedClients: function(evt) {
       this._connectedViewersNum = evt.connectedViewers.length;
     },
 
@@ -528,7 +526,7 @@ Examples:
     * @param {string} The css variable that will be changed.
     * @param {number} Duration of the animation cycle, given in seconds.
     */
-    _setVelocity:  function(property, velocity) {
+    _setVelocity: function(property, velocity) {
       this.customStyle[property] = velocity + 's';
       this.updateStyles();
       setTimeout(function() {
@@ -545,15 +543,15 @@ Examples:
       setInterval(function() {
         if (!this.directUpdate) this._update = true;
 
-        var submissionChange = this._calcChange(this._submissionCounter);
-        var workingChange = this._calcChange(this._workingCounter);
-        var focusedChange = this._calcChange(this._focusedCounter);
-        var idleChange = this._calcChange(this._idleCounter);
+        let submissionChange = this._calcChange(this._submissionCounter);
+        let workingChange = this._calcChange(this._workingCounter);
+        let focusedChange = this._calcChange(this._focusedCounter);
+        let idleChange = this._calcChange(this._idleCounter);
 
         this._setVelocity('--submitted-bar-duration', this._determineVelocity(submissionChange));
-        this._setVelocity('--working-bar-duration',  this._determineVelocity(workingChange));
-        this._setVelocity('--focused-bar-duration',  this._determineVelocity(focusedChange));
-        this._setVelocity('--idle-bar-duration',  this._determineVelocity(idleChange));
+        this._setVelocity('--working-bar-duration', this._determineVelocity(workingChange));
+        this._setVelocity('--focused-bar-duration', this._determineVelocity(focusedChange));
+        this._setVelocity('--idle-bar-duration', this._determineVelocity(idleChange));
 
         this._submissionCounter = 0;
         this._workingCounter = 0;
@@ -571,7 +569,7 @@ Examples:
     * @return {number} The amount of change in percent and in proportion to the number of users.
     */
     _calcChange: function(num) {
-      var total = this._submissionsNum + this._workingViewersNum + this._focusedViewersNum + this._idleViewersNum;
+      let total = this._submissionsNum + this._workingViewersNum + this._focusedViewersNum + this._idleViewersNum;
       return num/total * 100;
     },
 
@@ -584,13 +582,13 @@ Examples:
     */
     _determineVelocity: function(num) {
       if (num == 0) return 0;
-      else if(num < 5) return 10;
-      else if(num < 15) return 8;
-      else if(num < 30) return 6;
-      else if(num < 50) return 4;
-      else if(num < 75) return 2;
-      else if(num <= 100) return 1;
-      else return 0 // change was higher than 100%
+      else if (num < 5) return 10;
+      else if (num < 15) return 8;
+      else if (num < 30) return 6;
+      else if (num < 50) return 4;
+      else if (num < 75) return 2;
+      else if (num <= 100) return 1;
+      else return 0; // change was higher than 100%
     },
 
     created: function() {
@@ -624,9 +622,9 @@ Examples:
     * pixel bigger than the height of the progress bar.
     */
     _changeBackgroundProgressHeight: function() {
-      var backgroundProgressContainer = this.$$('.background-progress');
-      var foreGroundHeight = window.getComputedStyle(this.$$('.foreground-progress'), null).height;
-      var newHeight = parseInt(foreGroundHeight) + 2 + 'px';
+      let backgroundProgressContainer = this.$$('.background-progress');
+      let foreGroundHeight = window.getComputedStyle(this.$$('.foreground-progress'), null).height;
+      let newHeight = parseInt(foreGroundHeight) + 2 + 'px';
       [].forEach.call(backgroundProgressContainer.children, function(progressBar) {
         progressBar.customStyle['--paper-progress-height'] = newHeight;
         this.updateStyles();
@@ -655,7 +653,7 @@ Examples:
             this._viewers[submission] = {};
             this._makeSureSubmissionsExist();
             this._submissions[this.exUid][submission] = true;
-            var path = '_submissions.' + this.exUid + '.' + submission;
+            let path = '_submissions.' + this.exUid + '.' + submission;
             this.notifyPath(path, true);
           }.bind(this));
         }
